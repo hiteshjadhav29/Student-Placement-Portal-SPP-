@@ -1,0 +1,159 @@
+{% extends 'auth_base.html' %}
+
+{% block title %}
+Register
+{% endblock %}
+
+{% block content %}
+
+<div class="row justify-content-center align-items-center vh-100">
+
+    <div class="col-lg-7">
+
+        <div class="card shadow-lg border-0 rounded-4">
+
+            <div class="card-header bg-success text-white text-center py-4">
+
+                <h2>
+                    <i class="bi bi-person-plus-fill"></i>
+                    Create Your Account
+                </h2>
+
+                <p class="mb-0">
+                    Student Placement Portal
+                </p>
+
+            </div>
+
+            <div class="card-body p-4">
+
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert alert-{{ message.tags }}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+
+                <form method="POST">
+
+                    {% csrf_token %}
+
+                    <div class="row">
+
+                        <div class="col-md-6 mb-3">
+
+                            <label class="form-label">
+                                Username
+                            </label>
+
+                            {{ form.username }}
+
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+
+                            <label class="form-label">
+                                Email
+                            </label>
+
+                            {{ form.email }}
+
+                        </div>
+
+                    </div>
+
+                    <div class="row">
+
+                        <div class="col-md-6 mb-3">
+
+                            <label class="form-label">
+                                First Name
+                            </label>
+
+                            {{ form.first_name }}
+
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+
+                            <label class="form-label">
+                                Last Name
+                            </label>
+
+                            {{ form.last_name }}
+
+                        </div>
+
+                    </div>
+
+                    <div class="mb-3">
+
+                        <label class="form-label">
+                            Select Role
+                        </label>
+
+                        {{ form.role }}
+
+                    </div>
+
+                    <div class="row">
+
+                        <div class="col-md-6 mb-3">
+
+                            <label class="form-label">
+                                Password
+                            </label>
+
+                            {{ form.password1 }}
+
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+
+                            <label class="form-label">
+                                Confirm Password
+                            </label>
+
+                            {{ form.password2 }}
+
+                        </div>
+
+                    </div>
+
+                    <div class="d-grid mt-3">
+
+                        <button type="submit"
+                                class="btn btn-success btn-lg">
+
+                            <i class="bi bi-person-check-fill"></i>
+
+                            Register
+
+                        </button>
+
+                    </div>
+
+                </form>
+
+                <hr>
+
+                <div class="text-center">
+
+                    Already have an account?
+
+                    <a href="{% url 'accounts:login' %}">
+                        Login
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

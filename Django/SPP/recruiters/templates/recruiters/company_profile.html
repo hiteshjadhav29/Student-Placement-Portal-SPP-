@@ -1,0 +1,211 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Company Profile
+{% endblock %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+    <div class="row">
+
+        <!-- Company Logo -->
+
+        <div class="col-lg-4">
+
+            <div class="card shadow">
+
+                <div class="card-body text-center">
+
+                    {% if company.logo %}
+
+                        <img src="{{ company.logo.url }}"
+                             class="img-fluid rounded-circle mb-3"
+                             width="180"
+                             height="180">
+
+                    {% else %}
+
+                        <img src="https://via.placeholder.com/180"
+                             class="img-fluid rounded-circle mb-3">
+
+                    {% endif %}
+
+                    <h3>{{ company.company_name }}</h3>
+
+                    <p class="text-muted">
+                        {{ company.industry }}
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- Company Details -->
+
+        <div class="col-lg-8">
+
+            <div class="card shadow">
+
+                <div class="card-header bg-info text-white">
+
+                    <h4>
+
+                        <i class="bi bi-building"></i>
+
+                        Company Information
+
+                    </h4>
+
+                </div>
+
+                <div class="card-body">
+
+                    <table class="table table-bordered">
+
+                        <tr>
+
+                            <th width="30%">Company Name</th>
+
+                            <td>{{ company.company_name }}</td>
+
+                        </tr>
+
+                        <tr>
+
+                            <th>Email</th>
+
+                            <td>{{ company.company_email }}</td>
+
+                        </tr>
+
+                        <tr>
+
+                            <th>Phone</th>
+
+                            <td>{{ company.company_phone }}</td>
+
+                        </tr>
+
+                        <tr>
+
+                            <th>Website</th>
+
+                            <td>
+
+                                <a href="{{ company.website }}"
+                                   target="_blank">
+
+                                    {{ company.website }}
+
+                                </a>
+
+                            </td>
+
+                        </tr>
+
+                        <tr>
+
+                            <th>Industry</th>
+
+                            <td>{{ company.industry }}</td>
+
+                        </tr>
+
+                        <tr>
+
+                            <th>Location</th>
+
+                            <td>{{ company.location }}</td>
+
+                        </tr>
+
+                        <tr>
+
+                            <th>Description</th>
+
+                            <td>{{ company.description }}</td>
+
+                        </tr>
+
+                    </table>
+
+                    <div class="row mt-4">
+
+                        <div class="col-md-4">
+
+                            <div class="card bg-primary text-white">
+
+                                <div class="card-body text-center">
+
+                                    <h5>{{ total_jobs }}</h5>
+
+                                    <small>Total Jobs</small>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <div class="col-md-4">
+
+                            <div class="card bg-success text-white">
+
+                                <div class="card-body text-center">
+
+                                    <h5>{{ active_jobs }}</h5>
+
+                                    <small>Active Jobs</small>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <div class="col-md-4">
+
+                            <div class="card bg-warning text-dark">
+
+                                <div class="card-body text-center">
+
+                                    <h5>{{ total_applicants }}</h5>
+
+                                    <small>Applicants</small>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <div class="mt-4">
+
+                        <a href="{% url 'recruiters:edit_company' %}"
+                           class="btn btn-primary">
+
+                            <i class="bi bi-pencil-square"></i>
+
+                            Edit Company Profile
+
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

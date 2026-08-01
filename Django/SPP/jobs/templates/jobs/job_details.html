@@ -1,0 +1,126 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Job Details
+{% endblock %}
+
+{% block content %}
+
+<div class="container mt-5">
+
+    <div class="card shadow">
+
+        <div class="card-header bg-primary text-white">
+
+            <h3>{{ job.job_title }}</h3>
+
+        </div>
+
+        <div class="card-body">
+
+            <table class="table table-bordered">
+
+                <tr>
+                    <th width="30%">Company</th>
+                    <td>{{ job.company.company_name }}</td>
+                </tr>
+
+                <tr>
+                    <th>Job Title</th>
+                    <td>{{ job.job_title }}</td>
+                </tr>
+
+                <tr>
+                    <th>Job Description</th>
+                    <td>{{ job.job_description }}</td>
+                </tr>
+
+                <tr>
+                    <th>Required Skills</th>
+                    <td>{{ job.required_skills }}</td>
+                </tr>
+
+                <tr>
+                    <th>Qualification</th>
+                    <td>{{ job.qualification }}</td>
+                </tr>
+
+                <tr>
+                    <th>Experience</th>
+                    <td>{{ job.experience }}</td>
+                </tr>
+
+                <tr>
+                    <th>Job Type</th>
+                    <td>{{ job.job_type }}</td>
+                </tr>
+
+                <tr>
+                    <th>Location</th>
+                    <td>{{ job.location }}</td>
+                </tr>
+
+                <tr>
+                    <th>Salary</th>
+                    <td>{{ job.salary }}</td>
+                </tr>
+
+                <tr>
+                    <th>Vacancies</th>
+                    <td>{{ job.vacancies }}</td>
+                </tr>
+
+                <tr>
+                    <th>Application Deadline</th>
+                    <td>{{ job.application_deadline }}</td>
+                </tr>
+
+                <tr>
+                    <th>Status</th>
+                    <td>
+                        {% if job.status == "Open" %}
+                            <span class="badge bg-success">Open</span>
+                        {% else %}
+                            <span class="badge bg-danger">Closed</span>
+                        {% endif %}
+                    </td>
+                </tr>
+
+                <tr>
+                    <th>Recruiter</th>
+                    <td>{{ job.recruiter.username }}</td>
+                </tr>
+
+                <tr>
+                    <th>Posted On</th>
+                    <td>{{ job.created_at }}</td>
+                </tr>
+
+            </table>
+
+            <div class="mt-4">
+
+                <a href="{% url 'jobs:edit_job' job.id %}"
+                   class="btn btn-warning">
+                    Edit Job
+                </a>
+
+                <a href="{% url 'jobs:delete_job' job.id %}"
+                   class="btn btn-danger">
+                    Delete Job
+                </a>
+
+                <a href="{% url 'jobs:manage_jobs' %}"
+                   class="btn btn-secondary">
+                    Back
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}
