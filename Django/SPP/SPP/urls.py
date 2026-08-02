@@ -19,6 +19,8 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 
+
+
 urlpatterns = [
 
     path("admin/", admin.site.urls),
@@ -28,14 +30,18 @@ urlpatterns = [
         include(("accounts.urls", "accounts"), namespace="accounts"),
     ),
 
-    path("recruiter/", include("recruiters.urls")),
-
     path(
         "student/",
         include(("students.urls", "students"), namespace="students"),
     ),
 
-]
+    path("recruiter/", include("recruiters.urls")),
+
+    path("jobs/", include("jobs.urls")),
+
+    ]
+
+
 
 if settings.DEBUG:
     urlpatterns += static(

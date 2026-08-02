@@ -1,0 +1,127 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Edit Recruiter Profile
+{% endblock %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+    <div class="row justify-content-center">
+
+        <div class="col-lg-8">
+
+            <div class="card shadow">
+
+                <div class="card-header bg-warning text-dark">
+
+                    <h4>
+                        <i class="bi bi-pencil-square"></i>
+                        Edit Recruiter Profile
+                    </h4>
+
+                </div>
+
+                <div class="card-body">
+
+                    <form method="POST"
+                          enctype="multipart/form-data">
+
+                        {% csrf_token %}
+
+                        <div class="row">
+
+                            <div class="col-md-6 mb-3">
+
+                                <label class="form-label">
+                                    Full Name
+                                </label>
+
+                                {{ form.full_name }}
+
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+
+                                <label class="form-label">
+                                    Designation
+                                </label>
+
+                                {{ form.designation }}
+
+                            </div>
+
+                        </div>
+
+                        <div class="row">
+
+                            <div class="col-md-6 mb-3">
+
+                                <label class="form-label">
+                                    Phone Number
+                                </label>
+
+                                {{ form.phone }}
+
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+
+                                <label class="form-label">
+                                    Gender
+                                </label>
+
+                                {{ form.gender }}
+
+                            </div>
+
+                        </div>
+
+                        <div class="mb-3">
+
+                            <label class="form-label">
+                                Profile Picture
+                            </label>
+
+                            {{ form.profile_picture }}
+
+                        </div>
+
+                        <hr>
+
+                        <div class="d-flex justify-content-between">
+
+                            <a href="{% url 'recruiters:profile' %}"
+                               class="btn btn-secondary">
+
+                                <i class="bi bi-arrow-left"></i>
+
+                                Back
+
+                            </a>
+
+                            <button type="submit"
+                                    class="btn btn-success">
+
+                                <i class="bi bi-check-circle"></i>
+
+                                Save Changes
+
+                            </button>
+
+                        </div>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

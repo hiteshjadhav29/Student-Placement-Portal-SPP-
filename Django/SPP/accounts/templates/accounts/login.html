@@ -1,0 +1,104 @@
+{% extends 'auth_base.html' %}
+
+{% block title %}
+Login
+{% endblock %}
+
+{% block content %}
+
+<div class="row justify-content-center align-items-center vh-100">
+
+    <div class="col-md-5">
+
+        <div class="card shadow-lg border-0 rounded-4">
+
+            <div class="card-header bg-primary text-white text-center py-4">
+
+                <h2>
+                    <i class="bi bi-mortarboard-fill"></i>
+                    Student Placement Portal
+                </h2>
+
+                <p class="mb-0">
+                    Login to continue
+                </p>
+
+            </div>
+
+            <div class="card-body p-4">
+
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert alert-{{ message.tags }}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+
+                <form method="POST">
+
+                    {% csrf_token %}
+
+                    <div class="mb-3">
+
+                        <label class="form-label">
+                            Username
+                        </label>
+
+                        {{ form.username }}
+
+                    </div>
+
+                    <div class="mb-3">
+
+                        <label class="form-label">
+                            Password
+                        </label>
+
+                        {{ form.password }}
+
+                    </div>
+
+                    <div class="d-grid">
+
+                        <button type="submit"
+                                class="btn btn-primary btn-lg">
+
+                            <i class="bi bi-box-arrow-in-right"></i>
+
+                            Login
+
+                        </button>
+
+                    </div>
+
+                </form>
+
+                <hr>
+
+                <div class="text-center">
+
+                    <p class="mb-1">
+
+                        Don't have an account?
+
+                    </p>
+
+                    <a href="{% url 'accounts:register' %}"
+                       class="btn btn-outline-success">
+
+                        Register Here
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

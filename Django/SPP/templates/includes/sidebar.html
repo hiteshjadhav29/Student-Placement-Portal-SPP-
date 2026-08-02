@@ -1,0 +1,264 @@
+<div class="bg-dark text-white vh-100 p-3">
+
+    <h5 class="text-center mb-4">
+        Dashboard
+    </h5>
+
+    <ul class="nav flex-column">
+
+        <!-- Common Dashboard -->
+
+        <li class="nav-item mb-2">
+
+            <a href="/"
+               class="nav-link text-white">
+
+                <i class="bi bi-speedometer2"></i>
+
+                Dashboard
+
+            </a>
+
+        </li>
+
+        {% if user.is_authenticated %}
+
+            <!-- ========================= -->
+            <!-- Recruiter Sidebar -->
+            <!-- ========================= -->
+
+            {% if user.role == "recruiter" %}
+
+                <li class="nav-item mb-2">
+
+                    <a href="/recruiter/dashboard/"
+                       class="nav-link text-white">
+
+                        <i class="bi bi-house-door-fill"></i>
+
+                        Recruiter Dashboard
+
+                    </a>
+
+                </li>
+
+                <li class="nav-item mb-2">
+
+                    <a href="/recruiter/profile/"
+                       class="nav-link text-white">
+
+                        <i class="bi bi-person-fill"></i>
+
+                        My Profile
+
+                    </a>
+
+                </li>
+
+                <li class="nav-item mb-2">
+
+                    <a href="/jobs/add/"
+                       class="nav-link text-white">
+
+                        <i class="bi bi-plus-circle-fill"></i>
+
+                        Post Job
+
+                    </a>
+
+                </li>
+
+                <li class="nav-item mb-2">
+
+                    <a href="/jobs/manage/"
+                       class="nav-link text-white">
+
+                        <i class="bi bi-briefcase-fill"></i>
+
+                        Manage Jobs
+
+                    </a>
+
+                </li>
+
+                <li class="nav-item mb-2">
+
+                    <a href="#"
+                       class="nav-link text-white">
+
+                        <i class="bi bi-people-fill"></i>
+
+                        Applicants
+
+                    </a>
+
+                </li>
+
+                <li class="nav-item mb-2">
+
+                    <a href="#"
+                       class="nav-link text-white">
+
+                        <i class="bi bi-calendar-check-fill"></i>
+
+                        Interviews
+
+                    </a>
+
+                </li>
+
+                <li class="nav-item mb-2">
+
+                    <a href="#"
+                       class="nav-link text-white">
+
+                        <i class="bi bi-bar-chart-fill"></i>
+
+                        Analytics
+
+                    </a>
+
+                </li>
+
+            {% endif %}
+
+
+            <!-- ========================= -->
+            <!-- Student Sidebar -->
+            <!-- ========================= -->
+
+            {% if user.role == "student" %}
+
+                <li class="nav-item mb-2">
+
+                    <a href="/students/dashboard/"
+                       class="nav-link text-white">
+
+                        <i class="bi bi-mortarboard-fill"></i>
+
+                        Student Dashboard
+
+                    </a>
+
+                </li>
+
+                <li class="nav-item mb-2">
+
+                    <a href="/students/profile/"
+                       class="nav-link text-white">
+
+                        <i class="bi bi-person-fill"></i>
+
+                        My Profile
+
+                    </a>
+
+                </li>
+
+                <li class="nav-item mb-2">
+
+                    <a href="/students/jobs/"
+                       class="nav-link text-white">
+
+                        <i class="bi bi-search"></i>
+
+                        Browse Jobs
+
+                    </a>
+
+                </li>
+
+                <li class="nav-item mb-2">
+
+                    <a href="/students/applications/"
+                       class="nav-link text-white">
+
+                        <i class="bi bi-file-earmark-text-fill"></i>
+
+                        My Applications
+
+                    </a>
+
+                </li>
+
+                <li class="nav-item mb-2">
+
+                    <a href="#"
+                       class="nav-link text-white">
+
+                        <i class="bi bi-robot"></i>
+
+                        AI Job Recommendations
+
+                    </a>
+
+                </li>
+
+            {% endif %}
+
+
+            <!-- ========================= -->
+            <!-- Placement Officer Sidebar -->
+            <!-- ========================= -->
+
+            {% if user.role == "officer" %}
+
+                <li class="nav-item mb-2">
+
+                    <a href="/officer/dashboard/"
+                       class="nav-link text-white">
+
+                        <i class="bi bi-building-fill"></i>
+
+                        Officer Dashboard
+
+                    </a>
+
+                </li>
+
+                <li class="nav-item mb-2">
+
+                    <a href="/officer/students/"
+                       class="nav-link text-white">
+
+                        <i class="bi bi-people-fill"></i>
+
+                        Students
+
+                    </a>
+
+                </li>
+
+                <li class="nav-item mb-2">
+
+                    <a href="/officer/recruiters/"
+                       class="nav-link text-white">
+
+                        <i class="bi bi-person-badge-fill"></i>
+
+                        Recruiters
+
+                    </a>
+
+                </li>
+
+                <li class="nav-item mb-2">
+
+                    <a href="/officer/reports/"
+                       class="nav-link text-white">
+
+                        <i class="bi bi-file-earmark-bar-graph-fill"></i>
+
+                        Reports
+
+                    </a>
+
+                </li>
+
+            {% endif %}
+
+        {% endif %}
+
+    </ul>
+
+</div>

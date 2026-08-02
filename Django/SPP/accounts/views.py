@@ -6,11 +6,17 @@ from .forms import UserRegistrationForm, LoginForm
 User = get_user_model()
 
 
+# ==========================
+# Register
+# ==========================
 def register(request):
+
+    if request.user.is_authenticated:
+        return redirect("accounts:login_redirect")
 
     if request.method == "POST":
 
-        form = UserRegistrationForm(request.POST, request.FILES)
+        form = UserRegistrationForm(request.POST)
 
         if form.is_valid():
 
@@ -22,7 +28,7 @@ def register(request):
 
             messages.success(
                 request,
-                "Account created successfully."
+                "Registration successful! Please login."
             )
 
             return redirect("accounts:login")
@@ -40,18 +46,13 @@ def register(request):
     )
 
 
+# ==========================
+# Login
+# ==========================
 def login_view(request):
 
     if request.user.is_authenticated:
-
-        if request.user.role == "student":
-            return redirect("students:dashboard")
-
-        elif request.user.role == "recruiter":
-            return redirect("recruiters:recruiter_dashboard")
-
-        elif request.user.role == "officer":
-            return redirect("officers:dashboard")
+        return redirect("accounts:login_redirect")
 
     form = LoginForm(request, data=request.POST or None)
 
@@ -63,22 +64,28 @@ def login_view(request):
             password = form.cleaned_data["password"]
 
             user = authenticate(
+                request,
                 username=username,
                 password=password
             )
 
-            if user:
+            if user is not None:
 
                 login(request, user)
 
-                if user.role == "student":
-                    return redirect("students:dashboard")
+                messages.success(
+                    request,
+                    f"Welcome {user.username}!"
+                )
 
-                elif user.role == "recruiter":
-                    return redirect("recruiters:recruiter_dashboard")
+                return redirect("accounts:login_redirect")
 
-                elif user.role == "officer":
-                    return redirect("officers:dashboard")
+            else:
+
+                messages.error(
+                    request,
+                    "Invalid username or password."
+                )
 
     return render(
         request,
@@ -89,13 +96,42 @@ def login_view(request):
     )
 
 
+# ==========================
+# Redirect According to Role
+# ==========================
+def login_redirect(request):
+
+    if not request.user.is_authenticated:
+        return redirect("accounts:login")
+
+    if request.user.role == "student":
+        return redirect("students:dashboard")
+
+    elif request.user.role == "recruiter":
+        return redirect("recruiters:recruiter_dashboard")
+
+    elif request.user.role == "officer":
+        return redirect("placement_officer:dashboard")
+
+    else:
+        logout(request)
+        messages.error(
+            request,
+            "Invalid account role."
+        )
+        return redirect("accounts:login")
+
+
+# ==========================
+# Logout
+# ==========================
 def logout_view(request):
 
     logout(request)
 
     messages.success(
         request,
-        "Logged out successfully."
+        "You have been logged out successfully."
     )
 
     return redirect("accounts:login")
