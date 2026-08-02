@@ -2,6 +2,12 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login, logout, authenticate, get_user_model
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import render, redirect
+from django.contrib import messages
+
+from .models import RecruiterProfile
+from .forms import CompanyForm, RecruiterProfileForm
 
 from .models import Company, RecruiterProfile
 from .forms import (
@@ -24,85 +30,85 @@ def home(request):
 # =====================================
 # Recruiter Registration
 # =====================================
-def register(request):
+# def register(request):
 
-    if request.method == "POST":
+#     if request.method == "POST":
 
-        company_form = CompanyForm(request.POST, request.FILES)
-        recruiter_form = RecruiterRegistrationForm(request.POST, request.FILES)
+#         company_form = CompanyForm(request.POST, request.FILES)
+#         recruiter_form = RecruiterRegistrationForm(request.POST, request.FILES)
 
-        if company_form.is_valid() and recruiter_form.is_valid():
+#         if company_form.is_valid() and recruiter_form.is_valid():
 
-            company = company_form.save()
+#             company = company_form.save()
 
-            user = User.objects.create_user(
-                username=recruiter_form.cleaned_data["username"],
-                email=recruiter_form.cleaned_data["email"],
-                password=recruiter_form.cleaned_data["password1"],
-                role="recruiter"
-            )
+#             user = User.objects.create_user(
+#                 username=recruiter_form.cleaned_data["username"],
+#                 email=recruiter_form.cleaned_data["email"],
+#                 password=recruiter_form.cleaned_data["password1"],
+#                 role="recruiter"
+#             )
 
-            recruiter = recruiter_form.save(commit=False)
-            recruiter.user = user
-            recruiter.company = company
-            recruiter.save()
+#             recruiter = recruiter_form.save(commit=False)
+#             recruiter.user = user
+#             recruiter.company = company
+#             recruiter.save()
 
-            messages.success(request, "Recruiter registered successfully.")
+#             messages.success(request, "Recruiter registered successfully.")
 
-            return redirect("recruiter_login")
+#             return redirect("recruiter_login")
 
-    else:
-        company_form = CompanyForm()
-        recruiter_form = RecruiterRegistrationForm()
+#     else:
+#         company_form = CompanyForm()
+#         recruiter_form = RecruiterRegistrationForm()
 
-    context = {
-        "company_form": company_form,
-        "recruiter_form": recruiter_form,
-    }
+#     context = {
+#         "company_form": company_form,
+#         "recruiter_form": recruiter_form,
+#     }
 
-    return render(request, "recruiters/register.html", context)
+#     return render(request, "recruiters/register.html", context)
 
 
-# =====================================
-# Login
-# =====================================
-def recruiter_login(request):
+# # =====================================
+# # Login
+# # =====================================
+# def recruiter_login(request):
 
-    if request.user.is_authenticated:
-        return redirect("recruiter_dashboard")
+#     if request.user.is_authenticated:
+#         return redirect("recruiter_dashboard")
 
-    form = RecruiterLoginForm(request, data=request.POST or None)
+#     form = RecruiterLoginForm(request, data=request.POST or None)
 
-    if request.method == "POST":
+#     if request.method == "POST":
 
-        if form.is_valid():
+#         if form.is_valid():
 
-            username = form.cleaned_data.get("username")
-            password = form.cleaned_data.get("password")
+#             username = form.cleaned_data.get("username")
+#             password = form.cleaned_data.get("password")
 
-            user = authenticate(
-                username=username,
-                password=password
-            )
+#             user = authenticate(
+#                 username=username,
+#                 password=password
+#             )
 
-            if user is not None:
+#             if user is not None:
 
-                if user.role != "recruiter":
-                    messages.error(
-                        request,
-                        "Only recruiters can login here."
-                    )
-                    return redirect("recruiter_login")
+#                 if user.role != "recruiter":
+#                     messages.error(
+#                         request,
+#                         "Only recruiters can login here."
+#                     )
+#                     return redirect("recruiter_login")
 
-                login(request, user)
+#                 login(request, user)
 
-                return redirect("recruiter_dashboard")
+#                 return redirect("recruiters:recruiter_dashboard")
 
-    return render(
-        request,
-        "recruiters/login.html",
-        {"form": form}
-    )
+#     return render(
+#         request,
+#         "recruiters/login.html",
+#         {"form": form}
+#     )
 
 
 # =====================================
@@ -111,10 +117,19 @@ def recruiter_login(request):
 @login_required
 def recruiter_dashboard(request):
 
-    recruiter = get_object_or_404(
-        RecruiterProfile,
-        user=request.user
-    )
+    # Only recruiters can access
+    if request.user.role != "recruiter":
+        messages.error(
+            request,
+            "Access denied."
+        )
+        return redirect("accounts:login")
+
+    # If recruiter profile is not created yet
+    if not RecruiterProfile.objects.filter(user=request.user).exists():
+        return redirect("recruiters:complete_profile")
+
+    recruiter = RecruiterProfile.objects.get(user=request.user)
 
     context = {
         "recruiter": recruiter,
@@ -123,7 +138,7 @@ def recruiter_dashboard(request):
 
     return render(
         request,
-        "recruiters/dashboard.html",
+        "recruiters/recruiter_dashboard.html",
         context
     )
 
@@ -134,10 +149,10 @@ def recruiter_dashboard(request):
 @login_required
 def recruiter_profile(request):
 
-    recruiter = get_object_or_404(
-        RecruiterProfile,
-        user=request.user
-    )
+    if not RecruiterProfile.objects.filter(user=request.user).exists():
+        return redirect("recruiters:complete_profile")
+
+    recruiter = RecruiterProfile.objects.get(user=request.user)
 
     return render(
         request,
@@ -154,10 +169,10 @@ def recruiter_profile(request):
 @login_required
 def edit_profile(request):
 
-    recruiter = get_object_or_404(
-        RecruiterProfile,
-        user=request.user
-    )
+    if not RecruiterProfile.objects.filter(user=request.user).exists():
+        return redirect("recruiters:complete_profile")
+
+    recruiter = RecruiterProfile.objects.get(user=request.user)
 
     if request.method == "POST":
 
@@ -168,6 +183,7 @@ def edit_profile(request):
         )
 
         if form.is_valid():
+
             form.save()
 
             messages.success(
@@ -175,7 +191,7 @@ def edit_profile(request):
                 "Profile updated successfully."
             )
 
-            return redirect("recruiter_profile")
+            return redirect("recruiters:profile")
 
     else:
 
@@ -195,14 +211,138 @@ def edit_profile(request):
 # =====================================
 # Logout
 # =====================================
+# @login_required
+# def recruiter_logout(request):
+
+#     logout(request)
+
+#     messages.success(
+#         request,
+#         "Logged out successfully."
+#     )
+
+#     return redirect("recruiters:recruiter_login")
+
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import render, redirect
+from django.contrib import messages
+
+from .models import RecruiterProfile
+from .forms import CompanyForm, RecruiterProfileForm
+
+
 @login_required
-def recruiter_logout(request):
+def complete_recruiter_profile(request):
 
-    logout(request)
+    # Only recruiters should access this page
+    if request.user.role != "recruiter":
+        return redirect("accounts:login")
 
-    messages.success(
+    # If profile already exists
+    if RecruiterProfile.objects.filter(user=request.user).exists():
+        return redirect("recruiters:recruiter_dashboard")
+
+    if request.method == "POST":
+
+        company_form = CompanyForm(request.POST, request.FILES)
+        recruiter_form = RecruiterProfileForm(request.POST, request.FILES)
+
+        if company_form.is_valid() and recruiter_form.is_valid():
+
+            company = company_form.save()
+
+            recruiter = recruiter_form.save(commit=False)
+            recruiter.user = request.user
+            recruiter.company = company
+            recruiter.save()
+
+            messages.success(
+                request,
+                "Recruiter profile created successfully."
+            )
+
+            return redirect("recruiters:recruiter_dashboard")
+
+    else:
+
+        company_form = CompanyForm()
+        recruiter_form = RecruiterProfileForm()
+
+    return render(
         request,
-        "Logged out successfully."
+        "recruiters/complete_profile.html",
+        {
+            "company_form": company_form,
+            "recruiter_form": recruiter_form,
+        },
     )
 
-    return redirect("recruiter_login")
+
+
+@login_required
+def company_profile(request):
+
+    recruiter = RecruiterProfile.objects.get(
+        user=request.user
+    )
+
+    company = recruiter.company
+
+    context = {
+        "company": company,
+        "recruiter": recruiter,
+    }
+
+    return render(
+        request,
+        "recruiters/company_profile.html",
+        context
+    )
+
+# =====================================
+# Edit Company Profile
+# =====================================
+@login_required
+def edit_company(request):
+
+    if request.user.role != "recruiter":
+        messages.error(request, "Access denied.")
+        return redirect("accounts:login")
+
+    try:
+        recruiter = RecruiterProfile.objects.get(user=request.user)
+    except RecruiterProfile.DoesNotExist:
+        return redirect("recruiters:complete_profile")
+
+    company = recruiter.company
+
+    if request.method == "POST":
+
+        form = CompanyForm(
+            request.POST,
+            request.FILES,
+            instance=company
+        )
+
+        if form.is_valid():
+
+            form.save()
+
+            messages.success(
+                request,
+                "Company profile updated successfully."
+            )
+
+            return redirect("recruiters:company_profile")
+
+    else:
+
+        form = CompanyForm(instance=company)
+
+    return render(
+        request,
+        "recruiters/edit_company.html",
+        {
+            "form": form
+        }
+    )

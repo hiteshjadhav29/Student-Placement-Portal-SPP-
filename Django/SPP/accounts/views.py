@@ -99,6 +99,7 @@ def login_view(request):
 # ==========================
 # Redirect According to Role
 # ==========================
+
 def login_redirect(request):
 
     if not request.user.is_authenticated:
@@ -108,17 +109,27 @@ def login_redirect(request):
         return redirect("students:dashboard")
 
     elif request.user.role == "recruiter":
-        return redirect("recruiters:recruiter_dashboard")
+
+        from recruiters.models import RecruiterProfile
+
+        # Check if recruiter profile exists
+        if RecruiterProfile.objects.filter(user=request.user).exists():
+            return redirect("recruiters:recruiter_dashboard")
+
+        # First-time recruiter
+        return redirect("recruiters:complete_profile")
 
     elif request.user.role == "officer":
         return redirect("placement_officer:dashboard")
 
     else:
         logout(request)
+
         messages.error(
             request,
             "Invalid account role."
         )
+
         return redirect("accounts:login")
 
 

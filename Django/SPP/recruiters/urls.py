@@ -1,3 +1,5 @@
+
+
 from django.urls import path
 from . import views
 
@@ -5,18 +7,39 @@ app_name = "recruiters"
 
 urlpatterns = [
 
-    # Home
-    path('', views.home, name='home'),
+    path(
+        "dashboard/",
+        views.recruiter_dashboard,
+        name="recruiter_dashboard"
+    ),
 
-    # Authentication
-    path('register/', views.register, name='recruiter_register'),
-    path('login/', views.recruiter_login, name='recruiter_login'),
-    path('logout/', views.recruiter_logout, name='recruiter_logout'),
+    path(
+        "complete-profile/",
+        views.complete_recruiter_profile,
+        name="complete_profile"
+    ),
 
-    # Dashboard
-    path('dashboard/', views.recruiter_dashboard, name='recruiter_dashboard'),
+    path(
+        "profile/",
+        views.recruiter_profile,
+        name="profile"
+    ),
 
-    # Profile
-    path('profile/', views.recruiter_profile, name='recruiter_profile'),
-    path('profile/edit/', views.edit_profile, name='edit_profile'),
+    path(
+        "profile/edit/",
+        views.edit_profile,
+        name="edit_profile"
+    ),
+
+    path(
+        "company/",
+        views.company_profile,
+        name="company_profile"
+    ),
+
+    path(
+        "company/edit/",
+        views.edit_company,
+        name="edit_company"
+    ),
 ]

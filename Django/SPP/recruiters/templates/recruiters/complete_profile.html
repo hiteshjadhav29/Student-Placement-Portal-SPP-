@@ -1,0 +1,167 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Complete Recruiter Profile
+{% endblock %}
+
+{% block content %}
+
+<div class="container mt-5">
+
+    <div class="card shadow">
+
+        <div class="card-header bg-primary text-white">
+
+            <h3>Complete Recruiter Profile</h3>
+
+            <p class="mb-0">
+                Complete your company and recruiter information to continue.
+            </p>
+
+        </div>
+
+        <div class="card-body">
+
+            {% if messages %}
+
+                {% for message in messages %}
+
+                    <div class="alert alert-{{ message.tags }}">
+                        {{ message }}
+                    </div>
+
+                {% endfor %}
+
+            {% endif %}
+
+            <form method="POST"
+                  enctype="multipart/form-data">
+
+                {% csrf_token %}
+
+                <h4 class="mb-3">
+                    Company Information
+                </h4>
+
+                <div class="row">
+
+                    <div class="col-md-6 mb-3">
+                        <label>Company Name</label>
+                        {{ company_form.company_name }}
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label>Company Email</label>
+                        {{ company_form.company_email }}
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label>Company Phone</label>
+                        {{ company_form.company_phone }}
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label>Website</label>
+                        {{ company_form.website }}
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label>Industry</label>
+                        {{ company_form.industry }}
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label>Location</label>
+                        {{ company_form.location }}
+                    </div>
+
+                </div>
+
+                <div class="mb-3">
+
+                    <label>Description</label>
+
+                    {{ company_form.description }}
+
+                </div>
+
+                <div class="mb-4">
+
+                    <label>Company Logo</label>
+
+                    {{ company_form.logo }}
+
+                </div>
+
+                <hr>
+
+                <h4 class="mb-3">
+
+                    Recruiter Information
+
+                </h4>
+
+                <div class="row">
+
+                    <div class="col-md-6 mb-3">
+
+                        <label>Full Name</label>
+
+                        {{ recruiter_form.full_name }}
+
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+
+                        <label>Designation</label>
+
+                        {{ recruiter_form.designation }}
+
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+
+                        <label>Phone</label>
+
+                        {{ recruiter_form.phone }}
+
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+
+                        <label>Gender</label>
+
+                        {{ recruiter_form.gender }}
+
+                    </div>
+
+                </div>
+
+                <div class="mb-4">
+
+                    <label>Profile Picture</label>
+
+                    {{ recruiter_form.profile_picture }}
+
+                </div>
+
+                <div class="d-grid">
+
+                    <button type="submit"
+                            class="btn btn-success btn-lg">
+
+                        Complete Registration
+
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}
