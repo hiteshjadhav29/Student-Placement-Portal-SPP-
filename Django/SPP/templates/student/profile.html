@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Student Profile</title>
+</head>
+
+<body>
+
+    <h1>Student Profile</h1>
+
+    <p><strong>Name:</strong> {{ student.user.username }}</p>
+
+    <p><strong>Roll Number:</strong> {{ student.roll_number }}</p>
+
+    <p><strong>Phone:</strong> {{ student.phone }}</p>
+
+    <p><strong>Branch:</strong> {{ student.get_branch_display }}</p>
+
+    <p><strong>Semester:</strong> {{ student.semester }}</p>
+
+    <p><strong>CGPA:</strong> {{ student.cgpa }}</p>
+
+    <p><strong>Date of Birth:</strong> {{ student.date_of_birth }}</p>
+
+    <p><strong>Gender:</strong> {{ student.gender }}</p>
+
+    <p><strong>Address:</strong> {{ student.address }}</p>
+
+    <p><strong>GitHub:</strong> {{ student.github_url }}</p>
+
+    <p><strong>LinkedIn:</strong> {{ student.linkedin_url }}</p>
+
+    {% if student.profile_photo %}
+    <img src="{{ student.profile_photo.url }}" width="150" alt="Profile Photo">
+    {% endif %}
+
+    <br><br>
+
+    <a href="{% url 'students:edit_profile' %}">
+        Edit Profile
+    </a>
+
+</body>
+
+</html>

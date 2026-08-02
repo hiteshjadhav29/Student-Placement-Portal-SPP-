@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Delete Skill</title>
+</head>
+
+<body>
+
+    <h2>Delete Skill</h2>
+
+    <p>Are you sure you want to delete:</p>
+
+    <b>{{ skill.skill_name }}</b>
+
+    <form method="POST">
+
+        {% csrf_token %}
+
+        <button type="submit">
+            Delete
+        </button>
+
+    </form>
+
+    <a href="{% url 'students:skills' %}">
+        Cancel
+    </a>
+
+</body>
+
+</html>

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Add Skill</title>
+</head>
+
+<body>
+
+    <h1>Add Skill</h1>
+
+    <form method="POST">
+
+        {% csrf_token %}
+
+        {{ form.as_p }}
+
+        <button type="submit">
+            Save
+        </button>
+
+    </form>
+
+    <br>
+
+    <a href="{% url 'students:skills' %}">
+        Back
+    </a>
+
+</body>
+
+</html>

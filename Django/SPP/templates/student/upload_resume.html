@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Upload Resume</title>
+</head>
+
+<body>
+
+    <h1>Upload Resume</h1>
+
+    <form method="POST" enctype="multipart/form-data">
+
+        {% csrf_token %}
+
+        {{ form.as_p }}
+
+        <button type="submit">
+            Upload Resume
+        </button>
+
+    </form>
+
+    <br>
+
+    <a href="{% url 'students:resume' %}">
+        Back
+    </a>
+
+</body>
+
+</html>
