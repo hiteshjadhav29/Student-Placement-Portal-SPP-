@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>My Resume</title>
+</head>
+
+<body>
+
+    <h1>My Resume</h1>
+
+    {% if resume %}
+
+    <p><strong>Resume Uploaded Successfully ✅</strong></p>
+
+    <p>
+        <a href="{{ resume.resume_file.url }}" target="_blank">
+            View Resume
+        </a>
+    </p>
+
+    <p>Resume Score: {{ resume.resume_score }}</p>
+
+    <p>ATS Score: {{ resume.ats_score }}</p>
+
+    <p>AI Feedback:</p>
+
+    <p>{{ resume.ai_feedback }}</p>
+
+    <a href="{% url 'students:upload_resume' %}">
+        Update Resume
+    </a>
+
+    {% else %}
+
+    <p>No Resume Uploaded.</p>
+
+    <a href="{% url 'students:upload_resume' %}">
+        Upload Resume
+    </a>
+
+    {% endif %}
+
+</body>
+
+</html>

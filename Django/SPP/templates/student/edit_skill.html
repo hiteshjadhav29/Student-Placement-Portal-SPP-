@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Edit Skill</title>
+</head>
+
+<body>
+
+    <h1>Edit Skill</h1>
+
+    <form method="POST">
+
+        {% csrf_token %}
+
+        {{ form.as_p }}
+
+        <button type="submit">
+            Update
+        </button>
+
+    </form>
+
+</body>
+
+</html>

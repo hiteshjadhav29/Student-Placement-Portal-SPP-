@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>My Certifications</title>
+</head>
+
+<body>
+
+    <h1>My Certifications</h1>
+
+    <a href="{% url 'students:add_certification' %}">
+        Add Certification
+    </a>
+
+    <hr>
+
+    {% if certifications %}
+
+    <ul>
+
+        {% for certification in certifications %}
+
+        <li>
+
+            <h3>{{ certification.certificate_name }}</h3>
+
+            <p><b>Issued By:</b> {{ certification.issued_by }}</p>
+
+            <p><b>Issue Date:</b> {{ certification.issue_date }}</p>
+
+            {% if certification.certificate_file %}
+            <a href="{{ certification.certificate_file.url }}" target="_blank">
+                View Certificate
+            </a>
+            {% endif %}
+
+            <a href="{% url 'students:edit_certification' certification.id %}">
+                Edit
+            </a>
+
+            <a href="{% url 'students:delete_certification' certification.id %}">
+                Delete
+            </a>
+
+        </li>
+
+        <hr>
+
+        {% endfor %}
+
+    </ul>
+
+    {% else %}
+
+    <p>No Certifications Added.</p>
+
+    {% endif %}
+
+</body>
+
+</html>

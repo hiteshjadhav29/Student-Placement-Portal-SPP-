@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Student Dashboard</title>
+</head>
+
+<body>
+
+    <h1>Welcome {{ student.user.username }}</h1>
+
+    <hr>
+
+    <h2>Student Information</h2>
+
+    <p>Roll Number: {{ student.roll_number }}</p>
+    <p>Branch: {{ student.get_branch_display }}</p>
+    <p>Semester: {{ student.semester }}</p>
+    <p>CGPA: {{ student.cgpa }}</p>
+
+    <hr>
+
+    <h2>Resume</h2>
+
+    {% if resume %}
+    <p>Resume Uploaded ✅</p>
+    <p>Resume Score: {{ resume.resume_score }}</p>
+    <p>ATS Score: {{ resume.ats_score }}</p>
+    {% else %}
+    <p>No Resume Uploaded ❌</p>
+    {% endif %}
+
+    <hr>
+
+    <h2>Profile Summary</h2>
+
+    <p>Skills: {{ skills_count }}</p>
+    <p>Projects: {{ projects_count }}</p>
+    <p>Certifications: {{ certifications_count }}</p>
+
+    <hr>
+
+    <a href="{% url 'students:profile' %}">Profile</a><br>
+    <a href="{% url 'students:resume' %}">Resume</a>
+
+</body>
+
+</html>

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Edit Certification</title>
+</head>
+
+<body>
+
+    <h1>Edit Certification</h1>
+
+    <form method="POST" enctype="multipart/form-data">
+
+        {% csrf_token %}
+
+        {{ form.as_p }}
+
+        <button type="submit">
+            Update Certification
+        </button>
+
+    </form>
+
+    <br>
+
+    <a href="{% url 'students:certifications' %}">
+        Back
+    </a>
+
+</body>
+
+</html>
