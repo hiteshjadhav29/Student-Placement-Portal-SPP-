@@ -19,7 +19,13 @@ urlpatterns = [
 
     path("jobs/", include("jobs.urls")),
 
-]
+    path(
+    "applications/",
+    include(("applications.urls", "applications"), namespace="applications"),
+),
+
+    ]
+
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
