@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block title %}
+Student Placement Portal
+{% endblock %}
+
+{% block content %}
+
+<div class="container mt-5 text-center">
+
+    <h1>Student Placement Portal</h1>
+
+    <p>Welcome to the Student Placement Portal.</p>
+
+    <a href="{% url 'accounts:login' %}" class="btn btn-primary">
+        Login
+    </a>
+
+    <a href="{% url 'accounts:register' %}" class="btn btn-success">
+        Register
+    </a>
+
+</div>
+
+{% endblock %}
