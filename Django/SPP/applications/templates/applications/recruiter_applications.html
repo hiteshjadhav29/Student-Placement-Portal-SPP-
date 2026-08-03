@@ -1,0 +1,128 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Job Applications
+{% endblock %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+    <h2 class="mb-4">
+        Applications Received
+    </h2>
+
+    {% if applications %}
+
+    <table class="table table-bordered table-hover">
+
+        <thead class="table-dark">
+
+            <tr>
+
+                <th>Student</th>
+
+                <th>Job</th>
+
+                <th>Status</th>
+
+                <th>Applied On</th>
+
+                <th>Action</th>
+
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+            {% for application in applications %}
+
+            <tr>
+
+                <td>
+
+                    {{ application.student.user.username }}
+
+                </td>
+
+                <td>
+
+                    {{ application.job.job_title }}
+
+                </td>
+
+                <td>
+
+                    {% if application.status == "Pending" %}
+
+                        <span class="badge bg-warning text-dark">
+                            Pending
+                        </span>
+
+                    {% elif application.status == "Under Review" %}
+
+                        <span class="badge bg-info">
+                            Under Review
+                        </span>
+
+                    {% elif application.status == "Shortlisted" %}
+
+                        <span class="badge bg-primary">
+                            Shortlisted
+                        </span>
+
+                    {% elif application.status == "Selected" %}
+
+                        <span class="badge bg-success">
+                            Selected
+                        </span>
+
+                    {% else %}
+
+                        <span class="badge bg-danger">
+                            Rejected
+                        </span>
+
+                    {% endif %}
+
+                </td>
+
+                <td>
+
+                    {{ application.applied_at|date:"d M Y" }}
+
+                </td>
+
+                <td>
+
+                    <a href="{% url 'applications:application_detail' application.id %}"
+                       class="btn btn-primary btn-sm">
+
+                        View
+
+                    </a>
+
+                </td>
+
+            </tr>
+
+            {% endfor %}
+
+        </tbody>
+
+    </table>
+
+    {% else %}
+
+        <div class="alert alert-info">
+
+            No applications received yet.
+
+        </div>
+
+    {% endif %}
+
+</div>
+
+{% endblock %}

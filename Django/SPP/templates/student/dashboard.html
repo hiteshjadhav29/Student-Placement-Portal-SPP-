@@ -1,81 +1,232 @@
-<!DOCTYPE html>
-<html>
+{% extends "base.html" %}
 
-<head>
-    <title>Student Dashboard</title>
-</head>
+{% block title %}
+Student Dashboard
+{% endblock %}
 
-<body>
+{% block content %}
 
-    <h1>Welcome {{ student.user.username }}</h1>
+<div class="container mt-4">
 
-    <hr>
+    <h2 class="mb-4">
+        Welcome, {{ student.user.username }}
+    </h2>
 
-    <h2>Student Information</h2>
+    <!-- Student Information -->
 
-    <p>Roll Number: {{ student.roll_number }}</p>
-    <p>Branch: {{ student.get_branch_display }}</p>
-    <p>Semester: {{ student.semester }}</p>
-    <p>CGPA: {{ student.cgpa }}</p>
+    <div class="card shadow mb-4">
 
-    <hr>
+        <div class="card-header bg-primary text-white">
 
-    <h2>Resume</h2>
+            <h4 class="mb-0">Student Information</h4>
 
-    {% if resume %}
-    <p>Resume Uploaded ✅</p>
-    <p>Resume Score: {{ resume.resume_score }}</p>
-    <p>ATS Score: {{ resume.ats_score }}</p>
-    {% else %}
-    <p>No Resume Uploaded ❌</p>
-    {% endif %}
+        </div>
 
-    <hr>
+        <div class="card-body">
 
-    <h2>Profile Summary</h2>
+            <div class="row">
 
-    <p>Skills: {{ skills_count }}</p>
-    <p>Projects: {{ projects_count }}</p>
-    <p>Certifications: {{ certifications_count }}</p>
+                <div class="col-md-3">
+                    <strong>Roll Number</strong><br>
+                    {{ student.roll_number }}
+                </div>
 
-    <hr>
+                <div class="col-md-3">
+                    <strong>Branch</strong><br>
+                    {{ student.get_branch_display }}
+                </div>
 
-    <a href="{% url 'students:profile' %}">Profile</a><br>
-    <a href="{% url 'students:resume' %}">Resume</a>
+                <div class="col-md-3">
+                    <strong>Semester</strong><br>
+                    {{ student.semester }}
+                </div>
 
-    <hr>
+                <div class="col-md-3">
+                    <strong>CGPA</strong><br>
+                    {{ student.cgpa }}
+                </div>
 
-<h3>Quick Menu</h3>
+            </div>
 
-<div class="list-group">
+        </div>
 
-    <a href="{% url 'students:profile' %}"
-       class="list-group-item list-group-item-action">
-        👤 Profile
-    </a>
+    </div>
 
-    <a href="{% url 'students:resume' %}"
-       class="list-group-item list-group-item-action">
-        📄 Resume
-    </a>
+    <!-- Statistics -->
 
-    <a href="{% url 'students:skills' %}"
-       class="list-group-item list-group-item-action">
-        💡 Skills
-    </a>
+    <div class="row">
 
-    <a href="{% url 'students:projects' %}"
-       class="list-group-item list-group-item-action">
-        💻 Projects
-    </a>
+        <div class="col-md-3 mb-3">
 
-    <a href="{% url 'students:certifications' %}"
-       class="list-group-item list-group-item-action">
-        🏆 Certifications
-    </a>
+            <div class="card text-center shadow">
+
+                <div class="card-body">
+
+                    <h5>Skills</h5>
+
+                    <h2>{{ skills_count }}</h2>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-3 mb-3">
+
+            <div class="card text-center shadow">
+
+                <div class="card-body">
+
+                    <h5>Projects</h5>
+
+                    <h2>{{ projects_count }}</h2>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-3 mb-3">
+
+            <div class="card text-center shadow">
+
+                <div class="card-body">
+
+                    <h5>Certifications</h5>
+
+                    <h2>{{ certifications_count }}</h2>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-3 mb-3">
+
+            <div class="card text-center shadow">
+
+                <div class="card-body">
+
+                    <h5>Resume</h5>
+
+                    {% if resume %}
+                        <span class="badge bg-success">
+                            Uploaded
+                        </span>
+                    {% else %}
+                        <span class="badge bg-danger">
+                            Not Uploaded
+                        </span>
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Quick Menu -->
+
+    <div class="card shadow">
+
+        <div class="card-header bg-dark text-white">
+
+            <h4 class="mb-0">Quick Menu</h4>
+
+        </div>
+
+        <div class="card-body">
+
+            <div class="row">
+
+                <div class="col-md-4 mb-3">
+
+                    <a href="{% url 'students:profile' %}"
+                       class="btn btn-outline-primary w-100">
+
+                        👤 Profile
+
+                    </a>
+
+                </div>
+
+                <div class="col-md-4 mb-3">
+
+                    <a href="{% url 'students:resume' %}"
+                       class="btn btn-outline-success w-100">
+
+                        📄 Resume
+
+                    </a>
+
+                </div>
+
+                <div class="col-md-4 mb-3">
+
+                    <a href="{% url 'students:skills' %}"
+                       class="btn btn-outline-warning w-100">
+
+                        💡 Skills
+
+                    </a>
+
+                </div>
+
+                <div class="col-md-4 mb-3">
+
+                    <a href="{% url 'students:projects' %}"
+                       class="btn btn-outline-info w-100">
+
+                        💻 Projects
+
+                    </a>
+
+                </div>
+
+                <div class="col-md-4 mb-3">
+
+                    <a href="{% url 'students:certifications' %}"
+                       class="btn btn-outline-secondary w-100">
+
+                        🏆 Certifications
+
+                    </a>
+
+                </div>
+
+                <div class="col-md-4 mb-3">
+
+                    <a href="{% url 'jobs:job_list' %}"
+                       class="btn btn-outline-primary w-100">
+
+                        💼 Browse Jobs
+
+                    </a>
+
+                </div>
+
+                <div class="col-md-4 mb-3">
+
+                    <a href="{% url 'applications:my_applications' %}"
+                       class="btn btn-outline-danger w-100">
+
+                        📬 My Applications
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
 
 </div>
 
-</body>
-
-</html>
+{% endblock %}

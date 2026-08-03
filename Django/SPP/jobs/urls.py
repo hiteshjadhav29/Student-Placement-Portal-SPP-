@@ -5,35 +5,44 @@ app_name = "jobs"
 
 urlpatterns = [
 
-    # Add Job
+    # ==========================
+    # Student
+    # ==========================
+
     path(
-        "add/",
-        views.add_job,
-        name="add_job"
+        "",
+        views.job_list,
+        name="job_list"
     ),
 
-    # Manage Jobs
-    path(
-        "manage/",
-        views.manage_jobs,
-        name="manage_jobs"
-    ),
-
-    # Job Details
     path(
         "<int:job_id>/",
         views.job_detail,
         name="job_detail"
     ),
 
-    # Edit Job
+    # ==========================
+    # Recruiter
+    # ==========================
+
+    path(
+        "add/",
+        views.add_job,
+        name="add_job"
+    ),
+
+    path(
+        "manage/",
+        views.manage_jobs,
+        name="manage_jobs"
+    ),
+
     path(
         "<int:job_id>/edit/",
         views.edit_job,
         name="edit_job"
     ),
 
-    # Delete Job
     path(
         "<int:job_id>/delete/",
         views.delete_job,

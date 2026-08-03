@@ -6,6 +6,67 @@ from .models import Job
 from .forms import JobForm
 from recruiters.models import RecruiterProfile
 
+from django.db.models import Q
+
+# =====================================
+# Student Job Listing
+# =====================================
+
+@login_required
+def job_list(request):
+
+    jobs = Job.objects.filter(
+        status="Open"
+    ).order_by("-created_at")
+
+    search = request.GET.get("search")
+    job_type = request.GET.get("job_type")
+    experience = request.GET.get("experience")
+    location = request.GET.get("location")
+
+    if search:
+
+        jobs = jobs.filter(
+
+            Q(job_title__icontains=search) |
+            Q(location__icontains=search) |
+            Q(qualification__icontains=search)
+
+        )
+
+    if job_type:
+
+        jobs = jobs.filter(
+            job_type=job_type
+        )
+
+    if experience:
+
+        jobs = jobs.filter(
+            experience=experience
+        )
+
+    if location:
+
+        jobs = jobs.filter(
+            location__icontains=location
+        )
+
+    context = {
+
+        "jobs": jobs,
+
+        "job_types": Job.JOB_TYPE_CHOICES,
+
+        "experiences": Job.EXPERIENCE_CHOICES,
+
+    }
+
+    return render(
+        request,
+        "jobs/job_list.html",
+        context
+    )
 
 # ==============================
 # Add Job

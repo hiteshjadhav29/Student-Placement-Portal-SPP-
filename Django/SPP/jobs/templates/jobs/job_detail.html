@@ -100,20 +100,46 @@ Job Details
 
             <div class="mt-4">
 
-                <a href="{% url 'jobs:edit_job' job.id %}"
-                   class="btn btn-warning">
-                    Edit Job
-                </a>
+                {% if request.user.role == "recruiter" %}
 
-                <a href="{% url 'jobs:delete_job' job.id %}"
-                   class="btn btn-danger">
-                    Delete Job
-                </a>
+                    <a href="{% url 'jobs:edit_job' job.id %}"
+                    class="btn btn-warning">
+                        Edit Job
+                    </a>
 
-                <a href="{% url 'jobs:manage_jobs' %}"
-                   class="btn btn-secondary">
-                    Back
-                </a>
+                    <a href="{% url 'jobs:delete_job' job.id %}"
+                    class="btn btn-danger">
+                        Delete Job
+                    </a>
+
+                    <a href="{% url 'jobs:manage_jobs' %}"
+                    class="btn btn-secondary">
+                        Back
+                    </a>
+
+                {% elif request.user.role == "student" %}
+
+                    {% if job.status == "Open" %}
+
+                        <a href="{% url 'applications:apply_job' job.id %}"
+                        class="btn btn-success">
+                            Apply Now
+                        </a>
+
+                    {% else %}
+
+                        <button class="btn btn-secondary" disabled>
+                            Applications Closed
+                        </button>
+
+                    {% endif %}
+
+                    <a href="{% url 'jobs:job_list' %}"
+                    class="btn btn-primary">
+                        Back to Jobs
+                    </a>
+
+                {% endif %}
 
             </div>
 

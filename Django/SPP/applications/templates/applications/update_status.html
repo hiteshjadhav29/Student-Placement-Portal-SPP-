@@ -1,0 +1,143 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Update Application Status
+{% endblock %}
+
+{% block content %}
+
+<div class="container mt-5">
+
+    <div class="row justify-content-center">
+
+        <div class="col-md-8">
+
+            <div class="card shadow">
+
+                <div class="card-header bg-warning">
+
+                    <h3 class="mb-0">
+                        Update Application Status
+                    </h3>
+
+                </div>
+
+                <div class="card-body">
+
+                    <table class="table table-bordered">
+
+                        <tr>
+                            <th width="30%">Student</th>
+                            <td>{{ application.student.user.username }}</td>
+                        </tr>
+
+                        <tr>
+                            <th>Company</th>
+                            <td>{{ application.job.company.company_name }}</td>
+                        </tr>
+
+                        <tr>
+                            <th>Job</th>
+                            <td>{{ application.job.job_title }}</td>
+                        </tr>
+
+                        <tr>
+                            <th>Applied On</th>
+                            <td>{{ application.applied_at }}</td>
+                        </tr>
+
+                        <tr>
+                            <th>Current Status</th>
+                            <td>
+
+                                {% if application.status == "Pending" %}
+                                    <span class="badge bg-warning text-dark">
+                                        Pending
+                                    </span>
+
+                                {% elif application.status == "Under Review" %}
+                                    <span class="badge bg-info">
+                                        Under Review
+                                    </span>
+
+                                {% elif application.status == "Shortlisted" %}
+                                    <span class="badge bg-primary">
+                                        Shortlisted
+                                    </span>
+
+                                {% elif application.status == "Selected" %}
+                                    <span class="badge bg-success">
+                                        Selected
+                                    </span>
+
+                                {% else %}
+                                    <span class="badge bg-danger">
+                                        Rejected
+                                    </span>
+                                {% endif %}
+
+                            </td>
+                        </tr>
+
+                    </table>
+
+                    <hr>
+
+                    <form method="POST">
+
+                        {% csrf_token %}
+
+                        <div class="mb-3">
+
+                            <label class="form-label">
+                                Change Status
+                            </label>
+
+                            <select
+                                name="status"
+                                class="form-select">
+
+                                {% for value,label in status_choices %}
+
+                                <option
+                                    value="{{ value }}"
+                                    {% if application.status == value %}selected{% endif %}>
+
+                                    {{ label }}
+
+                                </option>
+
+                                {% endfor %}
+
+                            </select>
+
+                        </div>
+
+                        <button
+                            type="submit"
+                            class="btn btn-success">
+
+                            Update Status
+
+                        </button>
+
+                        <a href="{% url 'applications:application_detail' application.id %}"
+                           class="btn btn-secondary">
+
+                            Cancel
+
+                        </a>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

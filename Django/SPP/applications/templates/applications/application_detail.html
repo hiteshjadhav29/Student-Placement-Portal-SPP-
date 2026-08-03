@@ -1,0 +1,144 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Application Details
+{% endblock %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+    <div class="card shadow">
+
+        <div class="card-header bg-primary text-white">
+
+            <h3>
+
+                Application Details
+
+            </h3>
+
+        </div>
+
+        <div class="card-body">
+
+            <table class="table table-bordered">
+
+                <tr>
+
+                    <th width="30%">
+                        Student
+                    </th>
+
+                    <td>
+
+                        {{ application.student.user.username }}
+
+                    </td>
+
+                </tr>
+
+                <tr>
+
+                    <th>
+
+                        Job
+
+                    </th>
+
+                    <td>
+
+                        {{ application.job.job_title }}
+
+                    </td>
+
+                </tr>
+
+                <tr>
+
+                    <th>
+
+                        Company
+
+                    </th>
+
+                    <td>
+
+                        {{ application.job.company.company_name }}
+
+                    </td>
+
+                </tr>
+
+                <tr>
+
+                    <th>
+
+                        Status
+
+                    </th>
+
+                    <td>
+
+                        {{ application.status }}
+
+                    </td>
+
+                </tr>
+
+                <tr>
+
+                    <th>
+
+                        Applied On
+
+                    </th>
+
+                    <td>
+
+                        {{ application.applied_at }}
+
+                    </td>
+
+                </tr>
+
+            </table>
+
+            <div class="mt-4">
+
+                {% if request.user.role == "recruiter" %}
+
+                <a href="{% url 'applications:update_status' application.id %}"
+                   class="btn btn-warning">
+
+                    Update Status
+
+                </a>
+
+                <a href="{% url 'applications:recruiter_applications' %}"
+                   class="btn btn-secondary">
+
+                    Back
+
+                </a>
+
+                {% else %}
+
+                <a href="{% url 'applications:my_applications' %}"
+                   class="btn btn-secondary">
+
+                    Back
+
+                </a>
+
+                {% endif %}
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}
