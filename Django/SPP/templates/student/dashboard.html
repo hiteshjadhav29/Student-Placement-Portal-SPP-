@@ -43,6 +43,39 @@
     <a href="{% url 'students:profile' %}">Profile</a><br>
     <a href="{% url 'students:resume' %}">Resume</a>
 
+    <hr>
+
+<h3>Quick Menu</h3>
+
+<div class="list-group">
+
+    <a href="{% url 'students:profile' %}"
+       class="list-group-item list-group-item-action">
+        👤 Profile
+    </a>
+
+    <a href="{% url 'students:resume' %}"
+       class="list-group-item list-group-item-action">
+        📄 Resume
+    </a>
+
+    <a href="{% url 'students:skills' %}"
+       class="list-group-item list-group-item-action">
+        💡 Skills
+    </a>
+
+    <a href="{% url 'students:projects' %}"
+       class="list-group-item list-group-item-action">
+        💻 Projects
+    </a>
+
+    <a href="{% url 'students:certifications' %}"
+       class="list-group-item list-group-item-action">
+        🏆 Certifications
+    </a>
+
+</div>
+
 </body>
 
 </html>

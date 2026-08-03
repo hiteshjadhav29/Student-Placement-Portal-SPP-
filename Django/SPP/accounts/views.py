@@ -106,7 +106,13 @@ def login_redirect(request):
         return redirect("accounts:login")
 
     if request.user.role == "student":
-        return redirect("students:dashboard")
+
+        from students.models import Student
+
+        if Student.objects.filter(user=request.user).exists():
+            return redirect("students:dashboard")
+
+        return redirect("students:complete_profile")
 
     elif request.user.role == "recruiter":
 

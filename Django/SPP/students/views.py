@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 
 from .models import (
     Student,
@@ -21,7 +22,14 @@ from .forms import (
 
 @login_required
 def dashboard(request):
-    student = get_object_or_404(Student, user=request.user)
+
+    if request.user.role != "student":
+        return redirect("accounts:login")
+
+    if not Student.objects.filter(user=request.user).exists():
+        return redirect("students:complete_profile")
+
+    student = Student.objects.get(user=request.user)
 
     try:
         resume = student.resume
@@ -36,7 +44,11 @@ def dashboard(request):
         "certifications_count": student.certifications.count(),
     }
 
-    return render(request, "student/dashboard.html", context)
+    return render(
+        request,
+        "student/dashboard.html",
+        context
+    )
 @login_required
 def profile(request):
     student = get_object_or_404(Student, user=request.user)
@@ -398,5 +410,46 @@ def delete_certification(request, certification_id):
         "student/delete_certification.html",
         {
             "certification": certification,
+        }
+    )
+@login_required
+def complete_profile(request):
+
+    if request.user.role != "student":
+        return redirect("accounts:login")
+
+    # Already completed
+    if Student.objects.filter(user=request.user).exists():
+        return redirect("students:dashboard")
+
+    if request.method == "POST":
+
+        form = StudentForm(
+            request.POST,
+            request.FILES
+        )
+
+        if form.is_valid():
+
+            student = form.save(commit=False)
+            student.user = request.user
+            student.save()
+
+            messages.success(
+                request,
+                "Student profile created successfully."
+            )
+
+            return redirect("students:dashboard")
+
+    else:
+
+        form = StudentForm()
+
+    return render(
+        request,
+        "student/complete_profile.html",
+        {
+            "form": form
         }
     )

@@ -42,5 +42,10 @@ path("certifications/", views.certifications, name="certifications"),
 path("certifications/add/", views.add_certification, name="add_certification"),
 path("certifications/<int:certification_id>/edit/", views.edit_certification, name="edit_certification"),
 path("certifications/<int:certification_id>/delete/", views.delete_certification, name="delete_certification"),
+path(
+    "complete-profile/",
+    views.complete_profile,
+    name="complete_profile"
+),
 
 ]
