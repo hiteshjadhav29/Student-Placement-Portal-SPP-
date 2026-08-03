@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Applications</title>
+</head>
+
+<body>
+
+    <h1>My Applications</h1>
+
+    <hr>
+
+    <p>Welcome {{ request.user.username }}</p>
+
+    <p>This page will display all the jobs you have applied for.</p>
+
+    <hr>
+
+    <h3>Features (Coming Soon)</h3>
+
+    <ul>
+        <li>View Applied Jobs</li>
+        <li>Application Date</li>
+        <li>Application Status</li>
+        <li>View Job Details</li>
+    </ul>
+
+    <hr>
+
+    <a href="{% url 'students:dashboard' %}">
+        ← Back to Dashboard
+    </a>
+
+</body>
+
+</html>
