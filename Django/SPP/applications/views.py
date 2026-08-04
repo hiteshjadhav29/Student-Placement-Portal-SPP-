@@ -16,7 +16,11 @@ from .models import Application
 def apply_job(request, job_id):
 
     if request.user.role != "student":
-        return redirect("accounts:login")
+        messages.error(
+            request,
+            "Only students can apply for jobs."
+        )
+        return redirect("jobs:job_list")
 
     student = get_object_or_404(
         Student,
@@ -29,6 +33,7 @@ def apply_job(request, job_id):
         status="Open"
     )
 
+    # Prevent duplicate applications
     if Application.objects.filter(
         student=student,
         job=job
@@ -45,7 +50,8 @@ def apply_job(request, job_id):
 
         Application.objects.create(
             student=student,
-            job=job
+            job=job,
+            status="Pending"
         )
 
         messages.success(
@@ -62,8 +68,6 @@ def apply_job(request, job_id):
             "job": job
         }
     )
-
-
 # =====================================
 # Student Applications
 # =====================================
@@ -78,6 +82,9 @@ def my_applications(request):
 
     applications = Application.objects.filter(
         student=student
+    ).select_related(
+        "job",
+        "job__company"
     )
 
     return render(

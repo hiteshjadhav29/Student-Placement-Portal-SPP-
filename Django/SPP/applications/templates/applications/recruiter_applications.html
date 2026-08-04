@@ -1,7 +1,7 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
 
 {% block title %}
-Job Applications
+Applicants
 {% endblock %}
 
 {% block content %}
@@ -9,7 +9,7 @@ Job Applications
 <div class="container mt-4">
 
     <h2 class="mb-4">
-        Applications Received
+        Job Applications
     </h2>
 
     {% if applications %}
@@ -21,13 +21,10 @@ Job Applications
             <tr>
 
                 <th>Student</th>
-
                 <th>Job</th>
-
+                <th>Company</th>
                 <th>Status</th>
-
                 <th>Applied On</th>
-
                 <th>Action</th>
 
             </tr>
@@ -36,55 +33,29 @@ Job Applications
 
         <tbody>
 
-            {% for application in applications %}
+        {% for application in applications %}
 
             <tr>
 
                 <td>
-
                     {{ application.student.user.username }}
-
                 </td>
 
                 <td>
-
                     {{ application.job.job_title }}
+                </td>
 
+                <td>
+                    {{ application.job.company.company_name }}
                 </td>
 
                 <td>
 
-                    {% if application.status == "Pending" %}
+                    <span class="badge bg-info">
 
-                        <span class="badge bg-warning text-dark">
-                            Pending
-                        </span>
+                        {{ application.status }}
 
-                    {% elif application.status == "Under Review" %}
-
-                        <span class="badge bg-info">
-                            Under Review
-                        </span>
-
-                    {% elif application.status == "Shortlisted" %}
-
-                        <span class="badge bg-primary">
-                            Shortlisted
-                        </span>
-
-                    {% elif application.status == "Selected" %}
-
-                        <span class="badge bg-success">
-                            Selected
-                        </span>
-
-                    {% else %}
-
-                        <span class="badge bg-danger">
-                            Rejected
-                        </span>
-
-                    {% endif %}
+                    </span>
 
                 </td>
 
@@ -97,7 +68,7 @@ Job Applications
                 <td>
 
                     <a href="{% url 'applications:application_detail' application.id %}"
-                       class="btn btn-primary btn-sm">
+                       class="btn btn-sm btn-primary">
 
                         View
 
@@ -107,7 +78,7 @@ Job Applications
 
             </tr>
 
-            {% endfor %}
+        {% endfor %}
 
         </tbody>
 
@@ -115,7 +86,7 @@ Job Applications
 
     {% else %}
 
-        <div class="alert alert-info">
+        <div class="alert alert-warning">
 
             No applications received yet.
 

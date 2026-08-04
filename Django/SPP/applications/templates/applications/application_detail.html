@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
 
 {% block title %}
 Application Details
@@ -8,136 +8,77 @@ Application Details
 
 <div class="container mt-4">
 
-    <div class="card shadow">
+<div class="card shadow">
 
-        <div class="card-header bg-primary text-white">
+<div class="card-header bg-primary text-white">
 
-            <h3>
+<h3>Application Details</h3>
 
-                Application Details
+</div>
 
-            </h3>
+<div class="card-body">
 
-        </div>
+<table class="table table-bordered">
 
-        <div class="card-body">
+<tr>
+<th>Student</th>
+<td>{{ application.student.user.username }}</td>
+</tr>
 
-            <table class="table table-bordered">
+<tr>
+<th>Full Name</th>
+<td>{{ application.student.full_name }}</td>
+</tr>
 
-                <tr>
+<tr>
+<th>Email</th>
+<td>{{ application.student.user.email }}</td>
+</tr>
 
-                    <th width="30%">
-                        Student
-                    </th>
+<tr>
+<th>Branch</th>
+<td>{{ application.student.get_branch_display }}</td>
+</tr>
 
-                    <td>
+<tr>
+<th>CGPA</th>
+<td>{{ application.student.cgpa }}</td>
+</tr>
 
-                        {{ application.student.user.username }}
+<tr>
+<th>Job</th>
+<td>{{ application.job.job_title }}</td>
+</tr>
 
-                    </td>
+<tr>
+<th>Status</th>
+<td>{{ application.status }}</td>
+</tr>
 
-                </tr>
+<tr>
+<th>Applied On</th>
+<td>{{ application.applied_at }}</td>
+</tr>
 
-                <tr>
+</table>
 
-                    <th>
+<a href="{% url 'applications:update_status' application.id %}"
+class="btn btn-success">
 
-                        Job
+Update Status
 
-                    </th>
+</a>
 
-                    <td>
+<a href="{% url 'applications:recruiter_applications' %}"
+class="btn btn-secondary">
 
-                        {{ application.job.job_title }}
+Back
 
-                    </td>
+</a>
 
-                </tr>
+</div>
 
-                <tr>
-
-                    <th>
-
-                        Company
-
-                    </th>
-
-                    <td>
-
-                        {{ application.job.company.company_name }}
-
-                    </td>
-
-                </tr>
-
-                <tr>
-
-                    <th>
-
-                        Status
-
-                    </th>
-
-                    <td>
-
-                        {{ application.status }}
-
-                    </td>
-
-                </tr>
-
-                <tr>
-
-                    <th>
-
-                        Applied On
-
-                    </th>
-
-                    <td>
-
-                        {{ application.applied_at }}
-
-                    </td>
-
-                </tr>
-
-            </table>
-
-            <div class="mt-4">
-
-                {% if request.user.role == "recruiter" %}
-
-                <a href="{% url 'applications:update_status' application.id %}"
-                   class="btn btn-warning">
-
-                    Update Status
-
-                </a>
-
-                <a href="{% url 'applications:recruiter_applications' %}"
-                   class="btn btn-secondary">
-
-                    Back
-
-                </a>
-
-                {% else %}
-
-                <a href="{% url 'applications:my_applications' %}"
-                   class="btn btn-secondary">
-
-                    Back
-
-                </a>
-
-                {% endif %}
-
-            </div>
-
-        </div>
-
-    </div>
+</div>
 
 </div>
 

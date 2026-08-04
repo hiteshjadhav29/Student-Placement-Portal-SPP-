@@ -1,39 +1,132 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends "base.html" %}
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Applications</title>
-</head>
+{% block title %}
+My Applications
+{% endblock %}
 
-<body>
+{% block content %}
 
-    <h1>My Applications</h1>
+<div class="container mt-4">
 
-    <hr>
+    <div class="d-flex justify-content-between align-items-center mb-4">
 
-    <p>Welcome {{ request.user.username }}</p>
+        <h2>📬 My Applications</h2>
 
-    <p>This page will display all the jobs you have applied for.</p>
+        <a href="{% url 'jobs:job_list' %}" class="btn btn-primary">
+            Browse Jobs
+        </a>
 
-    <hr>
+    </div>
 
-    <h3>Features (Coming Soon)</h3>
+    <div class="card shadow">
 
-    <ul>
-        <li>View Applied Jobs</li>
-        <li>Application Date</li>
-        <li>Application Status</li>
-        <li>View Job Details</li>
-    </ul>
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">Applied Jobs</h5>
+        </div>
 
-    <hr>
+        <div class="card-body">
 
-    <a href="{% url 'students:dashboard' %}">
-        ← Back to Dashboard
-    </a>
+            {% if applications %}
 
-</body>
+            <div class="table-responsive">
 
-</html>
+                <table class="table table-bordered table-hover">
+
+                    <thead class="table-light">
+
+                        <tr>
+                            <th>Job Title</th>
+                            <th>Company</th>
+                            <th>Applied On</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        {% for application in applications %}
+
+                        <tr>
+
+                            <td>{{ application.job.job_title }}</td>
+
+                            <td>{{ application.job.company.company_name }}</td>
+
+                            <td>{{ application.applied_at|date:"d M Y" }}</td>
+
+                            <td>
+
+                                {% if application.status == "Pending" %}
+                                    <span class="badge bg-warning text-dark">
+                                        Pending
+                                    </span>
+
+                                {% elif application.status == "Shortlisted" %}
+                                    <span class="badge bg-success">
+                                        Shortlisted
+                                    </span>
+
+                                {% elif application.status == "Rejected" %}
+                                    <span class="badge bg-danger">
+                                        Rejected
+                                    </span>
+
+                                {% else %}
+                                    <span class="badge bg-secondary">
+                                        {{ application.status }}
+                                    </span>
+                                {% endif %}
+
+                            </td>
+
+                            <td>
+
+                                <a href="{% url 'applications:application_detail' application.id %}"
+                                   class="btn btn-sm btn-primary">
+
+                                    View
+
+                                </a>
+
+                            </td>
+
+                        </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+            {% else %}
+
+            <div class="text-center py-5">
+
+                <h4>No Applications Yet</h4>
+
+                <p class="text-muted">
+                    You haven't applied for any jobs.
+                </p>
+
+                <a href="{% url 'jobs:job_list' %}"
+                   class="btn btn-success">
+
+                    Browse Available Jobs
+
+                </a>
+
+            </div>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

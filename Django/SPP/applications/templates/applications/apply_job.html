@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block title %}
-Apply Job
+Apply for Job
 {% endblock %}
 
 {% block content %}
@@ -18,31 +18,74 @@ Apply Job
 
         <div class="card-body">
 
-            <p>
-                <strong>Company:</strong>
-                {{ job.company.company_name }}
-            </p>
+            <table class="table table-bordered">
 
-            <p>
-                <strong>Location:</strong>
-                {{ job.location }}
-            </p>
+                <tr>
+                    <th width="30%">Company</th>
+                    <td>{{ job.company.company_name }}</td>
+                </tr>
 
-            <p>
-                <strong>Salary:</strong>
-                {{ job.salary }}
-            </p>
+                <tr>
+                    <th>Job Title</th>
+                    <td>{{ job.job_title }}</td>
+                </tr>
 
-            <hr>
+                <tr>
+                    <th>Location</th>
+                    <td>{{ job.location }}</td>
+                </tr>
 
-            <p>
-                The application functionality will be implemented here.
-            </p>
+                <tr>
+                    <th>Salary</th>
+                    <td>{{ job.salary }}</td>
+                </tr>
 
-            <a href="{% url 'jobs:job_detail' job.id %}"
-               class="btn btn-secondary">
-                Back
-            </a>
+                <tr>
+                    <th>Qualification</th>
+                    <td>{{ job.qualification }}</td>
+                </tr>
+
+                <tr>
+                    <th>Experience</th>
+                    <td>{{ job.experience }}</td>
+                </tr>
+
+                <tr>
+                    <th>Job Type</th>
+                    <td>{{ job.job_type }}</td>
+                </tr>
+
+                <tr>
+                    <th>Application Deadline</th>
+                    <td>{{ job.application_deadline }}</td>
+                </tr>
+
+            </table>
+
+            <div class="alert alert-info">
+                Are you sure you want to apply for this job?
+            </div>
+
+            <form method="POST">
+
+                {% csrf_token %}
+
+                <button
+                    type="submit"
+                    class="btn btn-success">
+
+                    Apply Now
+
+                </button>
+
+                <a href="{% url 'jobs:job_detail' job.id %}"
+                   class="btn btn-secondary">
+
+                    Cancel
+
+                </a>
+
+            </form>
 
         </div>
 
