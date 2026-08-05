@@ -73,25 +73,14 @@ def apply_job(request, job_id):
 # Student Applications
 # =====================================
 
+
 @login_required
 def my_applications(request):
-
-    from django.shortcuts import render, get_object_or_404
-    from django.contrib.auth.decorators import login_required
-
-    from .models import Application
-    from students.models import Student
-
-
-@login_required
-def application_detail(request, application_id):
-
 
     student = get_object_or_404(
         Student,
         user=request.user
     )
-
 
     applications = Application.objects.filter(
         student=student
@@ -104,7 +93,31 @@ def application_detail(request, application_id):
         request,
         "applications/my_applications.html",
         {
-            "applications": applications
+            "applications": applications,
+        }
+    )
+
+
+
+@login_required
+def application_detail(request, application_id):
+
+    student = get_object_or_404(
+        Student,
+        user=request.user
+    )
+
+    application = get_object_or_404(
+        Application,
+        id=application_id,
+        student=student
+    )
+
+    return render(
+        request,
+        "applications/application_detail.html",
+        {
+            "application": application,
         }
     )
 
@@ -141,21 +154,7 @@ def recruiter_applications(request):
 # Application Details
 # =====================================
 
-@login_required
-def application_detail(request, application_id):
 
-    application = get_object_or_404(
-        Application,
-        id=application_id
-    )
-
-    return render(
-        request,
-        "applications/application_detail.html",
-        {
-            "application": application
-        }
-    )
 
 
 # =====================================
@@ -190,22 +189,6 @@ def update_status(request, application_id):
         "applications/update_status.html",
         {
             "application": application,
-            "status_choices": Application.STATUS_CHOICES
+            "status_choices": Application.STATUS_CHOICES,
         }
-    )
-    application = get_object_or_404(
-        Application,
-        id=application_id,
-        student=student
-    )
-
-    context = {
-        "application": application,
-    }
-
-    return render(
-        request,
-        "applications/application_detail.html",
-        context
-
     )
