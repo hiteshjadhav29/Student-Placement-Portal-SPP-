@@ -8,7 +8,13 @@ urlpatterns = [
     path(
         "",
         views.my_applications,
-        name="my_applications"
+        name="my_applications",
+    ),
+
+    path(
+        "<int:application_id>/",
+        views.application_detail,
+        name="application_detail",
     ),
 
     path(
