@@ -23,6 +23,7 @@ urlpatterns = [
     "applications/",
     include(("applications.urls", "applications"), namespace="applications"),
 ),
+    path("interview/", include("interview.urls")),
 
     ]
 

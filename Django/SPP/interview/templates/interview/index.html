@@ -1,0 +1,246 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Voice Interview Agent & Body Language Coach</title>
+
+    <!-- App Styles -->
+    <link rel="stylesheet" href="{% static 'interview/css/app.css' %}">
+</head>
+<body>
+
+<div class="app-container">
+    <!-- Header -->
+    <header class="app-header">
+        <div class="logo-container">
+            <div class="logo-icon">🤖</div>
+            <div>
+                <div class="logo-title">INTERVIEW AI AGENT</div>
+                <div class="logo-subtitle">Voice-to-Voice • Real-time Body Language Analytics</div>
+            </div>
+        </div>
+        <div class="header-badges">
+            <span class="header-badge">📷 Vision HUD Active</span>
+            <span class="header-badge">🎙️ Voice Recognition</span>
+            <span class="header-badge">⚡ Human-like AI</span>
+        </div>
+    </header>
+
+    <!-- SCREEN 1: Setup & Intake -->
+    <main id="screen-setup" class="screen setup-grid">
+        <!-- Candidate Intake Form -->
+        <div class="glass-card">
+            <h2 class="card-title">🎯 Interview Configuration</h2>
+            <p class="card-desc">Select your field of study and target role. The AI interviewer will customize questions and evaluate your technical knowledge and body language.</p>
+
+            <div class="form-group">
+                <label class="form-label" for="candidate-name">Full Name</label>
+                <input type="text" id="candidate-name" class="form-control" placeholder="e.g. Alex Morgan" value="Candidate Student">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="field-of-study">Field of Education / Study Background</label>
+                <select id="field-of-study" class="form-control form-select">
+                    <option value="Computer Science & Software">Computer Science & Software Engineering</option>
+                    <option value="Data Science & AI">Data Science, Machine Learning & AI</option>
+                    <option value="Business & Finance">Business Administration & Finance</option>
+                    <option value="Engineering (Mechanical/Electrical/Civil)">Engineering (Mechanical / Electrical / Civil)</option>
+                    <option value="General / Healthcare / Other">General Arts, Healthcare & Sciences</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="target-role">Target Job Role</label>
+                <input type="text" id="target-role" class="form-control" placeholder="e.g. Software Engineer, Data Analyst, Product Manager" value="Software Engineer">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="experience-level">Experience Level</label>
+                <select id="experience-level" class="form-control form-select">
+                    <option value="Entry Level / Graduate">Entry Level / Graduate Student</option>
+                    <option value="Junior (1-2 yrs)">Junior (1-2 years experience)</option>
+                    <option value="Mid Level (3-5 yrs)">Mid Level (3-5 years experience)</option>
+                    <option value="Internship">Internship Candidate</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="total-questions">Number of Questions</label>
+                <select id="total-questions" class="form-control form-select">
+                    <option value="5" selected>5 Questions (Standard Practice - 10 mins)</option>
+                    <option value="3">3 Questions (Quick Warm-up - 5 mins)</option>
+                    <option value="7">7 Questions (Comprehensive Interview - 15 mins)</option>
+                </select>
+            </div>
+
+            <button id="btn-start-interview" class="btn-primary">🚀 Start AI Interview</button>
+        </div>
+
+        <!-- Camera & Vision Telemetry Calibration Preview -->
+        <div class="glass-card">
+            <h2 class="card-title">📹 Webcam & Sensor Test</h2>
+            <p class="card-desc">Align yourself in the camera frame. The AI vision module tracks eye contact, posture, and non-verbal confidence in real-time.</p>
+
+            <div class="preview-container">
+                <video id="webcam-preview" class="preview-video" autoplay playsinline muted></video>
+                <canvas id="hud-canvas" class="hud-canvas"></canvas>
+            </div>
+        </div>
+    </main>
+
+    <!-- SCREEN 2: Live AI Studio -->
+    <main id="screen-studio" class="screen studio-grid hidden">
+        <!-- Main AI Interviewer Area -->
+        <div class="studio-main">
+            <!-- AI Intervwer Video Avatar -->
+            <div class="ai-card">
+                <div class="ai-avatar-wrapper">
+                    <div id="ai-avatar" class="ai-avatar-orb">🤖</div>
+                </div>
+                <canvas id="ai-waveform" class="ai-waveform"></canvas>
+                <div id="ai-status-badge" class="status-badge speaking">AI Interviewer Initializing...</div>
+
+                <!-- Current Question Box -->
+                <div class="question-box">
+                    <div id="question-badge" class="question-badge">QUESTION 1 OF 5 • INTRO</div>
+                    <div id="question-text" class="question-text">Loading question...</div>
+                </div>
+
+                <!-- Live Voice Transcript Box -->
+                <div class="transcript-box">
+                    <span id="live-transcript-text">Click 'Start Speaking' or speak your answer...</span>
+                </div>
+
+                <!-- Action Controls -->
+                <div class="controls-row">
+                    <button id="btn-record-toggle" class="btn-secondary btn-record">🎙️ Start Speaking</button>
+                    <button id="btn-repeat-question" class="btn-secondary">🔊 Repeat Question</button>
+                    <button id="btn-skip-question" class="btn-secondary">⏩ Skip</button>
+                    <button id="btn-submit-answer" class="btn-primary" style="width: auto; flex: 1;">Next Question ➔</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sidebar Telemetry & Live Video Feed -->
+        <div class="sidebar-panel">
+            <div class="telemetry-card">
+                <div class="telemetry-title">
+                    <span>LIVE BODY LANGUAGE</span>
+                    <span style="color: var(--success); font-size: 11px;">● LIVE</span>
+                </div>
+
+                <div class="metric-row">
+                    <div class="metric-header">
+                        <span class="metric-name">Eye Contact</span>
+                        <span id="val-eye-contact" class="metric-val">85%</span>
+                    </div>
+                    <div class="metric-track">
+                        <div id="meter-eye-contact" class="metric-bar" style="width: 85%;"></div>
+                    </div>
+                </div>
+
+                <div class="metric-row">
+                    <div class="metric-header">
+                        <span class="metric-name">Posture Quality</span>
+                        <span id="val-posture" class="metric-val">88%</span>
+                    </div>
+                    <div class="metric-track">
+                        <div id="meter-posture" class="metric-bar" style="width: 88%;"></div>
+                    </div>
+                </div>
+
+                <div class="metric-row">
+                    <div class="metric-header">
+                        <span class="metric-name">Fidget / Motion</span>
+                        <span id="val-fidget" class="metric-val">12%</span>
+                    </div>
+                    <div class="metric-track">
+                        <div id="meter-fidget" class="metric-bar" style="width: 12%; background: linear-gradient(135deg, #f59e0b 0%, #ef4444 100%);"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- SCREEN 3: Evaluation & Feedback Report -->
+    <main id="screen-report" class="screen hidden">
+        <!-- Candidate Overview Card -->
+        <div class="report-header-card">
+            <div>
+                <h1 id="rep-candidate-name" class="candidate-title">Alex Morgan</h1>
+                <div id="rep-field" class="candidate-sub">Computer Science & Software Engineering</div>
+                <div id="rep-role" class="candidate-sub" style="color: var(--accent-secondary); margin-top: 4px;">Target Role: Software Engineer</div>
+            </div>
+
+            <div style="display: flex; flex-direction: column; align-items: center;">
+                <div class="score-circle">
+                    <div id="rep-overall-score" class="score-val">84%</div>
+                    <div class="score-label">OVERALL</div>
+                </div>
+                <div id="rep-badge-verdict" class="badge-verdict verdict-good">READY FOR INTERVIEWS</div>
+            </div>
+        </div>
+
+        <!-- Scores Breakdown -->
+        <div class="scores-grid">
+            <div class="score-card">
+                <div id="rep-domain-score" class="score-card-num">85%</div>
+                <div class="score-card-title">Domain Knowledge</div>
+            </div>
+            <div class="score-card">
+                <div id="rep-speech-score" class="score-card-num">82%</div>
+                <div class="score-card-title">Speech Clarity</div>
+            </div>
+            <div class="score-card">
+                <div id="rep-body-score" class="score-card-num">88%</div>
+                <div class="score-card-title">Body Language</div>
+            </div>
+            <div class="score-card">
+                <div id="rep-structure-score" class="score-card-num">80%</div>
+                <div class="score-card-title">Answer Structure</div>
+            </div>
+        </div>
+
+        <!-- AI Summary & Feedback Lists -->
+        <div class="glass-card" style="margin-bottom: 28px;">
+            <h3 class="card-title">📊 Executive Summary</h3>
+            <p id="rep-verdict-text" class="card-desc" style="margin-bottom: 0; font-size: 15px; color: var(--text-sub);">
+                Candidate demonstrated good overall potential for the role...
+            </p>
+        </div>
+
+        <div class="feedback-grid">
+            <div class="glass-card feedback-card">
+                <h3 class="card-title" style="color: var(--success);">🌟 Key Strengths</h3>
+                <ul id="rep-strengths-list">
+                    <li><span class="icon">✅</span> Maintained solid eye contact.</li>
+                </ul>
+            </div>
+            <div class="glass-card feedback-card">
+                <h3 class="card-title" style="color: var(--warning);">💡 Areas for Improvement</h3>
+                <ul id="rep-improvements-list">
+                    <li><span class="icon">💡</span> Practice expanding on technical details.</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Detailed Question Transcript Breakdown -->
+        <div class="glass-card">
+            <h3 class="card-title" style="margin-bottom: 20px;">📝 Question-by-Question Deep Dive</h3>
+            <div id="rep-qa-container">
+                <!-- Dynamic Q&A Cards inserted here -->
+            </div>
+
+            <button id="btn-retake" class="btn-primary" style="margin-top: 24px; max-width: 300px;">🔄 Start New Mock Interview</button>
+        </div>
+    </main>
+</div>
+
+<!-- JS Scripts -->
+<script src="{% static 'interview/js/body_language.js' %}"></script>
+<script src="{% static 'interview/js/voice_engine.js' %}"></script>
+<script src="{% static 'interview/js/interview_app.js' %}"></script>
+</body>
+</html>
