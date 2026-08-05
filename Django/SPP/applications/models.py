@@ -15,15 +15,34 @@ class Application(models.Model):
         ("Selected", "Selected"),
     )
 
+from students.models import Student
+from jobs.models import Job
+
+
+class Application(models.Model):
+
+    STATUS_CHOICES = [
+        ("Pending", "Pending"),
+        ("Shortlisted", "Shortlisted"),
+        ("Rejected", "Rejected"),
+        ("Selected", "Selected"),
+    ]
+
+
     student = models.ForeignKey(
         Student,
         on_delete=models.CASCADE,
-        related_name="applications"
+
+        related_name="applications",
+
+        related_name="applications",
+
     )
 
     job = models.ForeignKey(
         Job,
         on_delete=models.CASCADE,
+
         related_name="applications"
     )
 
@@ -38,11 +57,22 @@ class Application(models.Model):
     )
 
     updated_at = models.DateTimeField(
-        auto_now=True
+        auto_now=True,
+        related_name="applications",
+    )
+
+    applied_at = models.DateTimeField(auto_now_add=True)
+
+    status = models.CharField(
+        max_length=20,
+        choices=STATUS_CHOICES,
+        default="Pending",
+
     )
 
     class Meta:
         ordering = ["-applied_at"]
+
 
         constraints = [
             models.UniqueConstraint(
@@ -50,6 +80,8 @@ class Application(models.Model):
                 name="unique_job_application"
             )
         ]
+
+
 
     def __str__(self):
         return f"{self.student.user.username} - {self.job.job_title}"

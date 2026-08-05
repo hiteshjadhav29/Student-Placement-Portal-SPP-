@@ -1,3 +1,4 @@
+
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
@@ -75,10 +76,22 @@ def apply_job(request, job_id):
 @login_required
 def my_applications(request):
 
+    from django.shortcuts import render, get_object_or_404
+    from django.contrib.auth.decorators import login_required
+
+    from .models import Application
+    from students.models import Student
+
+
+@login_required
+def application_detail(request, application_id):
+
+
     student = get_object_or_404(
         Student,
         user=request.user
     )
+
 
     applications = Application.objects.filter(
         student=student
@@ -179,4 +192,20 @@ def update_status(request, application_id):
             "application": application,
             "status_choices": Application.STATUS_CHOICES
         }
+    )
+    application = get_object_or_404(
+        Application,
+        id=application_id,
+        student=student
+    )
+
+    context = {
+        "application": application,
+    }
+
+    return render(
+        request,
+        "applications/application_detail.html",
+        context
+
     )
