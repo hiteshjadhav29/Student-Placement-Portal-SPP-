@@ -250,8 +250,25 @@
 
             {% endif %}
 
+            <hr class="text-secondary my-3">
+
+            <li class="nav-item mb-2">
+                <a href="{% url 'accounts:notifications' %}" class="nav-link text-white d-flex align-items-center justify-content-between">
+                    <span><i class="bi bi-bell-fill me-2"></i> Notifications</span>
+                    {% if unread_notifications_count > 0 %}
+                        <span class="badge bg-danger rounded-pill">{{ unread_notifications_count }}</span>
+                    {% endif %}
+                </a>
+            </li>
+
+            <li class="nav-item mb-2">
+                <a href="{% url 'accounts:settings' %}" class="nav-link text-white">
+                    <i class="bi bi-gear-fill me-2"></i> Settings
+                </a>
+            </li>
+
         {% endif %}
 
     </ul>
 
-</div>
+</div>

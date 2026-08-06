@@ -105,3 +105,10 @@ class JobForm(forms.ModelForm):
             )
 
         return skills
+
+    def clean_application_deadline(self):
+        from django.utils import timezone
+        deadline = self.cleaned_data.get("application_deadline")
+        if deadline and deadline < timezone.now().date():
+            raise forms.ValidationError("Application deadline cannot be set to a past date.")
+        return deadline

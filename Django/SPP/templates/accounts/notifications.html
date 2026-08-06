@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+
+{% block title %}Notifications - Student Placement Portal{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12 mb-4">
+        <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+            <div>
+                <h3 class="fw-bold mb-1"><i class="bi bi-bell-fill text-warning me-2"></i> Notifications</h3>
+                <p class="text-muted mb-0">Stay updated on your placement activities and updates</p>
+            </div>
+            {% if notifications %}
+                <a href="{% url 'accounts:mark_all_notifications_read' %}" class="btn btn-outline-secondary btn-sm fw-semibold rounded-pill">
+                    <i class="bi bi-check-all me-1"></i> Mark All as Read
+                </a>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <div class="card border-0 shadow-sm rounded-4">
+            <div class="card-body p-0">
+                {% if notifications %}
+                    <div class="list-group list-group-flush rounded-4">
+                        {% for n in notifications %}
+                            <div class="list-group-item p-3 border-bottom {% if not n.is_read %}bg-light border-start border-4 border-warning{% endif %}">
+                                <div class="d-flex align-items-start justify-content-between">
+                                    <div class="me-3">
+                                        <div class="d-flex align-items-center mb-1">
+                                            {% if n.notification_type == 'job' %}
+                                                <span class="badge bg-primary me-2"><i class="bi bi-briefcase"></i> Job</span>
+                                            {% elif n.notification_type == 'application' %}
+                                                <span class="badge bg-info text-white me-2"><i class="bi bi-file-earmark-text"></i> Application</span>
+                                            {% elif n.notification_type == 'interview' %}
+                                                <span class="badge bg-success me-2"><i class="bi bi-calendar-event"></i> Interview</span>
+                                            {% elif n.notification_type == 'report' %}
+                                                <span class="badge bg-dark me-2"><i class="bi bi-bar-chart"></i> Report</span>
+                                            {% else %}
+                                                <span class="badge bg-secondary me-2"><i class="bi bi-info-circle"></i> Notice</span>
+                                            {% endif %}
+                                            <h6 class="fw-bold mb-0 {% if not n.is_read %}text-dark{% else %}text-secondary{% endif %}">{{ n.title }}</h6>
+                                        </div>
+                                        <p class="text-dark mb-1 small">{{ n.message }}</p>
+                                        <small class="text-muted"><i class="bi bi-clock me-1"></i> {{ n.created_at|timesince }} ago</small>
+                                    </div>
+                                    <div class="d-flex align-items-center gap-2">
+                                        {% if not n.is_read %}
+                                            <a href="{% url 'accounts:mark_notification_read' n.id %}" class="btn btn-sm btn-light border text-primary" title="Mark as Read">
+                                                <i class="bi bi-check2"></i> Read
+                                            </a>
+                                        {% endif %}
+                                        {% if n.link %}
+                                            <a href="{{ n.link }}" class="btn btn-sm btn-primary">
+                                                View <i class="bi bi-arrow-right"></i>
+                                            </a>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="text-center py-5">
+                        <i class="bi bi-bell-slash text-muted fs-1 mb-3 d-block"></i>
+                        <h5 class="text-muted fw-normal">No notifications yet</h5>
+                        <p class="text-muted small">You will receive notifications for job updates, applications, and system alerts here.</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,4 +1,3 @@
-<h1>Reports Page</h1>
 {% extends "base.html" %}
 
 {% block title %}
@@ -7,17 +6,23 @@ Monthly Placement Report
 
 {% block content %}
 
-<div class="container mt-5">
+<div class="container mt-4">
 
-    <h2 class="mb-4">
-
-        Monthly Placement Report
-
-    </h2>
+    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+        <h2><i class="bi bi-calendar3 text-info me-2"></i> Monthly Placement Report</h2>
+        <div class="d-flex gap-2">
+            <a href="{% url 'reports:export_csv' 'monthly-report' %}" class="btn btn-outline-success">
+                <i class="bi bi-download me-1"></i> Download CSV
+            </a>
+            <a href="{% url 'reports:email_report' 'monthly-report' %}" class="btn btn-primary">
+                <i class="bi bi-envelope-at me-1"></i> Email Report to Me
+            </a>
+        </div>
+    </div>
 
     {% if monthly_data %}
 
-    <table class="table table-bordered table-hover">
+    <table class="table table-bordered table-hover shadow-sm bg-white rounded">
 
         <thead class="table-dark">
 
@@ -53,7 +58,7 @@ Monthly Placement Report
 
                 <td>
 
-                    {{ item.selected_students }}
+                    <span class="badge bg-success fs-6">{{ item.selected_students }}</span>
 
                 </td>
 
@@ -75,10 +80,8 @@ Monthly Placement Report
 
     {% endif %}
 
-    <a href="{% url 'reports:dashboard' %}" class="btn btn-secondary">
-
-        Back to Dashboard
-
+    <a href="{% url 'reports:dashboard' %}" class="btn btn-secondary mt-3">
+        <i class="bi bi-arrow-left me-1"></i> Back to Dashboard
     </a>
 
 </div>

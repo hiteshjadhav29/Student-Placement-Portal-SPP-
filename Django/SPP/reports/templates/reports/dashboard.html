@@ -8,9 +8,20 @@ Reports Dashboard
 
 <div class="container mt-5">
 
-    <h2 class="mb-4">
-        Reports Dashboard
-    </h2>
+    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+        <h2 class="mb-0">
+            <i class="bi bi-file-earmark-bar-graph-fill text-primary me-2"></i> Reports Dashboard
+        </h2>
+        <div class="d-flex gap-2">
+            <a href="{% url 'reports:export_csv' 'applications-summary' %}" class="btn btn-outline-success">
+                <i class="bi bi-file-earmark-spreadsheet me-1"></i> Export All Data (CSV)
+            </a>
+            <a href="{% url 'reports:email_report' 'applications-summary' %}" class="btn btn-primary">
+                <i class="bi bi-envelope-at-fill me-1"></i> Send Report to My Email
+            </a>
+        </div>
+    </div>
+
 
     <div class="row">
 
