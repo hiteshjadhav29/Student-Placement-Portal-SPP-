@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+
+{% block title %}
+Branch Report
+{% endblock %}
+
+{% block content %}
+
+<div class="container mt-5">
+
+    <h2 class="mb-4">
+        Branch-wise Placement Report
+    </h2>
+
+    <table class="table table-bordered table-hover">
+
+        <thead class="table-dark">
+
+            <tr>
+
+                <th>Branch</th>
+                <th>Total Students</th>
+                <th>Selected Students</th>
+                <th>Placement %</th>
+
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+            {% for branch in branches %}
+
+            <tr>
+
+                <td>{{ branch.branch }}</td>
+                <td>{{ branch.total_students }}</td>
+                <td>{{ branch.selected_students }}</td>
+                <td>{{ branch.placement_percentage }}%</td>
+
+            </tr>
+
+            {% endfor %}
+
+        </tbody>
+
+    </table>
+
+    <hr>
+
+    <h3 class="mt-4 mb-3">
+        Branch-wise Placement Chart
+    </h3>
+
+    <canvas id="branchChart"></canvas>
+
+    <a href="{% url 'reports:dashboard' %}" class="btn btn-secondary mt-4">
+
+        Back to Dashboard
+
+    </a>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+
+    const branchLabels = JSON.parse('{{ branch_labels|escapejs }}');
+    const branchData = JSON.parse('{{ branch_data|escapejs }}');
+
+    const ctx = document.getElementById('branchChart');
+
+    new Chart(ctx, {
+
+        type: 'bar',
+
+        data: {
+
+            labels: branchLabels,
+
+            datasets: [{
+
+                label: 'Selected Students',
+
+                data: branchData
+
+            }]
+
+        },
+
+        options: {
+
+            responsive: true,
+
+            scales: {
+
+                y: {
+
+                    beginAtZero: true
+
+                }
+
+            }
+
+        }
+
+    });
+
+</script>
+
+{% endblock %}

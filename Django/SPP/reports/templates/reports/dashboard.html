@@ -1,0 +1,251 @@
+{% extends "base.html" %}
+
+{% block title %}
+Reports Dashboard
+{% endblock %}
+
+{% block content %}
+
+<div class="container mt-5">
+
+    <h2 class="mb-4">
+        Reports Dashboard
+    </h2>
+
+    <div class="row">
+
+        <div class="col-md-3 mb-4">
+            <div class="card text-center border-primary shadow">
+                <div class="card-body">
+                    <h5>Total Students</h5>
+                    <h2>{{ total_students }}</h2>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3 mb-4">
+            <div class="card text-center border-success shadow">
+                <div class="card-body">
+                    <h5>Total Recruiters</h5>
+                    <h2>{{ total_recruiters }}</h2>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3 mb-4">
+            <div class="card text-center border-warning shadow">
+                <div class="card-body">
+                    <h5>Total Jobs</h5>
+                    <h2>{{ total_jobs }}</h2>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3 mb-4">
+            <div class="card text-center border-info shadow">
+                <div class="card-body">
+                    <h5>Total Applications</h5>
+                    <h2>{{ total_applications }}</h2>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="row">
+
+        <div class="col-md-4 mb-4">
+            <div class="card text-center border-success shadow">
+                <div class="card-body">
+                    <h5>Selected Students</h5>
+                    <h2>{{ selected_students }}</h2>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="card text-center border-warning shadow">
+                <div class="card-body">
+                    <h5>Pending Applications</h5>
+                    <h2>{{ pending }}</h2>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="card text-center border-danger shadow">
+                <div class="card-body">
+                    <h5>Rejected Applications</h5>
+                    <h2>{{ rejected }}</h2>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="card shadow">
+
+        <div class="card-header bg-primary text-white">
+
+            Placement Statistics
+
+        </div>
+
+        <div class="card-body">
+
+            <h3 class="text-center">
+
+                Placement Percentage
+
+            </h3>
+
+            <h1 class="text-center text-success">
+
+                {{ placement_percentage }}%
+
+            </h1>
+
+        </div>
+
+    </div>
+
+    <hr class="my-5">
+
+    <div class="row">
+
+        <div class="col-md-6">
+
+            <div class="card shadow">
+
+                <div class="card-header bg-primary text-white">
+
+                    <h5 class="mb-0">
+
+                        Application Status Distribution
+
+                    </h5>
+
+                </div>
+
+                <div class="card-body">
+
+                    <canvas id="statusChart"></canvas>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <hr class="my-5">
+
+    <div class="row">
+
+        <div class="col-md-3 mb-3">
+
+            <a href="{% url 'reports:placement_statistics' %}" class="btn btn-primary w-100">
+
+                Placement Statistics
+
+            </a>
+
+        </div>
+
+        <div class="col-md-3 mb-3">
+
+            <a href="{% url 'reports:company_report' %}" class="btn btn-success w-100">
+
+                Company Report
+
+            </a>
+
+        </div>
+
+        <div class="col-md-3 mb-3">
+
+            <a href="{% url 'reports:branch_report' %}" class="btn btn-warning w-100">
+
+                Branch Report
+
+            </a>
+
+        </div>
+
+        <div class="col-md-3 mb-3">
+
+            <a href="{% url 'reports:monthly_report' %}" class="btn btn-info w-100">
+
+                Monthly Report
+
+            </a>
+
+        </div>
+
+    </div>
+
+</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+
+    document.addEventListener("DOMContentLoaded", function () {
+
+        const labels = JSON.parse('{{ status_labels|escapejs }}');
+        const data = JSON.parse('{{ status_counts|escapejs }}');
+
+        const ctx = document.getElementById("statusChart");
+
+        new Chart(ctx, {
+
+            type: "pie",
+
+            data: {
+
+                labels: labels,
+
+                datasets: [{
+
+                    data: data,
+
+                    backgroundColor: [
+
+                        "#28a745",
+                        "#ffc107",
+                        "#dc3545",
+                        "#17a2b8",
+                        "#6f42c1"
+
+                    ]
+
+                }]
+
+            },
+
+            options: {
+
+                responsive: true,
+
+                plugins: {
+
+                    legend: {
+
+                        position: "bottom"
+
+                    }
+
+                }
+
+            }
+
+        });
+
+    });
+
+</script>
+
+
+{% endblock %}

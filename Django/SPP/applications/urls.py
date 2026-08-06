@@ -12,32 +12,27 @@ urlpatterns = [
     ),
 
     path(
-        "<int:application_id>/",
-        views.application_detail,
-        name="application_detail",
-    ),
-
-    path(
         "apply/<int:job_id>/",
         views.apply_job,
-        name="apply_job"
-    ),
-
-    path(
-        "recruiter/",
-        views.recruiter_applications,
-        name="recruiter_applications"
+        name="apply_job",
     ),
 
     path(
         "detail/<int:application_id>/",
         views.application_detail,
-        name="application_detail"
+        name="application_detail",
+    ),
+
+    path(
+        "recruiter/",
+        views.recruiter_applications,
+        name="recruiter_applications",
     ),
 
     path(
         "update/<int:application_id>/",
         views.update_status,
-        name="update_status"
+        name="update_status",
     ),
+
 ]

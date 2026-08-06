@@ -1,0 +1,252 @@
+{% extends "base.html" %}
+
+{% block title %}
+Student Profile
+{% endblock %}
+
+{% block content %}
+
+<div class="container mt-5">
+
+    <h2 class="mb-4">
+        Student Profile
+    </h2>
+
+    <!-- Student Information -->
+    <div class="card shadow mb-4">
+
+        <div class="card-header bg-primary text-white">
+            <h4>Student Information</h4>
+        </div>
+
+        <div class="card-body">
+
+            <p><strong>Name:</strong> {{ student.user.get_full_name|default:student.user.username }}</p>
+
+            <p><strong>Email:</strong> {{ student.user.email }}</p>
+
+            <p><strong>Roll Number:</strong> {{ student.roll_number }}</p>
+
+            <p><strong>Phone:</strong> {{ student.phone }}</p>
+
+            <p><strong>Branch:</strong> {{ student.get_branch_display }}</p>
+
+            <p><strong>Semester:</strong> {{ student.get_semester_display }}</p>
+
+            <p><strong>CGPA:</strong> {{ student.cgpa }}</p>
+
+            <p><strong>Gender:</strong> {{ student.gender }}</p>
+
+            <p><strong>Date of Birth:</strong> {{ student.date_of_birth }}</p>
+
+            <p><strong>Address:</strong> {{ student.address }}</p>
+
+        </div>
+
+    </div>
+
+    <!-- Resume -->
+
+    <div class="card shadow mb-4">
+
+        <div class="card-header bg-success text-white">
+            <h4>Resume</h4>
+        </div>
+
+        <div class="card-body">
+
+            {% if resume %}
+
+            <a href="{{ resume.resume_file.url }}" target="_blank" class="btn btn-success">
+
+                View Resume
+
+            </a>
+
+            <p class="mt-3">
+                <strong>Resume Score:</strong>
+                {{ resume.resume_score }}
+            </p>
+
+            <p>
+                <strong>ATS Score:</strong>
+                {{ resume.ats_score }}
+            </p>
+
+            {% else %}
+
+            <p>No Resume Uploaded.</p>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+    <!-- Skills -->
+
+    <div class="card shadow mb-4">
+
+        <div class="card-header bg-info text-white">
+            <h4>Skills</h4>
+        </div>
+
+        <div class="card-body">
+
+            {% if skills %}
+
+            <ul>
+
+                {% for skill in skills %}
+
+                <li>{{ skill.skill_name }}</li>
+
+                {% endfor %}
+
+            </ul>
+
+            {% else %}
+
+            <p>No Skills Added.</p>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+    <!-- Projects -->
+
+    <div class="card shadow mb-4">
+
+        <div class="card-header bg-warning">
+            <h4>Projects</h4>
+        </div>
+
+        <div class="card-body">
+
+            {% if projects %}
+
+            {% for project in projects %}
+
+            <div class="mb-3">
+
+                <h5>{{ project.title }}</h5>
+
+                <p>{{ project.description }}</p>
+
+                <p>
+                    <strong>Technology:</strong>
+                    {{ project.technology }}
+                </p>
+
+                {% if project.github_link %}
+
+                <a href="{{ project.github_link }}" target="_blank">
+
+                    GitHub Repository
+
+                </a>
+
+                {% endif %}
+
+            </div>
+
+            <hr>
+
+            {% endfor %}
+
+            {% else %}
+
+            <p>No Projects Added.</p>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+    <!-- Certifications -->
+
+    <div class="card shadow mb-4">
+
+        <div class="card-header bg-secondary text-white">
+            <h4>Certifications</h4>
+        </div>
+
+        <div class="card-body">
+
+            {% if certifications %}
+
+            <table class="table table-bordered">
+
+                <thead>
+
+                    <tr>
+
+                        <th>Certificate</th>
+                        <th>Issued By</th>
+                        <th>Issue Date</th>
+                        <th>File</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    {% for certificate in certifications %}
+
+                    <tr>
+
+                        <td>{{ certificate.certificate_name }}</td>
+
+                        <td>{{ certificate.issued_by }}</td>
+
+                        <td>{{ certificate.issue_date }}</td>
+
+                        <td>
+
+                            {% if certificate.certificate_file %}
+
+                            <a href="{{ certificate.certificate_file.url }}" target="_blank">
+
+                                View
+
+                            </a>
+
+                            {% else %}
+
+                            -
+
+                            {% endif %}
+
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+            {% else %}
+
+            <p>No Certifications Added.</p>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+    <a href="{% url 'placement_officer:manage_students' %}" class="btn btn-secondary">
+
+        Back to Students
+
+    </a>
+
+</div>
+
+{% endblock %}

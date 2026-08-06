@@ -70,22 +70,32 @@ Apply for Job
 
                 {% csrf_token %}
 
-                <button
-                    type="submit"
-                    class="btn btn-success">
+                <button type="submit" class="btn btn-success">
 
                     Apply Now
 
                 </button>
 
-                <a href="{% url 'jobs:job_detail' job.id %}"
-                   class="btn btn-secondary">
+                <a href="{% url 'jobs:job_detail' job.id %}" class="btn btn-secondary">
 
-                    Cancel
+                    <form method="POST">
 
-                </a>
+                        {% csrf_token %}
 
-            </form>
+                        <button type="submit" class="btn btn-success">
+
+                            Confirm Apply
+
+                        </button>
+
+                        <a href="{% url 'jobs:job_detail' job.id %}" class="btn btn-secondary">
+
+
+                            Cancel
+
+                        </a>
+
+                    </form>
 
         </div>
 

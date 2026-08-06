@@ -25,6 +25,22 @@ urlpatterns = [
 ),
     path("interview/", include("interview.urls")),
 
+    path(
+    "placement-officer/",
+    include(
+        ("placement_officer.urls", "placement_officer"),
+        namespace="placement_officer",
+    ),
+
+    ),
+    path(
+    "reports/",
+    include(
+        ("reports.urls", "reports"),
+        namespace="reports",
+    ),
+),
+
     ]
 
 

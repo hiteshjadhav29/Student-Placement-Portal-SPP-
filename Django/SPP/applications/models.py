@@ -35,8 +35,6 @@ class Application(models.Model):
 
         related_name="applications",
 
-        related_name="applications",
-
     )
 
     job = models.ForeignKey(
@@ -58,7 +56,7 @@ class Application(models.Model):
 
     updated_at = models.DateTimeField(
         auto_now=True,
-        related_name="applications",
+        
     )
 
     applied_at = models.DateTimeField(auto_now_add=True)

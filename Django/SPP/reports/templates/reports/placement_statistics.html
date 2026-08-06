@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+
+{% block title %}
+Placement Statistics
+{% endblock %}
+
+{% block content %}
+
+<div class="container mt-5">
+
+    <h2 class="mb-4">
+        Placement Statistics
+    </h2>
+
+    <table class="table table-bordered">
+
+        <tr>
+            <th>Total Students</th>
+            <td>{{ total_students }}</td>
+        </tr>
+
+        <tr>
+            <th>Total Applications</th>
+            <td>{{ total_applications }}</td>
+        </tr>
+
+        <tr>
+            <th>Selected Students</th>
+            <td>{{ selected }}</td>
+        </tr>
+
+        <tr>
+            <th>Rejected Students</th>
+            <td>{{ rejected }}</td>
+        </tr>
+
+        <tr>
+            <th>Pending Applications</th>
+            <td>{{ pending }}</td>
+        </tr>
+
+        <tr class="table-success">
+
+            <th>Placement Percentage</th>
+
+            <td>
+
+                <strong>
+
+                    {{ placement_percentage }}%
+
+                </strong>
+
+            </td>
+
+        </tr>
+
+    </table>
+
+    <a href="{% url 'reports:dashboard' %}" class="btn btn-secondary">
+
+        Back to Dashboard
+
+    </a>
+
+</div>
+
+{% endblock %}

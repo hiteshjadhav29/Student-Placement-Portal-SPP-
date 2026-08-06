@@ -1,0 +1,133 @@
+{% extends "base.html" %}
+
+{% block title %}
+Manage Students
+{% endblock %}
+
+{% block content %}
+
+<div class="container mt-5">
+
+    <h2 class="mb-4">
+        Manage Students
+    </h2>
+
+    {% if students %}
+    <form method="GET" class="row mb-4">
+
+        <div class="col-md-10">
+
+            <input type="text" name="q" class="form-control"
+                placeholder="Search by name, roll number, email or branch..." value="{{ query }}">
+
+        </div>
+
+        <div class="col-md-2">
+
+            <button type="submit" class="btn btn-primary w-100">
+
+                Search
+
+            </button>
+
+        </div>
+
+    </form>
+
+    <table class="table table-bordered table-hover">
+
+        <thead class="table-dark">
+
+            <tr>
+
+                <th>Roll No.</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>Branch</th>
+                <th>Semester</th>
+                <th>CGPA</th>
+                <th>Resume</th>
+                <th>Actions</th>
+
+
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+            {% for student in students %}
+
+            <tr>
+
+                <td>{{ student.roll_number }}</td>
+
+                <td>
+                    {{ student.user.get_full_name|default:student.user.username }}
+                </td>
+
+                <td>{{ student.user.email }}</td>
+
+                <td>{{ student.phone }}</td>
+
+                <td>{{ student.get_branch_display }}</td>
+
+                <td>{{ student.get_semester_display }}</td>
+
+                <td>{{ student.cgpa }}</td>
+
+                <td>
+
+                    {% if student.resume %}
+
+                    <a href="{{ student.resume.resume_file.url }}" target="_blank" class="btn btn-success btn-sm">
+
+                        View Resume
+
+                    </a>
+
+                    {% else %}
+
+                    <span class="text-muted">
+
+                        Not Uploaded
+
+                    </span>
+
+                    {% endif %}
+
+                </td>
+
+                <td>
+
+                    <a href="{% url 'placement_officer:student_profile' student.id %}" class="btn btn-primary btn-sm">
+
+                        View Profile
+
+                    </a>
+
+                </td>
+
+            </tr>
+
+
+            {% endfor %}
+
+        </tbody>
+
+    </table>
+
+    {% else %}
+
+    <div class="alert alert-info">
+
+        No students found.
+
+    </div>
+
+    {% endif %}
+
+</div>
+
+{% endblock %}
