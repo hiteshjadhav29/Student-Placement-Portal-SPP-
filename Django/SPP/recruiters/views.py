@@ -2,12 +2,6 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login, logout, authenticate, get_user_model
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from django.contrib.auth.decorators import login_required
-from django.shortcuts import render, redirect
-from django.contrib import messages
-
-from .models import RecruiterProfile
-from .forms import CompanyForm, RecruiterProfileForm
 
 from .models import Company, RecruiterProfile
 from .forms import (

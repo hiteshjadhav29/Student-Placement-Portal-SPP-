@@ -10,70 +10,123 @@ Application Details
 
 <div class="card shadow">
 
-<div class="card-header bg-primary text-white">
+<div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
 
-<h3>Application Details</h3>
+<h3 class="mb-0"><i class="bi bi-file-earmark-person"></i> Application Details</h3>
+<span class="badge bg-light text-dark fs-6">{{ application.status }}</span>
 
 </div>
 
 <div class="card-body">
 
-<table class="table table-bordered">
+<table class="table table-bordered align-middle">
 
 <tr>
-<th>Student</th>
+<th width="30%">Student Username</th>
 <td>{{ application.student.user.username }}</td>
 </tr>
 
 <tr>
 <th>Full Name</th>
-<td>{{ application.student.full_name }}</td>
+<td>{{ application.student.user.get_full_name|default:application.student.user.username }}</td>
 </tr>
 
 <tr>
 <th>Email</th>
-<td>{{ application.student.user.email }}</td>
+<td><a href="mailto:{{ application.student.user.email }}">{{ application.student.user.email }}</a></td>
+</tr>
+
+<tr>
+<th>Phone</th>
+<td>{{ application.student.phone }}</td>
 </tr>
 
 <tr>
 <th>Branch</th>
-<td>{{ application.student.get_branch_display }}</td>
+<td><span class="badge bg-secondary fs-6">{{ application.student.get_branch_display }}</span></td>
 </tr>
 
 <tr>
 <th>CGPA</th>
-<td>{{ application.student.cgpa }}</td>
+<td><strong class="text-primary fs-5">{{ application.student.cgpa }}</strong> / 10</td>
 </tr>
 
 <tr>
-<th>Job</th>
-<td>{{ application.job.job_title }}</td>
+<th>Resume</th>
+<td>
+    {% if resume %}
+        <a href="{{ resume.resume_file.url }}" target="_blank" class="btn btn-danger">
+            <i class="bi bi-file-earmark-pdf-fill"></i> View / Download Resume
+        </a>
+    {% else %}
+        <span class="text-muted"><i class="bi bi-x-circle"></i> No resume uploaded</span>
+    {% endif %}
+</td>
 </tr>
 
 <tr>
-<th>Status</th>
-<td>{{ application.status }}</td>
+<th>GitHub Profile</th>
+<td>
+    {% if application.student.github_url %}
+        <a href="{{ application.student.github_url }}" target="_blank" class="btn btn-dark">
+            <i class="bi bi-github"></i> Open GitHub Profile
+        </a>
+        <small class="ms-2 text-muted">{{ application.student.github_url }}</small>
+    {% else %}
+        <span class="text-muted">Not provided</span>
+    {% endif %}
+</td>
+</tr>
+
+<tr>
+<th>LinkedIn Profile</th>
+<td>
+    {% if application.student.linkedin_url %}
+        <a href="{{ application.student.linkedin_url }}" target="_blank" class="btn btn-primary">
+            <i class="bi bi-linkedin"></i> Open LinkedIn Profile
+        </a>
+        <small class="ms-2 text-muted">{{ application.student.linkedin_url }}</small>
+    {% else %}
+        <span class="text-muted">Not provided</span>
+    {% endif %}
+</td>
+</tr>
+
+<tr>
+<th>Skills</th>
+<td>
+    {% for skill in application.student.skills.all %}
+        <span class="badge bg-info text-dark me-1 p-2">{{ skill.skill_name }}</span>
+    {% empty %}
+        <span class="text-muted">No skills listed</span>
+    {% endfor %}
+</td>
+</tr>
+
+<tr>
+<th>Job Applied For</th>
+<td><strong>{{ application.job.job_title }}</strong> ({{ application.job.company.company_name }})</td>
 </tr>
 
 <tr>
 <th>Applied On</th>
-<td>{{ application.applied_at }}</td>
+<td>{{ application.applied_at|date:"F d, Y h:i A" }}</td>
 </tr>
 
 </table>
 
+<div class="mt-4">
+
+{% if request.user.role == "recruiter" or request.user.role == "officer" %}
 <a href="{% url 'applications:update_status' application.id %}"
-class="btn btn-success">
-
-Update Status
-
+class="btn btn-success me-2">
+<i class="bi bi-pencil-square"></i> Update Status
 </a>
+{% endif %}
 
 <a href="{% url 'applications:recruiter_applications' %}"
 class="btn btn-secondary">
-
-Back
-
+<i class="bi bi-arrow-left"></i> Back to Applicants
 </a>
 
 </div>
@@ -82,4 +135,6 @@ Back
 
 </div>
 
-{% endblock %}
+</div>
+
+{% endblock %}

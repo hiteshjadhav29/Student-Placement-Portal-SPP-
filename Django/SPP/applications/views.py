@@ -34,15 +34,6 @@ def apply_job(request, job_id):
         status="Open"
     )
 
-    # Deadline constraint check
-    from django.utils import timezone
-    if job.application_deadline < timezone.now().date():
-        messages.error(
-            request,
-            "The application deadline for this job has passed."
-        )
-        return redirect("jobs:job_list")
-
     # Prevent duplicate applications
     if Application.objects.filter(
         student=student,
@@ -126,27 +117,7 @@ def my_applications(request):
 
 
 
-@login_required
-def application_detail(request, application_id):
 
-    student = get_object_or_404(
-        Student,
-        user=request.user
-    )
-
-    application = get_object_or_404(
-        Application,
-        id=application_id,
-        student=student
-    )
-
-    return render(
-        request,
-        "applications/application_detail.html",
-        {
-            "application": application,
-        }
-    )
 
 
 # =====================================
@@ -165,14 +136,73 @@ def recruiter_applications(request):
         job__company=recruiter.company
     ).select_related(
         "student",
+        "student__user",
         "job"
+    ).prefetch_related(
+        "student__skills"
     )
+
+    # Filtering options
+    min_cgpa = request.GET.get("min_cgpa")
+    skill_query = request.GET.get("skill")
+    branch = request.GET.get("branch")
+    selected_job_id = request.GET.get("job_id")
+
+    if min_cgpa:
+        try:
+            min_cgpa_val = float(min_cgpa)
+            applications = applications.filter(student__cgpa__gte=min_cgpa_val)
+        except ValueError:
+            pass
+
+    if skill_query:
+        applications = applications.filter(
+            student__skills__skill_name__icontains=skill_query
+        ).distinct()
+
+    if branch:
+        applications = applications.filter(student__branch=branch)
+
+    if selected_job_id:
+        applications = applications.filter(job_id=selected_job_id)
+
+    company_jobs = Job.objects.filter(company=recruiter.company)
 
     return render(
         request,
         "applications/recruiter_applications.html",
         {
-            "applications": applications
+            "applications": applications,
+            "min_cgpa": min_cgpa or "",
+            "skill_query": skill_query or "",
+            "branch": branch or "",
+            "selected_job_id": selected_job_id or "",
+            "company_jobs": company_jobs,
+            "branch_choices": Student.BRANCH_CHOICES,
+        }
+    )
+
+
+# =====================================
+# Application Details
+# =====================================
+
+@login_required
+def application_detail(request, application_id):
+    if request.user.role == "student":
+        student = get_object_or_404(Student, user=request.user)
+        application = get_object_or_404(Application, id=application_id, student=student)
+    elif request.user.role == "recruiter":
+        recruiter = get_object_or_404(RecruiterProfile, user=request.user)
+        application = get_object_or_404(Application, id=application_id, job__company=recruiter.company)
+    else:
+        application = get_object_or_404(Application, id=application_id)
+
+    return render(
+        request,
+        "applications/application_detail.html",
+        {
+            "application": application
         }
     )
 
@@ -232,4 +262,4 @@ def update_status(request, application_id):
             "application": application,
             "status_choices": Application.STATUS_CHOICES,
         }
-    )
+    )

@@ -1,0 +1,114 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Placement Reports & Mail Generator
+{% endblock %}
+
+{% block content %}
+
+<div class="container mt-4 mb-5">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2><i class="bi bi-file-earmark-bar-graph-fill text-primary"></i> Placement Reports & Email Center</h2>
+        <div>
+            <a href="{% url 'placement_officer:download_report' %}" class="btn btn-success me-2 shadow-sm">
+                <i class="bi bi-download"></i> Download Report (CSV)
+            </a>
+            <a href="{% url 'placement_officer:email_report' %}" class="btn btn-primary shadow-sm" onclick="return confirm('Send full placement report CSV to your registered email address?');">
+                <i class="bi bi-envelope-at-fill"></i> Email Report to Me
+            </a>
+        </div>
+    </div>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <div class="card shadow-sm border-0 mb-4">
+        <div class="card-header bg-dark text-white">
+            <h5 class="mb-0"><i class="bi bi-trophy-fill text-warning"></i> Selected & Placed Students Report</h5>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Roll No</th>
+                            <th>Student Name</th>
+                            <th>Branch</th>
+                            <th>CGPA</th>
+                            <th>Company</th>
+                            <th>Job Title</th>
+                            <th>Status Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for app in selected_applications %}
+                            <tr>
+                                <td><strong>{{ app.student.roll_number }}</strong></td>
+                                <td>{{ app.student.user.get_full_name|default:app.student.user.username }}</td>
+                                <td><span class="badge bg-secondary">{{ app.student.get_branch_display }}</span></td>
+                                <td><strong class="text-success">{{ app.student.cgpa }}</strong></td>
+                                <td>{{ app.job.company.company_name }}</td>
+                                <td>{{ app.job.job_title }}</td>
+                                <td>{{ app.updated_at|date:"d M Y" }}</td>
+                            </tr>
+                        {% empty %}
+                            <tr>
+                                <td colspan="7" class="text-center text-muted py-4">No placed students recorded yet.</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="card shadow-sm border-0">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0"><i class="bi bi-star-fill text-warning"></i> Shortlisted Students Overview</h5>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Roll No</th>
+                            <th>Student Name</th>
+                            <th>Branch</th>
+                            <th>CGPA</th>
+                            <th>Company</th>
+                            <th>Job Title</th>
+                            <th>Applied Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for app in shortlisted_applications %}
+                            <tr>
+                                <td><strong>{{ app.student.roll_number }}</strong></td>
+                                <td>{{ app.student.user.get_full_name|default:app.student.user.username }}</td>
+                                <td><span class="badge bg-secondary">{{ app.student.get_branch_display }}</span></td>
+                                <td><strong class="text-primary">{{ app.student.cgpa }}</strong></td>
+                                <td>{{ app.job.company.company_name }}</td>
+                                <td>{{ app.job.job_title }}</td>
+                                <td>{{ app.applied_at|date:"d M Y" }}</td>
+                            </tr>
+                        {% empty %}
+                            <tr>
+                                <td colspan="7" class="text-center text-muted py-4">No shortlisted students currently.</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}

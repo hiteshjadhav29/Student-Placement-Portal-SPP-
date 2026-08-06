@@ -51,15 +51,20 @@ Login
 
                     <div class="mb-3">
 
-                        <label class="form-label">
-                            Password
-                        </label>
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <label class="form-label mb-0 fw-semibold">
+                                Password
+                            </label>
+                            <a href="{% url 'accounts:forgot_password' %}" class="small text-primary fw-bold text-decoration-none">
+                                <i class="bi bi-key-fill"></i> Forgot Password?
+                            </a>
+                        </div>
 
                         {{ form.password }}
 
                     </div>
 
-                    <div class="d-grid">
+                    <div class="d-grid mb-3">
 
                         <button type="submit"
                                 class="btn btn-primary btn-lg">
@@ -74,11 +79,17 @@ Login
 
                 </form>
 
+                <div class="text-end mb-3">
+                    <a href="{% url 'accounts:forgot_password' %}" class="text-danger fw-semibold text-decoration-none small">
+                        <i class="bi bi-shield-lock"></i> Forgot Password? Click here to reset with OTP
+                    </a>
+                </div>
+
                 <hr>
 
                 <div class="text-center">
 
-                    <p class="mb-1">
+                    <p class="mb-2 text-muted">
 
                         Don't have an account?
 
@@ -87,11 +98,12 @@ Login
                     <a href="{% url 'accounts:register' %}"
                        class="btn btn-outline-success">
 
-                        Register Here
+                        <i class="bi bi-person-plus-fill me-1"></i> Register Here
 
                     </a>
 
                 </div>
+
 
             </div>
 

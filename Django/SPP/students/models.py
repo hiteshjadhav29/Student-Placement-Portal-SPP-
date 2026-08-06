@@ -180,10 +180,20 @@ class Certification(models.Model):
         return self.certificate_name
 
 class Notification(models.Model):
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="user_notifications",
+        null=True,
+        blank=True
+    )
+
     student = models.ForeignKey(
         Student,
         on_delete=models.CASCADE,
-        related_name="notifications"
+        related_name="notifications",
+        null=True,
+        blank=True
     )
 
     title = models.CharField(max_length=200)
@@ -199,3 +209,4 @@ class Notification(models.Model):
 
     def __str__(self):
         return self.title
+

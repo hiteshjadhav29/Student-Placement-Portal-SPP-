@@ -66,6 +66,12 @@ class Job(models.Model):
 
     application_deadline = models.DateField()
 
+    target_branches = models.CharField(
+        max_length=255,
+        default='ALL',
+        help_text="Target branches for job posting (e.g. CO,IT,AIML or ALL)"
+    )
+
     status = models.CharField(
         max_length=10,
         choices=STATUS_CHOICES,
@@ -79,5 +85,10 @@ class Job(models.Model):
     class Meta:
         ordering = ['-created_at']
 
+    def get_target_branches_list(self):
+        if not self.target_branches or self.target_branches == 'ALL':
+            return ['ALL']
+        return [b.strip() for b in self.target_branches.split(',') if b.strip()]
+
     def __str__(self):
-        return f"{self.job_title} - {self.company.company_name}"
+        return f"{self.job_title} - {self.company.company_name}"

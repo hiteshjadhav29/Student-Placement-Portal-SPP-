@@ -88,4 +88,96 @@ class CertificationForm(forms.ModelForm):
             "issued_by",
             "issue_date",
             "certificate_file",    
-        ]
+        ]
+from django import forms
+from .models import (
+    Student,
+    Resume,
+    Skill,
+    Project,
+    Certification,
+)
+
+import re
+from django.utils import timezone
+
+class StudentForm(forms.ModelForm):
+    class Meta:
+        model = Student
+
+        fields = [
+            "roll_number",
+            "phone",
+            "branch",
+            "semester",
+            "cgpa",
+            "date_of_birth",
+            "gender",
+            "address",
+            "profile_photo",
+            "github_url",
+            "linkedin_url",
+        ]
+
+        widgets = {
+            "date_of_birth": forms.DateInput(attrs={"type": "date", "class": "form-control"}),
+            "roll_number": forms.TextInput(attrs={"class": "form-control", "placeholder": "e.g. 21CO101"}),
+            "phone": forms.TextInput(attrs={"class": "form-control", "placeholder": "10-digit mobile number"}),
+            "cgpa": forms.NumberInput(attrs={"class": "form-control", "step": "0.01", "min": "0", "max": "10"}),
+            "github_url": forms.URLInput(attrs={"class": "form-control", "placeholder": "https://github.com/username"}),
+            "linkedin_url": forms.URLInput(attrs={"class": "form-control", "placeholder": "https://linkedin.com/in/username"}),
+        }
+
+    def clean_phone(self):
+        phone = self.cleaned_data.get("phone", "").strip()
+        if not re.match(r"^\d{10}$", phone):
+            raise forms.ValidationError("Phone number must be exactly 10 digits.")
+        return phone
+
+    def clean_cgpa(self):
+        cgpa = self.cleaned_data.get("cgpa")
+        if cgpa is not None and (cgpa < 0 or cgpa > 10):
+            raise forms.ValidationError("CGPA must be between 0.00 and 10.00.")
+        return cgpa
+
+    def clean_date_of_birth(self):
+        dob = self.cleaned_data.get("date_of_birth")
+        if dob and dob >= timezone.now().date():
+            raise forms.ValidationError("Date of birth must be a past date.")
+        return dob
+
+class ResumeForm(forms.ModelForm):
+    class Meta:
+        model = Resume
+
+        fields = [
+            "resume_file",
+        ]
+
+class SkillForm(forms.ModelForm):
+    class Meta:
+        model = Skill
+
+        fields = [
+            "skill_name",
+        ]
+class ProjectForm(forms.ModelForm):
+    class Meta:
+        model = Project
+
+        fields = [
+            "title",
+            "description",
+            "technology",
+            "github_link",
+        ]
+class CertificationForm(forms.ModelForm):
+    class Meta:
+        model = Certification
+
+        fields = [
+            "certificate_name",
+            "issued_by",
+            "issue_date",
+            "certificate_file",    
+        ]

@@ -26,22 +26,15 @@ urlpatterns = [
     path("interview/", include("interview.urls")),
 
     path(
-    "placement-officer/",
-    include(
-        ("placement_officer.urls", "placement_officer"),
-        namespace="placement_officer",
-    ),
-
+        "placement-officer/",
+        include("placement_officer.urls"),
     ),
     path(
-    "reports/",
-    include(
-        ("reports.urls", "reports"),
-        namespace="reports",
+        "reports/",
+        include("reports.urls"),
     ),
-),
+]
 
-    ]
 
 
 if settings.DEBUG:

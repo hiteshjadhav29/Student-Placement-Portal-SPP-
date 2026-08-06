@@ -8,6 +8,8 @@ from recruiters.models import RecruiterProfile
 
 from django.db.models import Q
 
+from students.models import Student, Notification
+
 # =====================================
 # Student Job Listing
 # =====================================
@@ -18,6 +20,18 @@ def job_list(request):
     jobs = Job.objects.filter(
         status="Open"
     ).order_by("-created_at")
+
+    # If student, filter jobs by target branch
+    if hasattr(request.user, 'role') and request.user.role == 'student':
+        try:
+            student = Student.objects.get(user=request.user)
+            jobs = jobs.filter(
+                Q(target_branches__icontains=student.branch) |
+                Q(target_branches="ALL") |
+                Q(target_branches="")
+            )
+        except Student.DoesNotExist:
+            pass
 
     search = request.GET.get("search")
     job_type = request.GET.get("job_type")
@@ -30,7 +44,8 @@ def job_list(request):
 
             Q(job_title__icontains=search) |
             Q(location__icontains=search) |
-            Q(qualification__icontains=search)
+            Q(qualification__icontains=search) |
+            Q(required_skills__icontains=search)
 
         )
 
@@ -91,6 +106,25 @@ def add_job(request):
             job.recruiter = request.user
 
             job.save()
+            form.save_m2m() if hasattr(form, 'save_m2m') else None
+
+            # Create notifications for eligible students
+            target_list = job.get_target_branches_list()
+            if 'ALL' in target_list:
+                target_students = Student.objects.all()
+            else:
+                target_students = Student.objects.filter(branch__in=target_list)
+
+            notifications = [
+                Notification(
+                    user=st.user,
+                    student=st,
+                    title=f"New Job Posted: {job.job_title}",
+                    message=f"{job.company.company_name} has posted a new job: {job.job_title}."
+                )
+                for st in target_students
+            ]
+            Notification.objects.bulk_create(notifications)
 
             # Trigger notifications to all Students and Placement Officers
             from accounts.models import User
@@ -108,7 +142,7 @@ def add_job(request):
 
             messages.success(
                 request,
-                "Job posted successfully."
+                "Job posted successfully and notifications sent to eligible students."
             )
 
             return redirect("jobs:manage_jobs")
@@ -125,6 +159,7 @@ def add_job(request):
             "form": form
         }
     )
+
 
 
 # ==============================

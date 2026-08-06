@@ -1,25 +1,115 @@
-<!DOCTYPE html>
-<html>
+{% extends 'auth_base.html' %}
 
-<head>
-    <title>Register</title>
-</head>
+{% block title %}
+Register - Student Placement Portal
+{% endblock %}
 
-<body>
+{% block content %}
 
-    <h1>Register Page</h1>
+<div class="row justify-content-center align-items-center vh-100">
 
-    <form method="POST" enctype="multipart/form-data">
-        {% csrf_token %}
+    <div class="col-lg-7">
 
-        {{ form.as_p }}
+        <div class="card shadow-lg border-0 rounded-4">
 
-        <button type="submit">
-            Register
-        </button>
+            <div class="card-header bg-success text-white text-center py-4">
 
-    </form>
+                <h2>
+                    <i class="bi bi-person-plus-fill me-2"></i>
+                    Create Your Account
+                </h2>
 
-</body>
+                <p class="mb-0 text-white-50">
+                    Student Placement Portal
+                </p>
 
-</html>
+            </div>
+
+            <div class="card-body p-4">
+
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert alert-{{ message.tags }} alert-dismissible fade show">
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+
+                <form method="POST">
+
+                    {% csrf_token %}
+
+                    <div class="row">
+
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-bold">Username</label>
+                            {{ form.username }}
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-bold">Email</label>
+                            {{ form.email }}
+                        </div>
+
+                    </div>
+
+                    <div class="row">
+
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-bold">First Name</label>
+                            {{ form.first_name }}
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-bold">Last Name</label>
+                            {{ form.last_name }}
+                        </div>
+
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Select Role</label>
+                        {{ form.role }}
+                    </div>
+
+                    <div class="row">
+
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-bold">Password</label>
+                            {{ form.password1 }}
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-bold">Confirm Password</label>
+                            {{ form.password2 }}
+                        </div>
+
+                    </div>
+
+                    <div class="d-grid mt-3">
+                        <button type="submit" class="btn btn-success btn-lg fw-bold">
+                            <i class="bi bi-person-check-fill me-1"></i> Register
+                        </button>
+                    </div>
+
+                </form>
+
+                <hr>
+
+                <div class="text-center">
+                    <span class="text-muted">Already have an account?</span>
+                    <a href="{% url 'accounts:login' %}" class="fw-bold text-primary text-decoration-none ms-1">
+                        Login Here
+                    </a>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

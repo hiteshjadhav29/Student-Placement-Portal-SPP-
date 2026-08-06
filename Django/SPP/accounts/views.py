@@ -1,7 +1,13 @@
-from django.shortcuts import render, redirect
-from django.contrib.auth import login, logout, authenticate, get_user_model
+import random
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.auth import login, logout, authenticate, get_user_model, update_session_auth_hash
+from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.core.mail import send_mail
+from django.db.models import Q
 from .forms import UserRegistrationForm, LoginForm
+from .models import PasswordResetOTP
+from students.models import Notification
 
 User = get_user_model()
 
@@ -155,39 +161,36 @@ def logout_view(request):
 
 
 # ==========================
-# Forgot Password - Request OTP
+# Forgot Password
 # ==========================
 def forgot_password(request):
     if request.user.is_authenticated:
         return redirect("accounts:login_redirect")
 
     if request.method == "POST":
-        form = ForgotPasswordForm(request.POST)
-        if form.is_valid():
-            user = form.found_user
-            otp_code = generate_otp()
-            # Invalidate any old unused OTPs for this user
-            PasswordResetOTP.objects.filter(user=user, is_used=False).update(is_used=True)
-            
-            PasswordResetOTP.objects.create(
-                user=user,
-                otp=otp_code
-            )
+        email_or_username = request.POST.get("email_or_username", "").strip()
 
+        user = User.objects.filter(
+            Q(email__iexact=email_or_username) | Q(username__iexact=email_or_username)
+        ).first()
+
+        if user:
+            from .utils import generate_otp, send_otp_email
+            otp = generate_otp()
+            PasswordResetOTP.objects.create(user=user, otp=otp)
             try:
-                send_otp_email(user, otp_code)
-                request.session['reset_user_id'] = user.id
-                messages.success(
-                    request,
-                    f"An OTP has been sent to your registered email ({user.email}). Please enter it below."
-                )
-                return redirect("accounts:verify_otp")
+                send_otp_email(user, otp)
             except Exception as e:
-                messages.error(request, f"Failed to send email OTP: {str(e)}")
-    else:
-        form = ForgotPasswordForm()
+                messages.warning(request, "Failed to send email. Check SMTP settings.")
 
-    return render(request, "accounts/forgot_password.html", {"form": form})
+            request.session['reset_user_id'] = user.id
+            request.session['reset_email'] = user.email
+            messages.success(request, f"A 6-digit OTP has been sent to {user.email}.")
+            return redirect("accounts:verify_otp")
+        else:
+            messages.error(request, "No account found with that email or username.")
+
+    return render(request, "accounts/forgot_password.html")
 
 
 # ==========================
@@ -196,168 +199,131 @@ def forgot_password(request):
 def verify_otp(request):
     user_id = request.session.get('reset_user_id')
     if not user_id:
-        messages.error(request, "Session expired. Please request a new OTP.")
+        messages.error(request, "Session expired. Please request OTP again.")
         return redirect("accounts:forgot_password")
 
-    user = User.objects.filter(id=user_id).first()
-    if not user:
-        messages.error(request, "User not found.")
-        return redirect("accounts:forgot_password")
+    user = get_object_or_404(User, id=user_id)
+    email = request.session.get('reset_email', user.email)
 
     if request.method == "POST":
-        form = VerifyOTPForm(request.POST)
-        if form.is_valid():
-            otp_input = form.cleaned_data["otp"]
-            otp_record = PasswordResetOTP.objects.filter(
-                user=user,
-                otp=otp_input,
-                is_used=False
-            ).first()
+        otp_code = request.POST.get("otp_code", "").strip()
 
-            if otp_record and otp_record.is_valid():
-                otp_record.is_used = True
-                otp_record.save()
-                request.session['otp_verified_user_id'] = user.id
-                messages.success(request, "OTP verified successfully! Now set your new password.")
-                return redirect("accounts:reset_password")
-            else:
-                messages.error(request, "Invalid or expired OTP. Please try again or request a new one.")
-    else:
-        form = VerifyOTPForm()
+        otp_record = PasswordResetOTP.objects.filter(
+            user=user,
+            is_used=False
+        ).order_by('-created_at').first()
 
-    return render(
-        request,
-        "accounts/verify_otp.html",
-        {"form": form, "user_email": user.email}
-    )
+        if otp_record and otp_record.otp == otp_code and otp_record.is_valid():
+            otp_record.is_used = True
+            otp_record.save()
+            request.session['otp_verified'] = True
+            messages.success(request, "OTP verified successfully! Enter your new password.")
+            return redirect("accounts:reset_password")
+        else:
+            messages.error(request, "Invalid or expired OTP. Please try again.")
+
+    return render(request, "accounts/verify_otp.html", {"email": email})
 
 
 # ==========================
 # Reset Password
 # ==========================
 def reset_password(request):
-    user_id = request.session.get('otp_verified_user_id')
-    if not user_id:
-        messages.error(request, "Unauthorized access. Please verify OTP first.")
+    user_id = request.session.get('reset_user_id')
+    otp_verified = request.session.get('otp_verified')
+
+    if not (user_id and otp_verified):
+        messages.error(request, "Unauthorized access. Please start password reset process.")
         return redirect("accounts:forgot_password")
 
-    user = User.objects.filter(id=user_id).first()
-    if not user:
-        messages.error(request, "User not found.")
-        return redirect("accounts:forgot_password")
+    user = get_object_or_404(User, id=user_id)
 
     if request.method == "POST":
-        form = ResetPasswordForm(request.POST)
-        if form.is_valid():
-            new_password = form.cleaned_data["new_password"]
-            user.set_password(new_password)
+        p1 = request.POST.get("password1")
+        p2 = request.POST.get("password2")
+
+        if p1 and p2 and p1 == p2:
+            user.set_password(p1)
             user.save()
-            
-            # Clear reset session keys
             request.session.pop('reset_user_id', None)
-            request.session.pop('otp_verified_user_id', None)
-
-            # Send notification
-            create_notification(
-                user=user,
-                title="Password Reset Successful",
-                message="Your password was reset successfully.",
-                notification_type="system"
-            )
-
-            messages.success(request, "Your password has been reset successfully! Please log in with your new password.")
+            request.session.pop('reset_email', None)
+            request.session.pop('otp_verified', None)
+            messages.success(request, "Password reset successfully! You can now log in.")
             return redirect("accounts:login")
-    else:
-        form = ResetPasswordForm()
+        else:
+            messages.error(request, "Passwords do not match or are invalid.")
 
-    return render(request, "accounts/reset_password.html", {"form": form})
+    return render(request, "accounts/reset_password.html")
 
 
 # ==========================
-# Settings View (All Roles)
+# Notifications
 # ==========================
-from django.contrib.auth.decorators import login_required
-from .forms import ForgotPasswordForm, VerifyOTPForm, ResetPasswordForm, SettingsProfileForm, ChangePasswordSettingsForm
-from .models import PasswordResetOTP, UserNotification
-from .utils import generate_otp, send_otp_email, create_notification
-
-
 @login_required
-def settings_view(request):
-    profile_form = SettingsProfileForm(instance=request.user)
-    password_form = ChangePasswordSettingsForm()
-
-    if request.method == "POST":
-        if "update_profile" in request.POST:
-            profile_form = SettingsProfileForm(request.POST, instance=request.user)
-            if profile_form.is_valid():
-                profile_form.save()
-                messages.success(request, "Profile details updated successfully!")
-                return redirect("accounts:settings")
-
-        elif "change_password" in request.POST:
-            password_form = ChangePasswordSettingsForm(request.POST)
-            if password_form.is_valid():
-                current_pw = password_form.cleaned_data["current_password"]
-                if not request.user.check_password(current_pw):
-                    messages.error(request, "Incorrect current password.")
-                else:
-                    new_pw = password_form.cleaned_data["new_password"]
-                    request.user.set_password(new_pw)
-                    request.user.save()
-                    # Re-authenticate session after password change
-                    login(request, request.user)
-                    messages.success(request, "Your password has been changed successfully!")
-                    create_notification(
-                        user=request.user,
-                        title="Password Changed",
-                        message="Your account password was changed from settings.",
-                        notification_type="system"
-                    )
-                    return redirect("accounts:settings")
+def notifications(request):
+    from .models import UserNotification
+    user_notifications = UserNotification.objects.filter(user=request.user)
 
     return render(
         request,
-        "accounts/settings.html",
+        "accounts/notifications.html",
         {
-            "profile_form": profile_form,
-            "password_form": password_form,
+            "notifications": user_notifications
         }
     )
 
 
-# ==========================
-# Notifications List View
-# ==========================
-@login_required
-def notifications_view(request):
-    notifications = UserNotification.objects.filter(user=request.user)
-    return render(
-        request,
-        "accounts/notifications.html",
-        {"notifications": notifications}
-    )
-
-
-# ==========================
-# Mark Single Notification Read
-# ==========================
 @login_required
 def mark_notification_read(request, notification_id):
-    notification = UserNotification.objects.filter(id=notification_id, user=request.user).first()
-    if notification:
-        notification.is_read = True
-        notification.save()
-        if notification.link:
-            return redirect(notification.link)
+    from .models import UserNotification
+    noti = get_object_or_404(UserNotification, id=notification_id, user=request.user)
+    noti.is_read = True
+    noti.save()
+    messages.success(request, "Notification marked as read.")
+    return redirect("accounts:notifications")
+
+
+@login_required
+def mark_all_notifications_read(request):
+    from .models import UserNotification
+    UserNotification.objects.filter(user=request.user, is_read=False).update(is_read=True)
+    messages.success(request, "All notifications marked as read.")
     return redirect("accounts:notifications")
 
 
 # ==========================
-# Mark All Notifications Read
+# Account Settings
 # ==========================
 @login_required
-def mark_all_notifications_read(request):
-    UserNotification.objects.filter(user=request.user, is_read=False).update(is_read=True)
-    messages.success(request, "All notifications marked as read.")
-    return redirect("accounts:notifications")
+def settings_view(request):
+    if request.method == "POST":
+        action = request.POST.get("action")
+
+        if action == "update_profile":
+            request.user.first_name = request.POST.get("first_name", "").strip()
+            request.user.last_name = request.POST.get("last_name", "").strip()
+            request.user.email = request.POST.get("email", "").strip()
+            request.user.phone = request.POST.get("phone", "").strip()
+            request.user.save()
+            messages.success(request, "Profile settings updated successfully.")
+
+        elif action == "change_password":
+            old_pass = request.POST.get("old_password")
+            new_pass1 = request.POST.get("new_password1")
+            new_pass2 = request.POST.get("new_password2")
+
+            if not request.user.check_password(old_pass):
+                messages.error(request, "Current password is incorrect.")
+            elif new_pass1 != new_pass2:
+                messages.error(request, "New passwords do not match.")
+            elif len(new_pass1) < 6:
+                messages.error(request, "Password must be at least 6 characters long.")
+            else:
+                request.user.set_password(new_pass1)
+                request.user.save()
+                update_session_auth_hash(request, request.user)
+                messages.success(request, "Password updated successfully.")
+
+        return redirect("accounts:settings")
+
+    return render(request, "accounts/settings.html")

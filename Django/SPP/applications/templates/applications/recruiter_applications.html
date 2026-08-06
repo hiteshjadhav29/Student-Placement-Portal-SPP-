@@ -1,99 +1,160 @@
 {% extends "base.html" %}
 
 {% block title %}
-Applicants
+Job Applicants
 {% endblock %}
 
 {% block content %}
 
 <div class="container mt-4">
 
-    <h2 class="mb-4">
-        Job Applications
-    </h2>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2><i class="bi bi-people-fill"></i> Job Applicants</h2>
+    </div>
+
+    <!-- Filter Card -->
+    <div class="card shadow-sm mb-4">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0"><i class="bi bi-funnel-fill"></i> Filter Applicants</h5>
+        </div>
+        <div class="card-body">
+            <form method="GET" class="row g-3">
+                <div class="col-md-3">
+                    <label class="form-label font-weight-bold">Min CGPA</label>
+                    <input type="number" step="0.1" min="0" max="10" name="min_cgpa" class="form-control" placeholder="e.g. 7.5" value="{{ min_cgpa }}">
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label font-weight-bold">Skill</label>
+                    <input type="text" name="skill" class="form-control" placeholder="e.g. Python, React" value="{{ skill_query }}">
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label font-weight-bold">Branch</label>
+                    <select name="branch" class="form-select">
+                        <option value="">All Branches</option>
+                        {% for code, name in branch_choices %}
+                            <option value="{{ code }}" {% if branch == code %}selected{% endif %}>{{ name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label font-weight-bold">Job Post</label>
+                    <select name="job_id" class="form-select">
+                        <option value="">All Jobs</option>
+                        {% for j in company_jobs %}
+                            <option value="{{ j.id }}" {% if selected_job_id == j.id|stringformat:"s" %}selected{% endif %}>{{ j.job_title }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-12 text-end">
+                    <button type="submit" class="btn btn-primary"><i class="bi bi-search"></i> Apply Filters</button>
+                    <a href="{% url 'applications:recruiter_applications' %}" class="btn btn-outline-secondary"><i class="bi bi-x-circle"></i> Reset</a>
+                </div>
+            </form>
+        </div>
+    </div>
 
     {% if applications %}
 
-    <table class="table table-bordered table-hover">
+    <div class="table-responsive">
+        <table class="table table-bordered table-hover align-middle">
+            <thead class="table-dark">
+                <tr>
+                    <th>Student Name</th>
+                    <th>Branch / CGPA</th>
+                    <th>Skills</th>
+                    <th>Links & Resume</th>
+                    <th>Job Post</th>
+                    <th>Status</th>
+                    <th>Applied On</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for application in applications %}
+                <tr>
+                    <td>
+                        <strong>{{ application.student.user.get_full_name|default:application.student.user.username }}</strong>
+                        <br>
+                        <small class="text-muted"><i class="bi bi-envelope"></i> {{ application.student.user.email }}</small>
+                    </td>
 
-        <thead class="table-dark">
+                    <td>
+                        <span class="badge bg-secondary">{{ application.student.get_branch_display }}</span>
+                        <br>
+                        <small><strong>CGPA:</strong> {{ application.student.cgpa }}</small>
+                    </td>
 
-            <tr>
+                    <td>
+                        {% for sk in application.student.skills.all %}
+                            <span class="badge bg-info text-dark mb-1">{{ sk.skill_name }}</span>
+                        {% empty %}
+                            <small class="text-muted">No skills listed</small>
+                        {% endfor %}
+                    </td>
 
-                <th>Student</th>
-                <th>Job</th>
-                <th>Company</th>
-                <th>Status</th>
-                <th>Applied On</th>
-                <th>Action</th>
+                    <td>
+                        <!-- Resume -->
+                        {% if application.student.resume %}
+                            <a href="{{ application.student.resume.resume_file.url }}" target="_blank" class="btn btn-sm btn-outline-danger mb-1 me-1">
+                                <i class="bi bi-file-earmark-pdf-fill"></i> Resume
+                            </a>
+                        {% else %}
+                            <span class="badge bg-light text-dark border me-1">No Resume</span>
+                        {% endif %}
 
-            </tr>
+                        <!-- GitHub -->
+                        {% if application.student.github_url %}
+                            <a href="{{ application.student.github_url }}" target="_blank" class="btn btn-sm btn-outline-dark mb-1 me-1" title="GitHub Profile">
+                                <i class="bi bi-github"></i> GitHub
+                            </a>
+                        {% endif %}
 
-        </thead>
+                        <!-- LinkedIn -->
+                        {% if application.student.linkedin_url %}
+                            <a href="{{ application.student.linkedin_url }}" target="_blank" class="btn btn-sm btn-outline-primary mb-1" title="LinkedIn Profile">
+                                <i class="bi bi-linkedin"></i> LinkedIn
+                            </a>
+                        {% endif %}
+                    </td>
 
-        <tbody>
+                    <td>
+                        <strong>{{ application.job.job_title }}</strong>
+                    </td>
 
-        {% for application in applications %}
+                    <td>
+                        <span class="badge 
+                            {% if application.status == 'Selected' %}bg-success
+                            {% elif application.status == 'Shortlisted' %}bg-primary
+                            {% elif application.status == 'Rejected' %}bg-danger
+                            {% elif application.status == 'Under Review' %}bg-warning text-dark
+                            {% else %}bg-secondary{% endif %}">
+                            {{ application.status }}
+                        </span>
+                    </td>
 
-            <tr>
+                    <td>
+                        {{ application.applied_at|date:"d M Y" }}
+                    </td>
 
-                <td>
-                    {{ application.student.user.username }}
-                </td>
-
-                <td>
-                    {{ application.job.job_title }}
-                </td>
-
-                <td>
-                    {{ application.job.company.company_name }}
-                </td>
-
-                <td>
-
-                    <span class="badge bg-info">
-
-                        {{ application.status }}
-
-                    </span>
-
-                </td>
-
-                <td>
-
-                    {{ application.applied_at|date:"d M Y" }}
-
-                </td>
-
-                <td>
-
-                    <a href="{% url 'applications:application_detail' application.id %}"
-                       class="btn btn-sm btn-primary">
-
-                        View
-
-                    </a>
-
-                </td>
-
-            </tr>
-
-        {% endfor %}
-
-        </tbody>
-
-    </table>
+                    <td>
+                        <a href="{% url 'applications:application_detail' application.id %}" class="btn btn-sm btn-primary">
+                            <i class="bi bi-eye-fill"></i> View
+                        </a>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
 
     {% else %}
 
-        <div class="alert alert-warning">
-
-            No applications received yet.
-
+        <div class="alert alert-warning text-center">
+            <i class="bi bi-exclamation-triangle-fill"></i> No applications found matching your criteria.
         </div>
 
     {% endif %}
 
 </div>
 
-{% endblock %}
+{% endblock %}

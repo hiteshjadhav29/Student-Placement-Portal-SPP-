@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
 
 {% block title %}
 Placement Officer Dashboard
@@ -19,6 +19,33 @@ Placement Officer Dashboard
                 <div class="card-body">
                     <h5>Total Students</h5>
                     <h2>{{ total_students }}</h2>
+<div class="container mt-4 mb-5">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2><i class="bi bi-building-fill text-primary"></i> Placement Officer Dashboard</h2>
+        <div>
+            <a href="{% url 'placement_officer:reports' %}" class="btn btn-primary me-2">
+                <i class="bi bi-file-earmark-bar-graph"></i> View Reports
+            </a>
+            <a href="{% url 'placement_officer:download_report' %}" class="btn btn-success">
+                <i class="bi bi-download"></i> Download Report (CSV)
+            </a>
+        </div>
+    </div>
+
+    <!-- Analytics Cards -->
+    <div class="row g-4 mb-4">
+
+        <div class="col-md-3">
+            <div class="card bg-primary text-white shadow-sm border-0 rounded-3">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-white-50">Total Students</h6>
+                            <h2 class="mb-0 fw-bold">{{ total_students }}</h2>
+                        </div>
+                        <i class="bi bi-people-fill fs-1 text-white-50"></i>
+                    </div>
                 </div>
             </div>
         </div>
@@ -28,6 +55,17 @@ Placement Officer Dashboard
                 <div class="card-body">
                     <h5>Total Recruiters</h5>
                     <h2>{{ total_recruiters }}</h2>
+        <div class="col-md-3">
+            <div class="card bg-success text-white shadow-sm border-0 rounded-3">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-white-50">Placed Students</h6>
+                            <h2 class="mb-0 fw-bold">{{ selected_students }}</h2>
+                            <small class="text-white-50">{{ placement_rate }}% Placement Rate</small>
+                        </div>
+                        <i class="bi bi-check-circle-fill fs-1 text-white-50"></i>
+                    </div>
                 </div>
             </div>
         </div>
@@ -37,6 +75,16 @@ Placement Officer Dashboard
                 <div class="card-body">
                     <h5>Total Jobs</h5>
                     <h2>{{ total_jobs }}</h2>
+        <div class="col-md-3">
+            <div class="card bg-warning text-dark shadow-sm border-0 rounded-3">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-dark-50">Registered Companies</h6>
+                            <h2 class="mb-0 fw-bold">{{ total_companies }}</h2>
+                        </div>
+                        <i class="bi bi-building fs-1 text-dark-50"></i>
+                    </div>
                 </div>
             </div>
         </div>
@@ -46,6 +94,16 @@ Placement Officer Dashboard
                 <div class="card-body">
                     <h5>Total Applications</h5>
                     <h2>{{ total_applications }}</h2>
+        <div class="col-md-3">
+            <div class="card bg-info text-white shadow-sm border-0 rounded-3">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-white-50">Active Job Posts</h6>
+                            <h2 class="mb-0 fw-bold">{{ open_jobs }}</h2>
+                        </div>
+                        <i class="bi bi-briefcase-fill fs-1 text-white-50"></i>
+                    </div>
                 </div>
             </div>
         </div>
@@ -55,6 +113,28 @@ Placement Officer Dashboard
                 <div class="card-body">
                     <h5>Open Jobs</h5>
                     <h2>{{ open_jobs }}</h2>
+    </div>
+
+    <!-- Quick Sections -->
+    <div class="row g-4">
+
+        <!-- Branch Breakdown -->
+        <div class="col-md-6">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-dark text-white">
+                    <h5 class="mb-0"><i class="bi bi-pie-chart-fill"></i> Branch Breakdown</h5>
+                </div>
+                <div class="card-body p-0">
+                    <ul class="list-group list-group-flush">
+                        {% for bs in branch_stats %}
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <span>{{ bs.branch }}</span>
+                                <span class="badge bg-primary rounded-pill">{{ bs.count }} Students</span>
+                            </li>
+                        {% empty %}
+                            <li class="list-group-item text-muted">No branch data available</li>
+                        {% endfor %}
+                    </ul>
                 </div>
             </div>
         </div>
@@ -64,6 +144,27 @@ Placement Officer Dashboard
                 <div class="card-body">
                     <h5>Selected Students</h5>
                     <h2>{{ selected_students }}</h2>
+        <!-- Recent Jobs Posted -->
+        <div class="col-md-6">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0"><i class="bi bi-clock-history"></i> Recent Job Postings</h5>
+                </div>
+                <div class="card-body p-0">
+                    <ul class="list-group list-group-flush">
+                        {% for j in recent_jobs %}
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <div>
+                                    <strong>{{ j.job_title }}</strong>
+                                    <br>
+                                    <small class="text-muted">{{ j.company.company_name }} | {{ j.created_at|date:"d M Y" }}</small>
+                                </div>
+                                <span class="badge bg-secondary">{{ j.target_branches }}</span>
+                            </li>
+                        {% empty %}
+                            <li class="list-group-item text-muted">No jobs posted recently</li>
+                        {% endfor %}
+                    </ul>
                 </div>
             </div>
         </div>
@@ -72,4 +173,5 @@ Placement Officer Dashboard
 
 </div>
 
+{% endblock %}
 {% endblock %}

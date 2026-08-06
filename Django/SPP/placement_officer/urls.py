@@ -7,56 +7,78 @@ urlpatterns = [
 
     path(
         "dashboard/",
-        views.dashboard,
+        views.officer_dashboard,
         name="dashboard",
     ),
 
+    # Students
     path(
-    "students/",
-    views.manage_students,
-    name="manage_students",
+        "students/",
+        views.manage_students,
+        name="manage_students",
     ),
 
     path(
-    "students/<int:student_id>/",
-    views.student_profile,
-    name="student_profile",
-),
+        "students/<int:student_id>/",
+        views.student_profile,
+        name="student_profile",
+    ),
 
-path(
-    "recruiters/",
-    views.manage_recruiters,
-    name="manage_recruiters",
-),
+    # Recruiters
+    path(
+        "recruiters/",
+        views.manage_recruiters,
+        name="manage_recruiters",
+    ),
 
-path(
-    "recruiters/<int:recruiter_id>/",
-    views.recruiter_profile,
-    name="recruiter_profile",
-),
+    path(
+        "recruiters/<int:recruiter_id>/",
+        views.recruiter_profile,
+        name="recruiter_profile",
+    ),
 
-path(
-    "jobs/",
-    views.manage_jobs,
-    name="manage_jobs",
-),
+    # Jobs
+    path(
+        "jobs/",
+        views.manage_jobs,
+        name="manage_jobs",
+    ),
 
-path(
-    "jobs/<int:job_id>/",
-    views.job_detail,
-    name="job_detail",
-),
-path(
-    "applications/",
-    views.manage_applications,
-    name="manage_applications",
-),
+    path(
+        "jobs/<int:job_id>/",
+        views.job_detail,
+        name="job_detail",
+    ),
 
-path(
-    "applications/<int:application_id>/",
-    views.application_detail,
-    name="application_detail",
-),
+    # Applications
+    path(
+        "applications/",
+        views.manage_applications,
+        name="manage_applications",
+    ),
 
+    path(
+        "applications/<int:application_id>/",
+        views.application_detail,
+        name="application_detail",
+    ),
 
+    # Reports
+    path(
+        "reports/",
+        views.reports_view,
+        name="reports",
+    ),
+
+    path(
+        "reports/download/",
+        views.download_report_csv,
+        name="download_report",
+    ),
+
+    path(
+        "reports/email/",
+        views.send_report_email,
+        name="email_report",
+    ),
 ]

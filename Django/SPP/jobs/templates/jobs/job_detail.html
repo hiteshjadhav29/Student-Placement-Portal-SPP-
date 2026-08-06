@@ -76,6 +76,14 @@ Job Details
                 </tr>
 
                 <tr>
+                    <th>Eligible / Target Branches</th>
+                    <td>
+                        <span class="badge bg-primary">{{ job.target_branches }}</span>
+                    </td>
+                </tr>
+
+
+                <tr>
                     <th>Status</th>
                     <td>
                         {% if job.status == "Open" %}
