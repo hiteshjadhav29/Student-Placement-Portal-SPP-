@@ -34,6 +34,15 @@ def apply_job(request, job_id):
         status="Open"
     )
 
+    # Deadline constraint check
+    from django.utils import timezone
+    if job.application_deadline < timezone.now().date():
+        messages.error(
+            request,
+            "The application deadline for this job has passed."
+        )
+        return redirect("jobs:job_list")
+
     # Prevent duplicate applications
     if Application.objects.filter(
         student=student,
@@ -49,11 +58,29 @@ def apply_job(request, job_id):
 
     if request.method == "POST":
 
-        Application.objects.create(
+        app_obj = Application.objects.create(
             student=student,
             job=job,
             status="Pending"
         )
+
+        # Trigger Notification to Recruiter & Student
+        from accounts.utils import create_notification
+        create_notification(
+            user=student.user,
+            title="Application Submitted",
+            message=f"You successfully applied for {job.job_title} at {job.company.company_name}.",
+            notification_type="application",
+            link="/applications/my-applications/"
+        )
+        if job.recruiter:
+            create_notification(
+                user=job.recruiter,
+                title="New Applicant",
+                message=f"Student {student.user.get_full_name() or student.user.username} applied for {job.job_title}.",
+                notification_type="application",
+                link=f"/applications/recruiter/"
+            )
 
         messages.success(
             request,
@@ -151,13 +178,6 @@ def recruiter_applications(request):
 
 
 # =====================================
-# Application Details
-# =====================================
-
-
-
-
-# =====================================
 # Update Status
 # =====================================
 
@@ -171,8 +191,30 @@ def update_status(request, application_id):
 
     if request.method == "POST":
 
-        application.status = request.POST.get("status")
+        new_status = request.POST.get("status")
+        application.status = new_status
         application.save()
+
+        # Trigger notification to student & officers
+        from accounts.models import User
+        from accounts.utils import create_notification
+
+        create_notification(
+            user=application.student.user,
+            title="Application Status Updated",
+            message=f"Your application status for {application.job.job_title} has been updated to '{new_status}'.",
+            notification_type="application",
+            link="/applications/my-applications/"
+        )
+
+        officers = User.objects.filter(role="officer")
+        for officer in officers:
+            create_notification(
+                user=officer,
+                title="Application Status Update",
+                message=f"Application for {application.student.user.username} on {application.job.job_title} changed to '{new_status}'.",
+                notification_type="application"
+            )
 
         messages.success(
             request,
@@ -180,8 +222,7 @@ def update_status(request, application_id):
         )
 
         return redirect(
-            "applications:application_detail",
-            application.id
+            "applications:recruiter_applications"
         )
 
     return render(
@@ -191,4 +232,4 @@ def update_status(request, application_id):
             "application": application,
             "status_choices": Application.STATUS_CHOICES,
         }
-    )
+    )

@@ -92,12 +92,27 @@ def add_job(request):
 
             job.save()
 
+            # Trigger notifications to all Students and Placement Officers
+            from accounts.models import User
+            from accounts.utils import create_notification
+
+            students_and_officers = User.objects.filter(role__in=['student', 'officer'])
+            for user in students_and_officers:
+                create_notification(
+                    user=user,
+                    title="New Job Opportunity",
+                    message=f"New Job Posted: {job.job_title} at {job.company.company_name}",
+                    notification_type="job",
+                    link=f"/jobs/{job.id}/"
+                )
+
             messages.success(
                 request,
                 "Job posted successfully."
             )
 
             return redirect("jobs:manage_jobs")
+
 
     else:
 

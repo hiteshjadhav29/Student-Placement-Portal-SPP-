@@ -29,4 +29,46 @@ urlpatterns = [
         name="login_redirect"
     ),
 
-]
+    path(
+        "forgot-password/",
+        views.forgot_password,
+        name="forgot_password"
+    ),
+
+    path(
+        "verify-otp/",
+        views.verify_otp,
+        name="verify_otp"
+    ),
+
+    path(
+        "reset-password/",
+        views.reset_password,
+        name="reset_password"
+    ),
+
+    path(
+        "settings/",
+        views.settings_view,
+        name="settings"
+    ),
+
+    path(
+        "notifications/",
+        views.notifications_view,
+        name="notifications"
+    ),
+
+    path(
+        "notifications/<int:notification_id>/read/",
+        views.mark_notification_read,
+        name="mark_notification_read"
+    ),
+
+    path(
+        "notifications/read-all/",
+        views.mark_all_notifications_read,
+        name="mark_all_notifications_read"
+    ),
+
+]
