@@ -1,0 +1,125 @@
+{% extends "base.html" %}
+
+{% block title %}
+Application Details
+{% endblock %}
+
+{% block content %}
+
+<div class="container mt-5">
+
+    <h2 class="mb-4">
+        Application Details
+    </h2>
+
+    <!-- Student Information -->
+    <div class="card shadow mb-4">
+
+        <div class="card-header bg-primary text-white">
+            Student Information
+        </div>
+
+        <div class="card-body">
+
+            <p><strong>Name:</strong>
+                {{ application.student.user.get_full_name|default:application.student.user.username }}
+            </p>
+
+            <p><strong>Roll Number:</strong>
+                {{ application.student.roll_number }}
+            </p>
+
+            <p><strong>Email:</strong>
+                {{ application.student.user.email }}
+            </p>
+
+            <p><strong>Phone:</strong>
+                {{ application.student.phone }}
+            </p>
+
+            <p><strong>Branch:</strong>
+                {{ application.student.get_branch_display }}
+            </p>
+
+            <p><strong>Semester:</strong>
+                {{ application.student.get_semester_display }}
+            </p>
+
+            <p><strong>CGPA:</strong>
+                {{ application.student.cgpa }}
+            </p>
+
+        </div>
+
+    </div>
+
+    <!-- Job Information -->
+
+    <div class="card shadow mb-4">
+
+        <div class="card-header bg-success text-white">
+            Job Information
+        </div>
+
+        <div class="card-body">
+
+            <p><strong>Job Title:</strong>
+                {{ application.job.job_title }}
+            </p>
+
+            <p><strong>Company:</strong>
+                {{ application.job.company.company_name }}
+            </p>
+
+            <p><strong>Location:</strong>
+                {{ application.job.location }}
+            </p>
+
+            <p><strong>Job Type:</strong>
+                {{ application.job.job_type }}
+            </p>
+
+            <p><strong>Salary:</strong>
+                {{ application.job.salary }}
+            </p>
+
+            <p><strong>Status:</strong>
+                {{ application.job.status }}
+            </p>
+
+        </div>
+
+    </div>
+
+    <!-- Application Information -->
+
+    <div class="card shadow mb-4">
+
+        <div class="card-header bg-warning">
+            Application Information
+        </div>
+
+        <div class="card-body">
+
+            <p><strong>Applied On:</strong>
+                {{ application.applied_at }}
+            </p>
+
+            <p><strong>Application Status:</strong>
+                {{ application.status }}
+            </p>
+
+        </div>
+
+    </div>
+
+    <a href="{% url 'placement_officer:manage_applications' %}"
+       class="btn btn-secondary">
+
+        Back to Applications
+
+    </a>
+
+</div>
+
+{% endblock %}

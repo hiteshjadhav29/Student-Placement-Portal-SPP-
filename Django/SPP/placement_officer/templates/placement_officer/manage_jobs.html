@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+
+{% block title %}
+Manage Jobs
+{% endblock %}
+
+{% block content %}
+
+<div class="container mt-5">
+
+    <h2 class="mb-4">
+        Manage Jobs
+    </h2>
+
+    {% if jobs %}
+
+    <form method="GET" class="row mb-4">
+
+        <div class="col-md-10">
+
+            <input type="text" name="q" class="form-control"
+                placeholder="Search by job title, company, location or status..." value="{{ query }}">
+
+        </div>
+
+        <div class="col-md-2">
+
+            <button type="submit" class="btn btn-primary w-100">
+
+                Search
+
+            </button>
+
+        </div>
+
+    </form>
+
+    <table class="table table-bordered table-hover">
+
+        <thead class="table-dark">
+
+            <tr>
+
+                <th>Job Title</th>
+                <th>Company</th>
+                <th>Location</th>
+                <th>Job Type</th>
+                <th>Status</th>
+                <th>Deadline</th>
+                <th>Actions</th>
+
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+            {% for job in jobs %}
+
+            <tr>
+
+                <td>{{ job.job_title }}</td>
+
+                <td>{{ job.company.company_name }}</td>
+
+                <td>{{ job.location }}</td>
+
+                <td>{{ job.job_type }}</td>
+
+                <td>{{ job.status }}</td>
+
+                <td>{{ job.application_deadline }}</td>
+
+                <td>
+
+                    <a href="{% url 'placement_officer:job_detail' job.id %}" class="btn btn-primary btn-sm">
+
+                        View Details
+
+                    </a>
+
+                </td>
+
+            </tr>
+
+            {% endfor %}
+
+        </tbody>
+
+    </table>
+
+    {% else %}
+
+    <div class="alert alert-info">
+
+        No jobs available.
+
+    </div>
+
+    {% endif %}
+
+</div>
+
+{% endblock %}

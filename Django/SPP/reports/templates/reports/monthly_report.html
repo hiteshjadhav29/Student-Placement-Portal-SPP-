@@ -1,0 +1,86 @@
+<h1>Reports Page</h1>
+{% extends "base.html" %}
+
+{% block title %}
+Monthly Placement Report
+{% endblock %}
+
+{% block content %}
+
+<div class="container mt-5">
+
+    <h2 class="mb-4">
+
+        Monthly Placement Report
+
+    </h2>
+
+    {% if monthly_data %}
+
+    <table class="table table-bordered table-hover">
+
+        <thead class="table-dark">
+
+            <tr>
+
+                <th>Month</th>
+
+                <th>Total Applications</th>
+
+                <th>Selected Students</th>
+
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+            {% for item in monthly_data %}
+
+            <tr>
+
+                <td>
+
+                    {{ item.month|date:"F Y" }}
+
+                </td>
+
+                <td>
+
+                    {{ item.total_applications }}
+
+                </td>
+
+                <td>
+
+                    {{ item.selected_students }}
+
+                </td>
+
+            </tr>
+
+            {% endfor %}
+
+        </tbody>
+
+    </table>
+
+    {% else %}
+
+    <div class="alert alert-info">
+
+        No monthly data available.
+
+    </div>
+
+    {% endif %}
+
+    <a href="{% url 'reports:dashboard' %}" class="btn btn-secondary">
+
+        Back to Dashboard
+
+    </a>
+
+</div>
+
+{% endblock %}

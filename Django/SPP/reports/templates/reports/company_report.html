@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+
+{% block title %}
+Company Report
+{% endblock %}
+
+{% block content %}
+
+<div class="container mt-5">
+
+    <h2 class="mb-4">
+        Company-wise Placement Report
+    </h2>
+
+    {% if companies %}
+
+    <table class="table table-bordered table-hover">
+
+        <thead class="table-dark">
+
+            <tr>
+
+                <th>Company</th>
+                <th>Jobs Posted</th>
+                <th>Applications</th>
+                <th>Selected Students</th>
+
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+            {% for company in companies %}
+
+            <tr>
+
+                <td>{{ company.company_name }}</td>
+
+                <td>{{ company.jobs_posted }}</td>
+
+                <td>{{ company.total_applications }}</td>
+
+                <td>{{ company.selected_students }}</td>
+
+            </tr>
+
+            {% endfor %}
+
+        </tbody>
+
+    </table>
+
+    {% else %}
+
+    <div class="alert alert-info">
+
+        No company data available.
+
+    </div>
+
+    {% endif %}
+
+    <a href="{% url 'reports:dashboard' %}" class="btn btn-secondary">
+
+        Back to Dashboard
+
+    </a>
+
+</div>
+
+{% endblock %}

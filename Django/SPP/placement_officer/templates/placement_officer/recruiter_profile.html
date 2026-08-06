@@ -1,0 +1,131 @@
+{% extends "base.html" %}
+
+{% block title %}
+Recruiter Profile
+{% endblock %}
+
+{% block content %}
+
+<div class="container mt-5">
+
+    <h2 class="mb-4">
+        Recruiter Profile
+    </h2>
+
+    <div class="card shadow">
+
+        <div class="card-body">
+
+            <h4>{{ recruiter.full_name }}</h4>
+
+            <p><strong>Company:</strong> {{ recruiter.company.company_name }}</p>
+
+            <p><strong>Email:</strong> {{ recruiter.user.email }}</p>
+
+            <p><strong>Phone:</strong> {{ recruiter.phone }}</p>
+
+            <p><strong>Designation:</strong> {{ recruiter.designation }}</p>
+
+            <p><strong>Gender:</strong> {{ recruiter.gender }}</p>
+
+            <p><strong>Verified:</strong>
+                {% if recruiter.is_verified %}
+                Yes
+                {% else %}
+                No
+                {% endif %}
+            </p>
+
+        </div>
+
+    </div>
+
+    <div class="card shadow mt-4">
+
+        <div class="card-header">
+            <h4>Company Information</h4>
+        </div>
+
+        <div class="card-body">
+
+            <p><strong>Company Name:</strong> {{ recruiter.company.company_name }}</p>
+
+            <p><strong>Email:</strong> {{ recruiter.company.company_email }}</p>
+
+            <p><strong>Phone:</strong> {{ recruiter.company.company_phone }}</p>
+
+            <p><strong>Industry:</strong> {{ recruiter.company.industry }}</p>
+
+            <p><strong>Location:</strong> {{ recruiter.company.location }}</p>
+
+            <p><strong>Website:</strong> {{ recruiter.company.website }}</p>
+
+            <p><strong>Description:</strong></p>
+
+            <p>{{ recruiter.company.description }}</p>
+
+        </div>
+
+    </div>
+
+    <div class="card shadow mt-4">
+
+        <div class="card-header">
+            <h4>Jobs Posted</h4>
+        </div>
+
+        <div class="card-body">
+
+            {% if jobs %}
+
+            <table class="table table-bordered">
+
+                <thead>
+
+                    <tr>
+                        <th>Job Title</th>
+                        <th>Location</th>
+                        <th>Type</th>
+                        <th>Status</th>
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    {% for job in jobs %}
+
+                    <tr>
+
+                        <td>{{ job.job_title }}</td>
+                        <td>{{ job.location }}</td>
+                        <td>{{ job.job_type }}</td>
+                        <td>{{ job.status }}</td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+            {% else %}
+
+            <p>No jobs posted.</p>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+    <a href="{% url 'placement_officer:manage_recruiters' %}" class="btn btn-secondary mt-4">
+
+        Back to Recruiters
+
+    </a>
+
+</div>
+
+{% endblock %}
