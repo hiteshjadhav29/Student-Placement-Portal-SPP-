@@ -8,6 +8,12 @@ from django.db.models import Q
 from .forms import UserRegistrationForm, LoginForm
 from .models import PasswordResetOTP
 from students.models import Notification
+from .forms import (
+    UserRegistrationForm,
+    LoginForm,
+    SettingsProfileForm,
+    ChangePasswordSettingsForm,
+)
 
 User = get_user_model()
 
@@ -196,41 +202,68 @@ def forgot_password(request):
 # ==========================
 # Verify OTP
 # ==========================
+from .forms import VerifyOTPForm
+
 def verify_otp(request):
-    user_id = request.session.get('reset_user_id')
+    user_id = request.session.get("reset_user_id")
+
     if not user_id:
         messages.error(request, "Session expired. Please request OTP again.")
         return redirect("accounts:forgot_password")
 
     user = get_object_or_404(User, id=user_id)
-    email = request.session.get('reset_email', user.email)
+    email = request.session.get("reset_email", user.email)
+
+    form = VerifyOTPForm()
 
     if request.method == "POST":
-        otp_code = request.POST.get("otp_code", "").strip()
+        form = VerifyOTPForm(request.POST)
 
-        otp_record = PasswordResetOTP.objects.filter(
-            user=user,
-            is_used=False
-        ).order_by('-created_at').first()
+        if form.is_valid():
+            otp_code = form.cleaned_data["otp"]
 
-        if otp_record and otp_record.otp == otp_code and otp_record.is_valid():
-            otp_record.is_used = True
-            otp_record.save()
-            request.session['otp_verified'] = True
-            messages.success(request, "OTP verified successfully! Enter your new password.")
-            return redirect("accounts:reset_password")
-        else:
+            otp_record = PasswordResetOTP.objects.filter(
+                user=user,
+                is_used=False
+            ).order_by("-created_at").first()
+
+            if (
+                otp_record
+                and otp_record.otp == otp_code
+                and otp_record.is_valid()
+            ):
+                otp_record.is_used = True
+                otp_record.save()
+
+                request.session["otp_verified"] = True
+
+                messages.success(
+                    request,
+                    "OTP verified successfully! Enter your new password."
+                )
+
+                return redirect("accounts:reset_password")
+
             messages.error(request, "Invalid or expired OTP. Please try again.")
 
-    return render(request, "accounts/verify_otp.html", {"email": email})
+    return render(
+        request,
+        "accounts/verify_otp.html",
+        {
+            "form": form,
+            "email": email,
+        },
+    )
 
 
 # ==========================
 # Reset Password
 # ==========================
+from .forms import ResetPasswordForm
+
 def reset_password(request):
-    user_id = request.session.get('reset_user_id')
-    otp_verified = request.session.get('otp_verified')
+    user_id = request.session.get("reset_user_id")
+    otp_verified = request.session.get("otp_verified")
 
     if not (user_id and otp_verified):
         messages.error(request, "Unauthorized access. Please start password reset process.")
@@ -238,23 +271,29 @@ def reset_password(request):
 
     user = get_object_or_404(User, id=user_id)
 
-    if request.method == "POST":
-        p1 = request.POST.get("password1")
-        p2 = request.POST.get("password2")
+    form = ResetPasswordForm()
 
-        if p1 and p2 and p1 == p2:
-            user.set_password(p1)
+    if request.method == "POST":
+        form = ResetPasswordForm(request.POST)
+
+        if form.is_valid():
+            user.set_password(form.cleaned_data["new_password"])
             user.save()
-            request.session.pop('reset_user_id', None)
-            request.session.pop('reset_email', None)
-            request.session.pop('otp_verified', None)
+
+            request.session.pop("reset_user_id", None)
+            request.session.pop("reset_email", None)
+            request.session.pop("otp_verified", None)
+
             messages.success(request, "Password reset successfully! You can now log in.")
             return redirect("accounts:login")
-        else:
-            messages.error(request, "Passwords do not match or are invalid.")
 
-    return render(request, "accounts/reset_password.html")
-
+    return render(
+        request,
+        "accounts/reset_password.html",
+        {
+            "form": form,
+        },
+    )
 
 # ==========================
 # Notifications
@@ -296,34 +335,43 @@ def mark_all_notifications_read(request):
 # ==========================
 @login_required
 def settings_view(request):
+    profile_form = SettingsProfileForm(instance=request.user)
+    password_form = ChangePasswordSettingsForm()
+
     if request.method == "POST":
-        action = request.POST.get("action")
+        if "update_profile" in request.POST:
+            profile_form = SettingsProfileForm(
+                request.POST,
+                instance=request.user
+            )
 
-        if action == "update_profile":
-            request.user.first_name = request.POST.get("first_name", "").strip()
-            request.user.last_name = request.POST.get("last_name", "").strip()
-            request.user.email = request.POST.get("email", "").strip()
-            request.user.phone = request.POST.get("phone", "").strip()
-            request.user.save()
-            messages.success(request, "Profile settings updated successfully.")
+            if profile_form.is_valid():
+                profile_form.save()
+                messages.success(request, "Profile updated successfully.")
+                return redirect("accounts:settings")
 
-        elif action == "change_password":
-            old_pass = request.POST.get("old_password")
-            new_pass1 = request.POST.get("new_password1")
-            new_pass2 = request.POST.get("new_password2")
+        elif "change_password" in request.POST:
+            password_form = ChangePasswordSettingsForm(request.POST)
 
-            if not request.user.check_password(old_pass):
-                messages.error(request, "Current password is incorrect.")
-            elif new_pass1 != new_pass2:
-                messages.error(request, "New passwords do not match.")
-            elif len(new_pass1) < 6:
-                messages.error(request, "Password must be at least 6 characters long.")
-            else:
-                request.user.set_password(new_pass1)
-                request.user.save()
-                update_session_auth_hash(request, request.user)
-                messages.success(request, "Password updated successfully.")
+            if password_form.is_valid():
+                if not request.user.check_password(
+                    password_form.cleaned_data["current_password"]
+                ):
+                    messages.error(request, "Current password is incorrect.")
+                else:
+                    request.user.set_password(
+                        password_form.cleaned_data["new_password"]
+                    )
+                    request.user.save()
+                    update_session_auth_hash(request, request.user)
+                    messages.success(request, "Password updated successfully.")
+                    return redirect("accounts:settings")
 
-        return redirect("accounts:settings")
-
-    return render(request, "accounts/settings.html")
+    return render(
+        request,
+        "accounts/settings.html",
+        {
+            "profile_form": profile_form,
+            "password_form": password_form,
+        },
+    )
