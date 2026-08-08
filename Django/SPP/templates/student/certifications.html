@@ -1,62 +1,69 @@
-<!DOCTYPE html>
-<html>
+{% extends "base.html" %}
 
-<head>
-    <title>My Certifications</title>
-</head>
+{% block title %}My Certifications - Student Placement Portal{% endblock %}
 
-<body>
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-10">
+        <div class="spp-card">
+            <div class="d-flex align-items-center justify-content-between flex-wrap gap-3 pb-3 mb-4 border-bottom">
+                <div>
+                    <h3 class="fw-bold mb-1" style="color: var(--spp-navy);"><i class="bi bi-award-fill text-warning me-2"></i> My Certifications</h3>
+                    <p class="text-muted mb-0">Display accredited courses and professional certificates</p>
+                </div>
+                <div>
+                    <a href="{% url 'students:add_certification' %}" class="btn-spp-primary">
+                        <i class="bi bi-plus-lg"></i> Add Certification
+                    </a>
+                </div>
+            </div>
 
-    <h1>My Certifications</h1>
+            {% if certifications %}
+                <div class="row g-4">
+                    {% for cert in certifications %}
+                        <div class="col-md-6">
+                            <div class="spp-card h-100 mb-0 shadow-sm border">
+                                <div class="d-flex align-items-start justify-content-between gap-2 mb-2">
+                                    <h5 class="fw-bold mb-0" style="color: var(--spp-navy);">{{ cert.certificate_name }}</h5>
+                                    <div class="d-flex gap-1">
+                                        <a href="{% url 'students:edit_certification' cert.id %}" class="btn btn-sm btn-outline-secondary py-0 px-2" title="Edit">
+                                            <i class="bi bi-pencil-fill fs-7"></i>
+                                        </a>
+                                        <a href="{% url 'students:delete_certification' cert.id %}" class="btn btn-sm btn-outline-danger py-0 px-2" title="Delete">
+                                            <i class="bi bi-trash-fill fs-7"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <small class="text-muted d-block mb-1">Issued By:</small>
+                                    <span class="fw-semibold text-dark">{{ cert.issued_by }}</span>
+                                    {% if cert.issue_date %}
+                                        <span class="text-muted small ms-2">• {{ cert.issue_date }}</span>
+                                    {% endif %}
+                                </div>
 
-    <a href="{% url 'students:add_certification' %}">
-        Add Certification
-    </a>
-
-    <hr>
-
-    {% if certifications %}
-
-    <ul>
-
-        {% for certification in certifications %}
-
-        <li>
-
-            <h3>{{ certification.certificate_name }}</h3>
-
-            <p><b>Issued By:</b> {{ certification.issued_by }}</p>
-
-            <p><b>Issue Date:</b> {{ certification.issue_date }}</p>
-
-            {% if certification.certificate_file %}
-            <a href="{{ certification.certificate_file.url }}" target="_blank">
-                View Certificate
-            </a>
+                                {% if cert.certificate_file %}
+                                    <div class="mt-auto pt-2 border-top">
+                                        <a href="{{ cert.certificate_file.url }}" target="_blank" class="btn-spp-outline py-1 px-3 fs-7 w-100">
+                                            <i class="bi bi-file-earmark-pdf-fill"></i> View Certificate File
+                                        </a>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="spp-empty py-5">
+                    <i class="bi bi-award"></i>
+                    <h5 class="fw-bold">No Certifications Added</h5>
+                    <p class="text-muted small">Add your professional certifications to strengthen your resume.</p>
+                    <a href="{% url 'students:add_certification' %}" class="btn-spp-primary mt-2">
+                        <i class="bi bi-plus-lg"></i> Add Certification
+                    </a>
+                </div>
             {% endif %}
-
-            <a href="{% url 'students:edit_certification' certification.id %}">
-                Edit
-            </a>
-
-            <a href="{% url 'students:delete_certification' certification.id %}">
-                Delete
-            </a>
-
-        </li>
-
-        <hr>
-
-        {% endfor %}
-
-    </ul>
-
-    {% else %}
-
-    <p>No Certifications Added.</p>
-
-    {% endif %}
-
-</body>
-
-</html>
+        </div>
+    </div>
+</div>
+{% endblock %}

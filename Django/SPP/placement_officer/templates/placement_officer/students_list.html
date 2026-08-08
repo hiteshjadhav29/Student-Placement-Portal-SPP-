@@ -1,42 +1,45 @@
 {% extends 'base.html' %}
 
-{% block title %}
-Student Directory - Placement Officer
-{% endblock %}
+{% block title %}Student Directory - Placement Officer{% endblock %}
 
 {% block content %}
-
-<div class="container mt-4 mb-5">
-
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2><i class="bi bi-people-fill text-primary"></i> Registered Students</h2>
-    </div>
-
-    <!-- Search & Filter -->
-    <div class="card shadow-sm mb-4">
-        <div class="card-body">
-            <form method="GET" class="row g-3">
-                <div class="col-md-5">
-                    <input type="text" name="search" class="form-control" placeholder="Search by name, username, or roll number" value="{{ search }}">
-                </div>
-                <div class="col-md-4">
-                    <select name="branch" class="form-select">
-                        <option value="">All Branches</option>
-                        {% for code, name in branch_choices %}
-                            <option value="{{ code }}" {% if branch == code %}selected{% endif %}>{{ name }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-                <div class="col-md-3">
-                    <button type="submit" class="btn btn-primary w-100"><i class="bi bi-search"></i> Search</button>
-                </div>
-            </form>
+<div class="row">
+    <div class="col-12 mb-4">
+        <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+            <div>
+                <h3 class="fw-bold mb-1" style="color: var(--spp-navy);"><i class="bi bi-people-fill text-primary me-2"></i> Registered Students</h3>
+                <p class="text-muted mb-0">Full campus student directory and qualifications overview</p>
+            </div>
         </div>
     </div>
+</div>
 
+<div class="spp-card mb-4">
+    <form method="GET" class="row g-3">
+        <div class="col-md-5">
+            <div class="input-group">
+                <span class="input-group-text bg-light"><i class="bi bi-search text-muted"></i></span>
+                <input type="text" name="search" class="form-control" placeholder="Search by name, username, or roll number" value="{{ search }}">
+            </div>
+        </div>
+        <div class="col-md-4">
+            <select name="branch" class="form-select">
+                <option value="">All Branches</option>
+                {% for code, name in branch_choices %}
+                    <option value="{{ code }}" {% if branch == code %}selected{% endif %}>{{ name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-md-3">
+            <button type="submit" class="btn-spp-primary w-100 py-2"><i class="bi bi-search"></i> Search Students</button>
+        </div>
+    </form>
+</div>
+
+<div class="spp-card">
     <div class="table-responsive">
-        <table class="table table-bordered table-hover align-middle shadow-sm">
-            <thead class="table-dark">
+        <table class="spp-table">
+            <thead>
                 <tr>
                     <th>Roll No</th>
                     <th>Student Name</th>
@@ -50,30 +53,32 @@ Student Directory - Placement Officer
             <tbody>
                 {% for st in students %}
                     <tr>
-                        <td><strong>{{ st.roll_number }}</strong></td>
+                        <td><strong class="fs-6" style="color: var(--spp-navy);">{{ st.roll_number }}</strong></td>
                         <td>{{ st.user.get_full_name|default:st.user.username }}</td>
-                        <td>{{ st.user.email }}</td>
-                        <td><span class="badge bg-secondary">{{ st.get_branch_display }}</span></td>
-                        <td><strong class="text-primary">{{ st.cgpa }}</strong></td>
+                        <td><span class="text-muted small">{{ st.user.email }}</span></td>
+                        <td><span class="spp-pill blue">{{ st.get_branch_display }}</span></td>
+                        <td><span class="spp-pill green fw-bold">{{ st.cgpa }}</span></td>
                         <td>
                             {% for sk in st.skills.all %}
-                                <span class="badge bg-info text-dark mb-1">{{ sk.skill_name }}</span>
+                                <span class="spp-pill purple fs-7 me-1 mb-1">{{ sk.skill_name }}</span>
                             {% empty %}
                                 <small class="text-muted">None</small>
                             {% endfor %}
                         </td>
                         <td>
-                            {% if st.resume %}
-                                <a href="{{ st.resume.resume_file.url }}" target="_blank" class="btn btn-sm btn-outline-danger me-1">
-                                    <i class="bi bi-file-earmark-pdf"></i> Resume
-                                </a>
-                            {% endif %}
-                            {% if st.github_url %}
-                                <a href="{{ st.github_url }}" target="_blank" class="btn btn-sm btn-outline-dark me-1"><i class="bi bi-github"></i></a>
-                            {% endif %}
-                            {% if st.linkedin_url %}
-                                <a href="{{ st.linkedin_url }}" target="_blank" class="btn btn-sm btn-outline-primary"><i class="bi bi-linkedin"></i></a>
-                            {% endif %}
+                            <div class="d-flex align-items-center gap-1">
+                                {% if st.resume %}
+                                    <a href="{{ st.resume.resume_file.url }}" target="_blank" class="btn-spp-outline py-1 px-2 fs-7">
+                                        <i class="bi bi-file-earmark-pdf-fill"></i> Resume
+                                    </a>
+                                {% endif %}
+                                {% if st.github_url %}
+                                    <a href="{{ st.github_url }}" target="_blank" class="btn btn-sm btn-outline-dark py-1 px-2 fs-7"><i class="bi bi-github"></i></a>
+                                {% endif %}
+                                {% if st.linkedin_url %}
+                                    <a href="{{ st.linkedin_url }}" target="_blank" class="btn btn-sm btn-outline-primary py-1 px-2 fs-7"><i class="bi bi-linkedin"></i></a>
+                                {% endif %}
+                            </div>
                         </td>
                     </tr>
                 {% empty %}
@@ -84,7 +89,5 @@ Student Directory - Placement Officer
             </tbody>
         </table>
     </div>
-
 </div>
-
 {% endblock %}

@@ -1,65 +1,102 @@
 {% extends 'base.html' %}
 
-{% block title %}
-Notifications
-{% endblock %}
+{% block title %}Notifications - Student Placement Portal{% endblock %}
 
 {% block content %}
+<div class="row">
+    <!-- Header Section -->
+    <div class="col-12 mb-4">
+        <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
+            <div>
+                <div class="d-flex align-items-center gap-2 mb-1">
+                    <h3 class="fw-bold mb-0" style="color: var(--spp-navy);"><i class="bi bi-bell-fill text-warning me-2"></i> Notifications & Activity Feed</h3>
+                    {% if user.role == 'officer' %}
+                        <span class="spp-pill orange fs-7">TPO Officer Feed</span>
+                    {% elif user.role == 'recruiter' %}
+                        <span class="spp-pill purple fs-7">Recruiter Feed</span>
+                    {% else %}
+                        <span class="spp-pill blue fs-7">Student Feed</span>
+                    {% endif %}
+                </div>
+                <p class="text-muted mb-0">Stay updated on campus recruitment drives, new job postings, and application updates.</p>
+            </div>
 
-<div class="container mt-4 mb-5">
+            {% if notifications %}
+                <a href="{% url 'accounts:mark_all_notifications_read' %}" class="btn-spp-outline py-2 px-3 fs-7">
+                    <i class="bi bi-check-all me-1"></i> Mark All as Read
+                </a>
+            {% endif %}
+        </div>
+    </div>
 
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2><i class="bi bi-bell-fill text-warning"></i> Notifications</h2>
+    <!-- Alert Messages -->
+    {% if messages %}
+        <div class="col-12 mb-3">
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show border-0 shadow-sm" style="border-radius: 12px;">
+                    <i class="bi bi-info-circle-fill me-2"></i> {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <!-- Notifications List -->
+    <div class="col-12">
         {% if notifications %}
-            <a href="{% url 'accounts:mark_all_notifications_read' %}" class="btn btn-outline-primary btn-sm">
-                <i class="bi bi-check-all"></i> Mark All as Read
-            </a>
+            <div class="d-flex flex-column gap-3">
+                {% for noti in notifications %}
+                    <div class="spp-card mb-0 p-3.5 transition-all {% if not noti.is_read %}border-start border-4 border-primary bg-white shadow-sm{% else %}bg-light opacity-75{% endif %}">
+                        <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
+                            <div class="d-flex align-items-center gap-3">
+                                <!-- Icon Chip -->
+                                <div class="spp-stat-icon {% if not noti.is_read %}blue{% else %}gray{% endif %} p-0 flex-shrink-0" style="width: 44px; height: 44px; font-size: 1.25rem;">
+                                    {% if 'Job' in noti.title or 'Opening' in noti.title %}
+                                        <i class="bi bi-briefcase-fill"></i>
+                                    {% elif 'Application' in noti.title or 'Selected' in noti.title %}
+                                        <i class="bi bi-send-fill"></i>
+                                    {% else %}
+                                        <i class="bi bi-bell-fill"></i>
+                                    {% endif %}
+                                </div>
+
+                                <!-- Notification Content -->
+                                <div>
+                                    <div class="d-flex align-items-center gap-2 mb-1">
+                                        <strong class="fs-6" style="color: var(--spp-navy);">{{ noti.title }}</strong>
+                                        {% if not noti.is_read %}
+                                            <span class="spp-pill blue fs-7 py-0.5 px-2">New</span>
+                                        {% endif %}
+                                    </div>
+                                    <p class="mb-1 text-secondary small fw-medium" style="line-height: 1.5;">{{ noti.message }}</p>
+                                    <small class="text-muted"><i class="bi bi-clock me-1"></i> {{ noti.created_at|timesince }} ago ({{ noti.created_at|date:"d M Y, h:i A" }})</small>
+                                </div>
+                            </div>
+
+                            <!-- Notification Actions -->
+                            <div class="d-flex align-items-center gap-2 ms-auto ms-sm-0">
+                                {% if not noti.is_read %}
+                                    <a href="{% url 'accounts:mark_notification_read' noti.id %}" class="btn-spp-outline py-1.5 px-3 fs-7">
+                                        <i class="bi bi-check-lg me-1"></i> Mark as Read
+                                    </a>
+                                {% else %}
+                                    <span class="badge bg-light text-muted border fs-7 px-2.5 py-1.5">Read</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <!-- Clean Empty State -->
+            <div class="spp-card py-5 text-center">
+                <div class="spp-empty py-3">
+                    <i class="bi bi-bell-slash text-muted opacity-50 display-4 mb-3"></i>
+                    <h5 class="fw-bold" style="color: var(--spp-navy);">All Caught Up!</h5>
+                    <p class="text-muted small mb-0">You have no unread placement activity notifications.</p>
+                </div>
+            </div>
         {% endif %}
     </div>
-
-    {% if messages %}
-        {% for message in messages %}
-            <div class="alert alert-{{ message.tags }} alert-dismissible fade show">
-                {{ message }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-            </div>
-        {% endfor %}
-    {% endif %}
-
-    {% if notifications %}
-
-    <div class="list-group shadow-sm">
-        {% for noti in notifications %}
-            <div class="list-group-item list-group-item-action d-flex justify-content-between align-items-start p-3 {% if not noti.is_read %}bg-light border-start border-primary border-4{% endif %}">
-                <div class="ms-2 me-auto">
-                    <div class="fw-bold fs-5">
-                        {% if not noti.is_read %}
-                            <span class="badge bg-primary me-2">New</span>
-                        {% endif %}
-                        {{ noti.title }}
-                    </div>
-                    <p class="mb-1 text-secondary mt-1">{{ noti.message }}</p>
-                    <small class="text-muted"><i class="bi bi-clock"></i> {{ noti.created_at|date:"d M Y, h:i A" }}</small>
-                </div>
-                {% if not noti.is_read %}
-                    <a href="{% url 'accounts:mark_notification_read' noti.id %}" class="btn btn-sm btn-outline-success">
-                        <i class="bi bi-check"></i> Mark Read
-                    </a>
-                {% endif %}
-            </div>
-        {% endfor %}
-    </div>
-
-    {% else %}
-
-        <div class="alert alert-info text-center py-4 shadow-sm">
-            <i class="bi bi-bell-slash fs-1 d-block mb-2"></i>
-            <h5>No notifications available</h5>
-            <p class="mb-0 text-muted">You're all caught up!</p>
-        </div>
-
-    {% endif %}
-
 </div>
-
 {% endblock %}

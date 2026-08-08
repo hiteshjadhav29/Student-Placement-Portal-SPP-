@@ -1,78 +1,63 @@
 {% extends "base.html" %}
 
-{% block title %}
-Company Report
-{% endblock %}
+{% block title %}Company Report - Student Placement Portal{% endblock %}
 
 {% block content %}
-
-<div class="container mt-4">
-
-    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
-        <h2><i class="bi bi-building-fill text-success me-2"></i> Company-wise Placement Report</h2>
-        <div class="d-flex gap-2">
-            <a href="{% url 'reports:export_csv' 'company-report' %}" class="btn btn-outline-success">
-                <i class="bi bi-download me-1"></i> Download CSV
-            </a>
-            <a href="{% url 'reports:email_report' 'company-report' %}" class="btn btn-primary">
-                <i class="bi bi-envelope-at me-1"></i> Email Report to Me
-            </a>
+<div class="row">
+    <div class="col-12 mb-4">
+        <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
+            <div>
+                <h3 class="fw-bold mb-1" style="color: var(--spp-navy);"><i class="bi bi-building-fill text-success me-2"></i> Company-wise Placement Report</h3>
+                <p class="text-muted mb-0">Corporate recruitment statistics and selections by company</p>
+            </div>
+            <div class="d-flex gap-2">
+                <a href="{% url 'reports:export_csv' 'company-report' %}" class="btn-spp-outline">
+                    <i class="bi bi-download"></i> Download CSV
+                </a>
+                <a href="{% url 'reports:email_report' 'company-report' %}" class="btn-spp-primary">
+                    <i class="bi bi-envelope-at-fill"></i> Email Report
+                </a>
+            </div>
         </div>
     </div>
-
-    {% if companies %}
-
-    <table class="table table-bordered table-hover shadow-sm bg-white rounded">
-
-        <thead class="table-dark">
-
-            <tr>
-
-                <th>Company</th>
-                <th>Jobs Posted</th>
-                <th>Applications</th>
-                <th>Selected Students</th>
-
-            </tr>
-
-        </thead>
-
-        <tbody>
-
-            {% for company in companies %}
-
-            <tr>
-
-                <td>{{ company.company_name }}</td>
-
-                <td>{{ company.jobs_posted }}</td>
-
-                <td>{{ company.total_applications }}</td>
-
-                <td><span class="badge bg-success fs-6">{{ company.selected_students }}</span></td>
-
-            </tr>
-
-            {% endfor %}
-
-        </tbody>
-
-    </table>
-
-    {% else %}
-
-    <div class="alert alert-info">
-
-        No company data available.
-
-    </div>
-
-    {% endif %}
-
-    <a href="{% url 'reports:dashboard' %}" class="btn btn-secondary mt-3">
-        <i class="bi bi-arrow-left me-1"></i> Back to Dashboard
-    </a>
-
 </div>
 
+<div class="spp-card">
+    {% if companies %}
+        <div class="table-responsive">
+            <table class="spp-table">
+                <thead>
+                    <tr>
+                        <th>Company Name</th>
+                        <th>Jobs Posted</th>
+                        <th>Applications Received</th>
+                        <th>Selected Students</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for company in companies %}
+                        <tr>
+                            <td><strong class="fs-6" style="color: var(--spp-navy);"><i class="bi bi-building me-1 text-primary"></i> {{ company.company_name }}</strong></td>
+                            <td>{{ company.jobs_posted }}</td>
+                            <td>{{ company.total_applications }}</td>
+                            <td><span class="spp-pill green fw-bold fs-6">{{ company.selected_students }}</span></td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <div class="spp-empty py-5">
+            <i class="bi bi-building"></i>
+            <h5 class="fw-bold">No Company Data Available</h5>
+            <p class="text-muted small">No corporate placement records found.</p>
+        </div>
+    {% endif %}
+
+    <div class="mt-4">
+        <a href="{% url 'reports:dashboard' %}" class="btn-spp-outline">
+            <i class="bi bi-arrow-left me-1"></i> Back to Dashboard
+        </a>
+    </div>
+</div>
 {% endblock %}

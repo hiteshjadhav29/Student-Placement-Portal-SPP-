@@ -1,131 +1,139 @@
 {% extends "base.html" %}
 
-{% block title %}
-Recruiter Profile
-{% endblock %}
+{% block title %}Recruiter Profile - {{ recruiter.full_name }}{% endblock %}
 
 {% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-10">
+        <div class="spp-card">
+            <!-- Header -->
+            <div class="d-flex align-items-center justify-content-between flex-wrap gap-3 pb-3 mb-4 border-bottom">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="spp-avatar">
+                        <i class="bi bi-person-badge-fill"></i>
+                    </div>
+                    <div>
+                        <div class="d-flex align-items-center gap-2 mb-1">
+                            <h3 class="fw-bold mb-0" style="color: var(--spp-navy);">{{ recruiter.full_name }}</h3>
+                            {% if recruiter.is_verified %}
+                                <span class="spp-pill green"><i class="bi bi-check-circle-fill"></i> Verified Recruiter</span>
+                            {% else %}
+                                <span class="spp-pill red"><i class="bi bi-x-circle-fill"></i> Unverified</span>
+                            {% endif %}
+                        </div>
+                        <h5 class="text-primary mb-0 fw-semibold">{{ recruiter.designation }} • {{ recruiter.company.company_name }}</h5>
+                    </div>
+                </div>
+                <div>
+                    <a href="{% url 'placement_officer:manage_recruiters' %}" class="btn-spp-outline">
+                        <i class="bi bi-arrow-left"></i> Back to Recruiters
+                    </a>
+                </div>
+            </div>
 
-<div class="container mt-5">
+            <!-- Recruiter Contact Details -->
+            <div class="spp-form-section-title">
+                <i class="bi bi-person-lines-fill text-primary"></i> Recruiter Contact Details
+            </div>
+            <div class="row g-4 mb-4">
+                <div class="col-md-4">
+                    <div class="p-3 bg-light rounded-3">
+                        <small class="text-muted d-block mb-1">Email Address</small>
+                        <strong class="fs-6" style="color: var(--spp-navy);">{{ recruiter.user.email }}</strong>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="p-3 bg-light rounded-3">
+                        <small class="text-muted d-block mb-1">Phone Number</small>
+                        <strong class="fs-6" style="color: var(--spp-navy);">{{ recruiter.phone|default:"-" }}</strong>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="p-3 bg-light rounded-3">
+                        <small class="text-muted d-block mb-1">Gender</small>
+                        <strong class="fs-6" style="color: var(--spp-navy);">{{ recruiter.gender|default:"-" }}</strong>
+                    </div>
+                </div>
+            </div>
 
-    <h2 class="mb-4">
-        Recruiter Profile
-    </h2>
-
-    <div class="card shadow">
-
-        <div class="card-body">
-
-            <h4>{{ recruiter.full_name }}</h4>
-
-            <p><strong>Company:</strong> {{ recruiter.company.company_name }}</p>
-
-            <p><strong>Email:</strong> {{ recruiter.user.email }}</p>
-
-            <p><strong>Phone:</strong> {{ recruiter.phone }}</p>
-
-            <p><strong>Designation:</strong> {{ recruiter.designation }}</p>
-
-            <p><strong>Gender:</strong> {{ recruiter.gender }}</p>
-
-            <p><strong>Verified:</strong>
-                {% if recruiter.is_verified %}
-                Yes
-                {% else %}
-                No
+            <!-- Company Overview -->
+            <div class="spp-form-section-title">
+                <i class="bi bi-building-fill text-primary"></i> Company Overview
+            </div>
+            <div class="row g-4 mb-4">
+                <div class="col-md-4">
+                    <small class="text-muted d-block mb-1">Company Name</small>
+                    <span class="fw-bold text-dark fs-6">{{ recruiter.company.company_name }}</span>
+                </div>
+                <div class="col-md-4">
+                    <small class="text-muted d-block mb-1">Industry</small>
+                    <span class="spp-pill blue">{{ recruiter.company.industry|default:"Corporate" }}</span>
+                </div>
+                <div class="col-md-4">
+                    <small class="text-muted d-block mb-1">Location</small>
+                    <span class="fw-semibold text-dark"><i class="bi bi-geo-alt-fill text-danger me-1"></i> {{ recruiter.company.location|default:"-" }}</span>
+                </div>
+                <div class="col-md-6">
+                    <small class="text-muted d-block mb-1">Official Company Email / Phone</small>
+                    <span class="fw-medium text-dark">{{ recruiter.company.company_email }} • {{ recruiter.company.company_phone }}</span>
+                </div>
+                <div class="col-md-6">
+                    <small class="text-muted d-block mb-1">Website</small>
+                    {% if recruiter.company.website %}
+                        <a href="{{ recruiter.company.website }}" target="_blank" class="text-primary text-decoration-none fw-semibold">
+                            <i class="bi bi-globe me-1"></i> {{ recruiter.company.website }}
+                        </a>
+                    {% else %}
+                        <span class="text-muted">-</span>
+                    {% endif %}
+                </div>
+                {% if recruiter.company.description %}
+                    <div class="col-12">
+                        <small class="text-muted d-block mb-1">Company Description</small>
+                        <p class="text-secondary mb-0 bg-light p-3 rounded-3">{{ recruiter.company.description }}</p>
+                    </div>
                 {% endif %}
-            </p>
+            </div>
 
-        </div>
-
-    </div>
-
-    <div class="card shadow mt-4">
-
-        <div class="card-header">
-            <h4>Company Information</h4>
-        </div>
-
-        <div class="card-body">
-
-            <p><strong>Company Name:</strong> {{ recruiter.company.company_name }}</p>
-
-            <p><strong>Email:</strong> {{ recruiter.company.company_email }}</p>
-
-            <p><strong>Phone:</strong> {{ recruiter.company.company_phone }}</p>
-
-            <p><strong>Industry:</strong> {{ recruiter.company.industry }}</p>
-
-            <p><strong>Location:</strong> {{ recruiter.company.location }}</p>
-
-            <p><strong>Website:</strong> {{ recruiter.company.website }}</p>
-
-            <p><strong>Description:</strong></p>
-
-            <p>{{ recruiter.company.description }}</p>
-
-        </div>
-
-    </div>
-
-    <div class="card shadow mt-4">
-
-        <div class="card-header">
-            <h4>Jobs Posted</h4>
-        </div>
-
-        <div class="card-body">
+            <!-- Jobs Posted -->
+            <div class="spp-form-section-title">
+                <i class="bi bi-briefcase-fill text-primary"></i> Jobs Posted by Recruiter
+            </div>
 
             {% if jobs %}
-
-            <table class="table table-bordered">
-
-                <thead>
-
-                    <tr>
-                        <th>Job Title</th>
-                        <th>Location</th>
-                        <th>Type</th>
-                        <th>Status</th>
-                    </tr>
-
-                </thead>
-
-                <tbody>
-
-                    {% for job in jobs %}
-
-                    <tr>
-
-                        <td>{{ job.job_title }}</td>
-                        <td>{{ job.location }}</td>
-                        <td>{{ job.job_type }}</td>
-                        <td>{{ job.status }}</td>
-
-                    </tr>
-
-                    {% endfor %}
-
-                </tbody>
-
-            </table>
-
+                <table class="spp-table">
+                    <thead>
+                        <tr>
+                            <th>Job Title</th>
+                            <th>Location</th>
+                            <th>Job Type</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for job in jobs %}
+                            <tr>
+                                <td><strong style="color: var(--spp-navy);">{{ job.job_title }}</strong></td>
+                                <td><i class="bi bi-geo-alt-fill text-danger me-1"></i> {{ job.location }}</td>
+                                <td><span class="spp-pill blue">{{ job.job_type }}</span></td>
+                                <td>
+                                    {% if job.status == "Open" %}
+                                        <span class="spp-pill green">Open</span>
+                                    {% else %}
+                                        <span class="spp-pill gray">Closed</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
             {% else %}
-
-            <p>No jobs posted.</p>
-
+                <div class="spp-empty py-4">
+                    <i class="bi bi-briefcase"></i>
+                    <p class="text-muted small">No jobs posted yet by this recruiter.</p>
+                </div>
             {% endif %}
-
         </div>
-
     </div>
-
-    <a href="{% url 'placement_officer:manage_recruiters' %}" class="btn btn-secondary mt-4">
-
-        Back to Recruiters
-
-    </a>
-
 </div>
-
 {% endblock %}

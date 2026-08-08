@@ -1,160 +1,127 @@
 {% extends 'base.html' %}
 
-{% block title %}
-Job Details
-{% endblock %}
+{% block title %}Job Details - {{ job.job_title }}{% endblock %}
 
 {% block content %}
-
-<div class="container mt-5">
-
-    <div class="card shadow">
-
-        <div class="card-header bg-primary text-white">
-
-            <h3>{{ job.job_title }}</h3>
-
-        </div>
-
-        <div class="card-body">
-
-            <table class="table table-bordered">
-
-                <tr>
-                    <th width="30%">Company</th>
-                    <td>{{ job.company.company_name }}</td>
-                </tr>
-
-                <tr>
-                    <th>Job Title</th>
-                    <td>{{ job.job_title }}</td>
-                </tr>
-
-                <tr>
-                    <th>Job Description</th>
-                    <td>{{ job.job_description }}</td>
-                </tr>
-
-                <tr>
-                    <th>Required Skills</th>
-                    <td>{{ job.required_skills }}</td>
-                </tr>
-
-                <tr>
-                    <th>Qualification</th>
-                    <td>{{ job.qualification }}</td>
-                </tr>
-
-                <tr>
-                    <th>Experience</th>
-                    <td>{{ job.experience }}</td>
-                </tr>
-
-                <tr>
-                    <th>Job Type</th>
-                    <td>{{ job.job_type }}</td>
-                </tr>
-
-                <tr>
-                    <th>Location</th>
-                    <td>{{ job.location }}</td>
-                </tr>
-
-                <tr>
-                    <th>Salary</th>
-                    <td>{{ job.salary }}</td>
-                </tr>
-
-                <tr>
-                    <th>Vacancies</th>
-                    <td>{{ job.vacancies }}</td>
-                </tr>
-
-                <tr>
-                    <th>Application Deadline</th>
-                    <td>{{ job.application_deadline }}</td>
-                </tr>
-
-                <tr>
-                    <th>Eligible / Target Branches</th>
-                    <td>
-                        <span class="badge bg-primary">{{ job.target_branches }}</span>
-                    </td>
-                </tr>
-
-
-                <tr>
-                    <th>Status</th>
-                    <td>
-                        {% if job.status == "Open" %}
-                            <span class="badge bg-success">Open</span>
-                        {% else %}
-                            <span class="badge bg-danger">Closed</span>
-                        {% endif %}
-                    </td>
-                </tr>
-
-                <tr>
-                    <th>Recruiter</th>
-                    <td>{{ job.recruiter.username }}</td>
-                </tr>
-
-                <tr>
-                    <th>Posted On</th>
-                    <td>{{ job.created_at }}</td>
-                </tr>
-
-            </table>
-
-            <div class="mt-4">
-
-                {% if request.user.role == "recruiter" %}
-
-                    <a href="{% url 'jobs:edit_job' job.id %}"
-                    class="btn btn-warning">
-                        Edit Job
-                    </a>
-
-                    <a href="{% url 'jobs:delete_job' job.id %}"
-                    class="btn btn-danger">
-                        Delete Job
-                    </a>
-
-                    <a href="{% url 'jobs:manage_jobs' %}"
-                    class="btn btn-secondary">
-                        Back
-                    </a>
-
-                {% elif request.user.role == "student" %}
-
-                    {% if job.status == "Open" %}
-
-                        <a href="{% url 'applications:apply_job' job.id %}"
-                        class="btn btn-success">
-                            Apply Now
+<div class="row justify-content-center">
+    <div class="col-lg-10">
+        <div class="spp-card">
+            <!-- Header Section -->
+            <div class="d-flex align-items-start justify-content-between flex-wrap gap-3 pb-3 mb-4 border-bottom">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="spp-logo" style="width:64px; height:64px; font-size:2rem;">
+                        <i class="bi bi-building-fill"></i>
+                    </div>
+                    <div>
+                        <div class="d-flex align-items-center gap-2 mb-1">
+                            <h3 class="fw-bold mb-0" style="color: var(--spp-navy);">{{ job.job_title }}</h3>
+                            <span class="spp-pill blue">{{ job.job_type }}</span>
+                            {% if job.status == "Open" %}
+                                <span class="spp-pill green">Open</span>
+                            {% else %}
+                                <span class="spp-pill gray">Closed</span>
+                            {% endif %}
+                        </div>
+                        <h5 class="text-primary mb-0 fw-semibold">{{ job.company.company_name }}</h5>
+                    </div>
+                </div>
+                
+                <div class="d-flex align-items-center gap-2 ms-auto">
+                    {% if request.user.role == "recruiter" %}
+                        <a href="{% url 'jobs:edit_job' job.id %}" class="btn-spp-outline">
+                            <i class="bi bi-pencil-fill"></i> Edit Job
                         </a>
-
-                    {% else %}
-
-                        <button class="btn btn-secondary" disabled>
-                            Applications Closed
-                        </button>
-
+                        <a href="{% url 'jobs:delete_job' job.id %}" class="btn btn-outline-danger rounded-3 px-3 py-2 fw-semibold">
+                            <i class="bi bi-trash-fill"></i> Delete
+                        </a>
+                        <a href="{% url 'jobs:manage_jobs' %}" class="btn-spp-outline">
+                            Back
+                        </a>
+                    {% elif request.user.role == "student" %}
+                        {% if job.status == "Open" %}
+                            <a href="{% url 'applications:apply_job' job.id %}" class="btn-spp-primary fs-6 px-4 py-2">
+                                <i class="bi bi-send-fill"></i> Apply Now
+                            </a>
+                        {% else %}
+                            <button class="btn btn-secondary rounded-3 px-4 py-2" disabled>
+                                Applications Closed
+                            </button>
+                        {% endif %}
+                        <a href="{% url 'jobs:job_list' %}" class="btn-spp-outline">
+                            <i class="bi bi-arrow-left"></i> Back to Jobs
+                        </a>
                     {% endif %}
-
-                    <a href="{% url 'jobs:job_list' %}"
-                    class="btn btn-primary">
-                        Back to Jobs
-                    </a>
-
-                {% endif %}
-
+                </div>
             </div>
 
+            <!-- Job Details Table -->
+            <div class="spp-form-section-title">
+                <i class="bi bi-file-earmark-text-fill text-primary"></i> Position Overview & Requirements
+            </div>
+
+            <table class="spp-table mb-4">
+                <tbody>
+                    <tr>
+                        <th style="width: 25%;">Job Title</th>
+                        <td class="fw-semibold">{{ job.job_title }}</td>
+                    </tr>
+                    <tr>
+                        <th>Company</th>
+                        <td>{{ job.company.company_name }}</td>
+                    </tr>
+                    <tr>
+                        <th>Job Description</th>
+                        <td style="white-space: pre-line;">{{ job.job_description }}</td>
+                    </tr>
+                    <tr>
+                        <th>Required Skills</th>
+                        <td>
+                            {% if job.required_skills %}
+                                <span class="spp-pill purple"><i class="bi bi-tools me-1"></i> {{ job.required_skills }}</span>
+                            {% else %}
+                                <span class="text-muted">Not specified</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Qualification Required</th>
+                        <td>{{ job.qualification }}</td>
+                    </tr>
+                    <tr>
+                        <th>Experience</th>
+                        <td>{{ job.experience }}</td>
+                    </tr>
+                    <tr>
+                        <th>Job Location</th>
+                        <td><i class="bi bi-geo-alt-fill text-danger me-1"></i> {{ job.location }}</td>
+                    </tr>
+                    <tr>
+                        <th>Offered Salary</th>
+                        <td><span class="spp-pill green fw-bold"><i class="bi bi-cash-stack me-1"></i> {{ job.salary }}</span></td>
+                    </tr>
+                    <tr>
+                        <th>Vacancies Available</th>
+                        <td>{{ job.vacancies }}</td>
+                    </tr>
+                    <tr>
+                        <th>Application Deadline</th>
+                        <td><i class="bi bi-calendar-event text-warning me-1"></i> {{ job.application_deadline }}</td>
+                    </tr>
+                    <tr>
+                        <th>Eligible / Target Branches</th>
+                        <td><span class="spp-pill blue">{{ job.target_branches }}</span></td>
+                    </tr>
+                    <tr>
+                        <th>Posted By</th>
+                        <td>{{ job.recruiter.username }}</td>
+                    </tr>
+                    <tr>
+                        <th>Posted On</th>
+                        <td>{{ job.created_at|date:"d M Y, H:i" }}</td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
-
     </div>
-
 </div>
-
 {% endblock %}

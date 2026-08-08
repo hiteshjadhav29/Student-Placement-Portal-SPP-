@@ -1,114 +1,117 @@
 {% extends 'base.html' %}
 
-{% block title %}
-Placement Reports & Mail Generator
-{% endblock %}
+{% block title %}Placement Reports & Mail Center - Student Placement Portal{% endblock %}
 
 {% block content %}
-
-<div class="container mt-4 mb-5">
-
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2><i class="bi bi-file-earmark-bar-graph-fill text-primary"></i> Placement Reports & Email Center</h2>
-        <div>
-            <a href="{% url 'placement_officer:download_report' %}" class="btn btn-success me-2 shadow-sm">
-                <i class="bi bi-download"></i> Download Report (CSV)
-            </a>
-            <a href="{% url 'placement_officer:email_report' %}" class="btn btn-primary shadow-sm" onclick="return confirm('Send full placement report CSV to your registered email address?');">
-                <i class="bi bi-envelope-at-fill"></i> Email Report to Me
-            </a>
-        </div>
-    </div>
-
-    {% if messages %}
-        {% for message in messages %}
-            <div class="alert alert-{{ message.tags }} alert-dismissible fade show">
-                {{ message }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+<div class="row">
+    <div class="col-12 mb-4">
+        <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
+            <div>
+                <h3 class="fw-bold mb-1" style="color: var(--spp-navy);"><i class="bi bi-file-earmark-bar-graph-fill text-primary me-2"></i> Placement Reports & Email Center</h3>
+                <p class="text-muted mb-0">Generate placement summaries, export data, and dispatch email reports</p>
             </div>
-        {% endfor %}
-    {% endif %}
-
-    <div class="card shadow-sm border-0 mb-4">
-        <div class="card-header bg-dark text-white">
-            <h5 class="mb-0"><i class="bi bi-trophy-fill text-warning"></i> Selected & Placed Students Report</h5>
-        </div>
-        <div class="card-body p-0">
-            <div class="table-responsive">
-                <table class="table table-bordered table-hover align-middle mb-0">
-                    <thead class="table-light">
-                        <tr>
-                            <th>Roll No</th>
-                            <th>Student Name</th>
-                            <th>Branch</th>
-                            <th>CGPA</th>
-                            <th>Company</th>
-                            <th>Job Title</th>
-                            <th>Status Date</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for app in selected_applications %}
-                            <tr>
-                                <td><strong>{{ app.student.roll_number }}</strong></td>
-                                <td>{{ app.student.user.get_full_name|default:app.student.user.username }}</td>
-                                <td><span class="badge bg-secondary">{{ app.student.get_branch_display }}</span></td>
-                                <td><strong class="text-success">{{ app.student.cgpa }}</strong></td>
-                                <td>{{ app.job.company.company_name }}</td>
-                                <td>{{ app.job.job_title }}</td>
-                                <td>{{ app.updated_at|date:"d M Y" }}</td>
-                            </tr>
-                        {% empty %}
-                            <tr>
-                                <td colspan="7" class="text-center text-muted py-4">No placed students recorded yet.</td>
-                            </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+            <div class="d-flex align-items-center gap-2">
+                <a href="{% url 'placement_officer:download_report' %}" class="btn-spp-outline">
+                    <i class="bi bi-download"></i> Download CSV
+                </a>
+                <a href="{% url 'placement_officer:email_report' %}" class="btn-spp-primary" onclick="return confirm('Send full placement report CSV to your registered email address?');">
+                    <i class="bi bi-envelope-at-fill"></i> Email Report
+                </a>
             </div>
         </div>
     </div>
-
-    <div class="card shadow-sm border-0">
-        <div class="card-header bg-primary text-white">
-            <h5 class="mb-0"><i class="bi bi-star-fill text-warning"></i> Shortlisted Students Overview</h5>
-        </div>
-        <div class="card-body p-0">
-            <div class="table-responsive">
-                <table class="table table-bordered table-hover align-middle mb-0">
-                    <thead class="table-light">
-                        <tr>
-                            <th>Roll No</th>
-                            <th>Student Name</th>
-                            <th>Branch</th>
-                            <th>CGPA</th>
-                            <th>Company</th>
-                            <th>Job Title</th>
-                            <th>Applied Date</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for app in shortlisted_applications %}
-                            <tr>
-                                <td><strong>{{ app.student.roll_number }}</strong></td>
-                                <td>{{ app.student.user.get_full_name|default:app.student.user.username }}</td>
-                                <td><span class="badge bg-secondary">{{ app.student.get_branch_display }}</span></td>
-                                <td><strong class="text-primary">{{ app.student.cgpa }}</strong></td>
-                                <td>{{ app.job.company.company_name }}</td>
-                                <td>{{ app.job.job_title }}</td>
-                                <td>{{ app.applied_at|date:"d M Y" }}</td>
-                            </tr>
-                        {% empty %}
-                            <tr>
-                                <td colspan="7" class="text-center text-muted py-4">No shortlisted students currently.</td>
-                            </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-
 </div>
 
+{% if messages %}
+    <div class="row">
+        <div class="col-12 mb-3">
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endif %}
+
+<!-- Selected & Placed Students Report Card -->
+<div class="spp-card mb-4">
+    <div class="spp-form-section-title justify-content-between">
+        <span><i class="bi bi-trophy-fill text-warning me-2"></i> Selected & Placed Students</span>
+        <span class="spp-pill green">{{ selected_applications.count }} Students</span>
+    </div>
+    <div class="table-responsive">
+        <table class="spp-table">
+            <thead>
+                <tr>
+                    <th>Roll No</th>
+                    <th>Student Name</th>
+                    <th>Branch</th>
+                    <th>CGPA</th>
+                    <th>Company</th>
+                    <th>Job Title</th>
+                    <th>Status Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for app in selected_applications %}
+                    <tr>
+                        <td><strong style="color: var(--spp-navy);">{{ app.student.roll_number }}</strong></td>
+                        <td>{{ app.student.user.get_full_name|default:app.student.user.username }}</td>
+                        <td><span class="spp-pill blue">{{ app.student.get_branch_display }}</span></td>
+                        <td><span class="spp-pill green fw-bold">{{ app.student.cgpa }}</span></td>
+                        <td><span class="fw-semibold text-primary"><i class="bi bi-building me-1"></i> {{ app.job.company.company_name }}</span></td>
+                        <td>{{ app.job.job_title }}</td>
+                        <td><span class="text-muted small"><i class="bi bi-calendar-check me-1"></i> {{ app.updated_at|date:"d M Y" }}</span></td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="7" class="text-center text-muted py-4">No placed students recorded yet.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Shortlisted Students Overview Card -->
+<div class="spp-card">
+    <div class="spp-form-section-title justify-content-between">
+        <span><i class="bi bi-star-fill text-warning me-2"></i> Shortlisted Candidates Overview</span>
+        <span class="spp-pill purple">{{ shortlisted_applications.count }} Shortlisted</span>
+    </div>
+    <div class="table-responsive">
+        <table class="spp-table">
+            <thead>
+                <tr>
+                    <th>Roll No</th>
+                    <th>Student Name</th>
+                    <th>Branch</th>
+                    <th>CGPA</th>
+                    <th>Company</th>
+                    <th>Job Title</th>
+                    <th>Applied Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for app in shortlisted_applications %}
+                    <tr>
+                        <td><strong style="color: var(--spp-navy);">{{ app.student.roll_number }}</strong></td>
+                        <td>{{ app.student.user.get_full_name|default:app.student.user.username }}</td>
+                        <td><span class="spp-pill blue">{{ app.student.get_branch_display }}</span></td>
+                        <td><span class="spp-pill purple fw-bold">{{ app.student.cgpa }}</span></td>
+                        <td><span class="fw-semibold text-primary"><i class="bi bi-building me-1"></i> {{ app.job.company.company_name }}</span></td>
+                        <td>{{ app.job.job_title }}</td>
+                        <td><span class="text-muted small"><i class="bi bi-calendar-event me-1"></i> {{ app.applied_at|date:"d M Y" }}</span></td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="7" class="text-center text-muted py-4">No shortlisted students currently.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
 {% endblock %}

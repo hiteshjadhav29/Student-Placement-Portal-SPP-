@@ -2,26 +2,27 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap');
 
 :root {
-    --bg-dark: #090d16;
-    --bg-card: rgba(17, 24, 39, 0.7);
-    --border-card: rgba(255, 255, 255, 0.08);
-    --accent-primary: #6366f1;
-    --accent-secondary: #06b6d4;
-    --accent-gradient: linear-gradient(135deg, #6366f1 0%, #06b6d4 100%);
-    --accent-glow: rgba(99, 102, 241, 0.35);
+    --bg-dark: #0B1739;
+    --bg-card: rgba(15, 23, 57, 0.85);
+    --border-card: rgba(226, 232, 240, 0.15);
+    --accent-primary: #3B6FF0;
+    --accent-secondary: #8B5CF6;
+    --accent-gradient: linear-gradient(135deg, #4F6EF7 0%, #8B5CF6 100%);
+    --accent-glow: rgba(79, 110, 247, 0.35);
     
     --text-main: #f8fafc;
     --text-muted: #94a3b8;
     --text-sub: #cbd5e1;
     
-    --success: #10b981;
-    --warning: #f59e0b;
-    --danger: #ef4444;
+    --success: #22C55E;
+    --warning: #F59E0B;
+    --danger: #EF4444;
 
     --radius-lg: 16px;
     --radius-md: 12px;
     --radius-sm: 8px;
 }
+
 
 * {
     box-sizing: border-box;

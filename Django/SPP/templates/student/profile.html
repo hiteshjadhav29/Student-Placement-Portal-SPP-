@@ -1,46 +1,105 @@
-<!DOCTYPE html>
-<html>
+{% extends "base.html" %}
 
-<head>
-    <title>Student Profile</title>
-</head>
+{% block title %}My Profile - Student Placement Portal{% endblock %}
 
-<body>
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-10">
+        <div class="spp-card">
+            <div class="d-flex align-items-center justify-content-between flex-wrap gap-3 pb-3 mb-4 border-bottom">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="spp-avatar">
+                        {% if student.profile_photo %}
+                            <img src="{{ student.profile_photo.url }}" alt="{{ student.user.username }}" class="w-100 h-100 rounded-circle object-fit-cover">
+                        {% else %}
+                            <i class="bi bi-person-fill"></i>
+                        {% endif %}
+                    </div>
+                    <div>
+                        <h3 class="fw-bold mb-1" style="color: var(--spp-navy);">{{ student.user.get_full_name|default:student.user.username }}</h3>
+                        <p class="text-muted small mb-0"><i class="bi bi-envelope me-1"></i> {{ student.user.email }}</p>
+                    </div>
+                </div>
+                <div>
+                    <a href="{% url 'students:edit_profile' %}" class="btn-spp-primary">
+                        <i class="bi bi-pencil-square"></i> Edit Profile
+                    </a>
+                </div>
+            </div>
 
-    <h1>Student Profile</h1>
+            <div class="spp-form-section-title">
+                <i class="bi bi-card-heading text-primary"></i> Academic & Personal Information
+            </div>
 
-    <p><strong>Name:</strong> {{ student.user.username }}</p>
+            <div class="row g-4 mb-4">
+                <div class="col-md-4">
+                    <div class="p-3 bg-light rounded-3">
+                        <small class="text-muted d-block mb-1">Roll Number</small>
+                        <strong class="fs-6" style="color: var(--spp-navy);">{{ student.roll_number }}</strong>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="p-3 bg-light rounded-3">
+                        <small class="text-muted d-block mb-1">Branch</small>
+                        <strong class="fs-6" style="color: var(--spp-navy);">{{ student.get_branch_display }}</strong>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="p-3 bg-light rounded-3">
+                        <small class="text-muted d-block mb-1">Semester & CGPA</small>
+                        <strong class="fs-6" style="color: var(--spp-navy);">Sem {{ student.semester }} • CGPA {{ student.cgpa }}</strong>
+                    </div>
+                </div>
 
-    <p><strong>Roll Number:</strong> {{ student.roll_number }}</p>
+                <div class="col-md-4">
+                    <div class="p-3 bg-light rounded-3">
+                        <small class="text-muted d-block mb-1">Phone Number</small>
+                        <span class="fw-medium">{{ student.phone|default:"Not specified" }}</span>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="p-3 bg-light rounded-3">
+                        <small class="text-muted d-block mb-1">Date of Birth</small>
+                        <span class="fw-medium">{{ student.date_of_birth|default:"Not specified" }}</span>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="p-3 bg-light rounded-3">
+                        <small class="text-muted d-block mb-1">Gender</small>
+                        <span class="fw-medium">{{ student.gender|default:"Not specified" }}</span>
+                    </div>
+                </div>
+            </div>
 
-    <p><strong>Phone:</strong> {{ student.phone }}</p>
+            <div class="spp-form-section-title">
+                <i class="bi bi-geo-alt-fill text-primary"></i> Contact & Social Links
+            </div>
 
-    <p><strong>Branch:</strong> {{ student.get_branch_display }}</p>
-
-    <p><strong>Semester:</strong> {{ student.semester }}</p>
-
-    <p><strong>CGPA:</strong> {{ student.cgpa }}</p>
-
-    <p><strong>Date of Birth:</strong> {{ student.date_of_birth }}</p>
-
-    <p><strong>Gender:</strong> {{ student.gender }}</p>
-
-    <p><strong>Address:</strong> {{ student.address }}</p>
-
-    <p><strong>GitHub:</strong> {{ student.github_url }}</p>
-
-    <p><strong>LinkedIn:</strong> {{ student.linkedin_url }}</p>
-
-    {% if student.profile_photo %}
-    <img src="{{ student.profile_photo.url }}" width="150" alt="Profile Photo">
-    {% endif %}
-
-    <br><br>
-
-    <a href="{% url 'students:edit_profile' %}">
-        Edit Profile
-    </a>
-
-</body>
-
-</html>
+            <div class="row g-4">
+                <div class="col-md-6">
+                    <small class="text-muted d-block mb-1">Address</small>
+                    <p class="fw-medium text-dark">{{ student.address|default:"No address provided" }}</p>
+                </div>
+                <div class="col-md-6">
+                    <small class="text-muted d-block mb-1">External Profiles</small>
+                    <div class="d-flex flex-wrap gap-2 mt-1">
+                        {% if student.github_url %}
+                            <a href="{{ student.github_url }}" target="_blank" class="btn-spp-outline py-1 px-3 fs-7">
+                                <i class="bi bi-github"></i> GitHub Profile
+                            </a>
+                        {% endif %}
+                        {% if student.linkedin_url %}
+                            <a href="{{ student.linkedin_url }}" target="_blank" class="btn-spp-outline py-1 px-3 fs-7">
+                                <i class="bi bi-linkedin"></i> LinkedIn Profile
+                            </a>
+                        {% endif %}
+                        {% if not student.github_url and not student.linkedin_url %}
+                            <span class="text-muted small">No profile links added</span>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

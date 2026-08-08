@@ -1,53 +1,74 @@
 {% extends 'base.html' %}
 
-{% block title %}
-Add Job
-{% endblock %}
+{% block title %}Post New Job - Student Placement Portal{% endblock %}
 
 {% block content %}
-
-<div class="container mt-5">
-
-    <div class="card shadow">
-
-        <div class="card-header bg-primary text-white">
-            <h3>Post New Job</h3>
-        </div>
-
-        <div class="card-body">
+<div class="row justify-content-center">
+    <div class="col-lg-10">
+        <div class="spp-card">
+            <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 pb-3 mb-4 border-bottom">
+                <div>
+                    <h3 class="fw-bold mb-1" style="color: var(--spp-navy);"><i class="bi bi-plus-circle-fill text-primary me-2"></i> Post Campus Opening</h3>
+                    <p class="text-muted mb-0">Publish a new job opportunity for eligible campus candidates</p>
+                </div>
+                <a href="{% url 'jobs:manage_jobs' %}" class="btn-spp-outline">
+                    <i class="bi bi-arrow-left"></i> Manage Openings
+                </a>
+            </div>
 
             {% if messages %}
                 {% for message in messages %}
-                    <div class="alert alert-success">
+                    <div class="alert alert-{{ message.tags }} alert-dismissible fade show border-0 shadow-sm mb-4" role="alert">
                         {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                     </div>
                 {% endfor %}
             {% endif %}
 
             <form method="POST">
-
                 {% csrf_token %}
 
-                {{ form.as_p }}
+                <div class="row g-3">
+                    {% for field in form %}
+                        {% if field.name == 'target_branches_list' %}
+                            <div class="col-12 mb-3">
+                                <label class="form-label fw-bold small text-muted text-uppercase mb-1">{{ field.label }}</label>
+                                <div class="spp-checkbox-wrapper p-3 rounded-3 border bg-light">
 
-                <div class="mt-4">
-
-                    <button type="submit" class="btn btn-success">
-                        Post Job
-                    </button>
-
-                    <a href="{% url 'jobs:manage_jobs' %}" class="btn btn-secondary">
-                        Cancel
-                    </a>
-
+                                    {{ field }}
+                                </div>
+                                {% if field.help_text %}<div class="form-text small">{{ field.help_text }}</div>{% endif %}
+                                {% if field.errors %}<div class="text-danger small mt-1">{{ field.errors.0 }}</div>{% endif %}
+                            </div>
+                        {% elif field.name == 'job_description' or field.name == 'required_skills' or field.name == 'qualification' %}
+                            <div class="col-12 mb-3">
+                                <label class="form-label fw-bold small text-muted text-uppercase mb-1">{{ field.label }}</label>
+                                {{ field }}
+                                {% if field.help_text %}<div class="form-text small">{{ field.help_text }}</div>{% endif %}
+                                {% if field.errors %}<div class="text-danger small mt-1">{{ field.errors.0 }}</div>{% endif %}
+                            </div>
+                        {% else %}
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-bold small text-muted text-uppercase mb-1">{{ field.label }}</label>
+                                {{ field }}
+                                {% if field.help_text %}<div class="form-text small">{{ field.help_text }}</div>{% endif %}
+                                {% if field.errors %}<div class="text-danger small mt-1">{{ field.errors.0 }}</div>{% endif %}
+                            </div>
+                        {% endif %}
+                    {% endfor %}
                 </div>
 
+                <div class="d-flex align-items-center gap-3 mt-4 pt-3 border-top">
+                    <button type="submit" class="btn-spp-primary px-4 py-2.5">
+                        <i class="bi bi-check-circle-fill me-1"></i> Post Opening Now
+                    </button>
+
+                    <a href="{% url 'jobs:manage_jobs' %}" class="btn-spp-outline px-4 py-2.5">
+                        Cancel
+                    </a>
+                </div>
             </form>
-
         </div>
-
     </div>
-
 </div>
-
 {% endblock %}

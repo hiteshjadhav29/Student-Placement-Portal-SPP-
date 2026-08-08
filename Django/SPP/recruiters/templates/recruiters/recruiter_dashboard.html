@@ -1,196 +1,263 @@
 {% extends 'base.html' %}
 
-{% block title %}
-Recruiter Dashboard
-{% endblock %}
+{% block title %}Recruiter Dashboard - Student Placement Portal{% endblock %}
 
 {% block content %}
+<div class="container-fluid p-0">
 
-<div class="container-fluid">
-
-    <h2 class="mb-4">
-        Recruiter Dashboard
-    </h2>
-
-    <div class="row">
-
-        <div class="col-md-3">
-
-            <div class="card bg-primary text-white shadow">
-
-                <div class="card-body text-center">
-
-                    <h5>Total Jobs</h5>
-
-                    <h2>{{ total_jobs }}</h2>
-
+    <!-- Hero Greeting Banner (Superset / Handshake Style) -->
+    <div class="spp-hero text-start mb-4 shadow-lg p-4 p-md-5">
+        <div class="d-flex align-items-center justify-content-between flex-wrap gap-4">
+            <div class="d-flex align-items-center gap-3">
+                <div class="spp-avatar bg-white text-primary border-0 shadow-lg d-none d-sm-flex align-items-center justify-content-center" style="width: 68px; height: 68px; font-size: 2rem; flex-shrink: 0;">
+                    <i class="bi bi-building-fill"></i>
                 </div>
-
-            </div>
-
-        </div>
-
-        <div class="col-md-3">
-
-            <div class="card bg-success text-white shadow">
-
-                <div class="card-body text-center">
-
-                    <h5>Total Applicants</h5>
-
-                    <h2>{{ total_applicants }}</h2>
-
-                </div>
-
-            </div>
-
-        </div>
-
-        <div class="col-md-3">
-
-            <div class="card bg-warning text-dark shadow">
-
-                <div class="card-body text-center">
-
-                    <h5>Shortlisted</h5>
-
-                    <h2>{{ shortlisted }}</h2>
-
-                </div>
-
-            </div>
-
-        </div>
-
-        <div class="col-md-3">
-
-            <div class="card bg-danger text-white shadow">
-
-                <div class="card-body text-center">
-
-                    <h5>Selected</h5>
-
-                    <h2>{{ selected }}</h2>
-
-                </div>
-
-            </div>
-
-        </div>
-
-    </div>
-
-    <div class="row mt-5">
-
-        <div class="col-md-6">
-
-            <div class="card shadow">
-
-                <div class="card-header">
-
-                    Quick Actions
-
-                </div>
-
-                <div class="card-body">
-
-                    <a href="{% url 'jobs:add_job' %}"
-                       class="btn btn-primary mb-2 w-100">
-
-                        Post New Job
-
-                    </a>
-
-                    <a href="{% url 'jobs:manage_jobs' %}"
-                       class="btn btn-success mb-2 w-100">
-
-                        Manage Jobs
-
-                    </a>
-
-                    <a href="{% url 'recruiters:profile' %}"
-                       class="btn btn-warning mb-2 w-100">
-
-                        My Profile
-
-                    </a>
-
-                    <a href="{% url 'recruiters:company_profile' %}"
-                       class="btn btn-info w-100">
-
-                        Company Profile
-
-                    </a>
-                    <div class="col-md-4 mb-3">
-
-                        <a href="{% url 'applications:recruiter_applications' %}"
-                        class="btn btn-primary w-100 p-3">
-
-                            📋 View Applicants
-
-                        </a>
-
+                <div>
+                    <div class="d-flex align-items-center flex-wrap gap-2 mb-2">
+                        <span class="badge rounded-pill bg-white bg-opacity-25 text-white px-3 py-1.5 fw-bold border border-white border-opacity-25 shadow-sm">
+                            <i class="bi bi-building-fill text-warning me-1"></i> {{ company.company_name|default:"Corporate Partner" }}
+                        </span>
+                        <span class="badge rounded-pill bg-white bg-opacity-25 text-white px-3 py-1.5 fw-bold border border-white border-opacity-25 shadow-sm">
+                            <i class="bi bi-patch-check-fill text-info me-1"></i> Verified Campus Drive
+                        </span>
                     </div>
-
+                    <h1 class="display-6 fw-extrabold mb-1 text-white letter-spacing-tight">
+                        Welcome back, {{ recruiter.name|default:user.username }}! 👋
+                    </h1>
+                    <p class="mb-0 text-white opacity-90 fs-6 fw-medium" style="max-width: 620px;">
+                        Manage campus recruitment drives, post new job openings, and track student application pipelines in real-time.
+                    </p>
                 </div>
-
             </div>
 
+            <div class="d-flex align-items-center gap-3 ms-auto ms-md-0">
+                <a href="{% url 'jobs:add_job' %}" class="btn btn-light text-primary fw-bold px-4 py-2.5 rounded-3 shadow-lg hover-shadow">
+                    <i class="bi bi-plus-circle-fill me-1.5"></i> Post New Job
+                </a>
+                <a href="{% url 'applications:recruiter_applications' %}" class="btn btn-outline-light fw-bold px-4 py-2.5 rounded-3">
+                    <i class="bi bi-people-fill me-1.5"></i> View Applicants
+                </a>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- 4 Key Dynamic Metrics Grid -->
+    <div class="row g-4 mb-4">
+
+        <!-- Total Jobs Posted -->
+        <div class="col-12 col-sm-6 col-lg-3">
+            <div class="spp-stat">
+                <div class="spp-stat-icon blue">
+                    <i class="bi bi-briefcase-fill"></i>
+                </div>
+                <div>
+                    <div class="spp-stat-val text-primary">{{ total_jobs|default:"0" }}</div>
+                    <div class="spp-stat-label">Total Jobs Posted</div>
+                </div>
+            </div>
         </div>
 
-        <div class="col-md-6">
-
-            <div class="card shadow">
-
-                <div class="card-header">
-
-                    Recent Jobs
-
+        <!-- Total Applicants -->
+        <div class="col-12 col-sm-6 col-lg-3">
+            <div class="spp-stat">
+                <div class="spp-stat-icon green">
+                    <i class="bi bi-people-fill"></i>
                 </div>
-
-                <div class="card-body">
-
-                    {% if jobs %}
-
-                        <table class="table">
-
-                            <tr>
-
-                                <th>Job</th>
-
-                                <th>Status</th>
-
-                            </tr>
-
-                            {% for job in jobs %}
-
-                            <tr>
-
-                                <td>{{ job.job_title }}</td>
-
-                                <td>{{ job.status }}</td>
-
-                            </tr>
-
-                            {% endfor %}
-
-                        </table>
-
-                    {% else %}
-
-                        <p>No jobs posted yet.</p>
-
-                    {% endif %}
-
+                <div>
+                    <div class="spp-stat-val text-info">{{ total_applicants|default:"0" }}</div>
+                    <div class="spp-stat-label">Total Applicants</div>
                 </div>
-                
-
             </div>
+        </div>
 
+        <!-- Shortlisted Candidates -->
+        <div class="col-12 col-sm-6 col-lg-3">
+            <div class="spp-stat">
+                <div class="spp-stat-icon orange">
+                    <i class="bi bi-star-fill"></i>
+                </div>
+                <div>
+                    <div class="spp-stat-val text-warning">{{ shortlisted|default:"0" }}</div>
+                    <div class="spp-stat-label">Shortlisted Candidates</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Hired / Selected -->
+        <div class="col-12 col-sm-6 col-lg-3">
+            <div class="spp-stat">
+                <div class="spp-stat-icon purple">
+                    <i class="bi bi-trophy-fill"></i>
+                </div>
+                <div>
+                    <div class="spp-stat-val text-purple">{{ selected|default:"0" }}</div>
+                    <div class="spp-stat-label">Selected / Hired</div>
+                </div>
+            </div>
         </div>
 
     </div>
+
+
+    <!-- Main Content Section: Quick Actions, Recent Jobs, & Recent Applicants -->
+    <div class="row g-4 mb-4">
+
+        <!-- Quick Actions Column -->
+        <div class="col-lg-4">
+            <div class="spp-card h-100">
+                <div class="spp-form-section-title">
+                    <i class="bi bi-lightning-charge-fill text-warning me-1"></i> Quick Actions
+                </div>
+
+                <div class="d-flex flex-column gap-3 mt-4">
+                    <a href="{% url 'jobs:add_job' %}" class="btn-spp-primary justify-content-start py-3 px-3">
+                        <i class="bi bi-plus-circle-fill fs-5"></i> Post New Job Opening
+                    </a>
+
+                    <a href="{% url 'jobs:manage_jobs' %}" class="btn-spp-outline justify-content-start py-3 px-3">
+                        <i class="bi bi-briefcase-fill me-1"></i> Manage Job Listings
+                    </a>
+
+                    <a href="{% url 'applications:recruiter_applications' %}" class="btn-spp-outline justify-content-start py-3 px-3">
+                        <i class="bi bi-people-fill me-1"></i> Review Applicants Pipeline
+                    </a>
+
+                    <a href="{% url 'recruiters:company_profile' %}" class="btn-spp-outline justify-content-start py-3 px-3">
+                        <i class="bi bi-building me-1"></i> Company Profile & Logo
+                    </a>
+
+                    <a href="{% url 'recruiters:profile' %}" class="btn-spp-outline justify-content-start py-3 px-3">
+                        <i class="bi bi-person-fill me-1"></i> Recruiter Account Settings
+                    </a>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Recent Job Postings Column -->
+        <div class="col-lg-8">
+            <div class="spp-card h-100">
+                <div class="spp-form-section-title justify-content-between">
+                    <span><i class="bi bi-clock-history text-primary me-2"></i> Recent Job Postings</span>
+                    <a href="{% url 'jobs:manage_jobs' %}" class="btn-spp-outline py-1 px-3 fs-7">Manage All</a>
+                </div>
+
+                {% if jobs %}
+                    <div class="table-responsive mt-3">
+                        <table class="spp-table">
+                            <thead>
+                                <tr>
+                                    <th>Job Title</th>
+                                    <th>Location</th>
+                                    <th>Salary</th>
+                                    <th>Status</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for job in jobs %}
+                                    <tr>
+                                        <td>
+                                            <strong class="fs-6" style="color: var(--spp-navy);">{{ job.job_title }}</strong>
+                                            <div class="small text-muted"><i class="bi bi-calendar-event me-1"></i> {{ job.created_at|date:"d M Y" }}</div>
+                                        </td>
+                                        <td><i class="bi bi-geo-alt text-danger me-1"></i> {{ job.location }}</td>
+                                        <td><span class="spp-pill green fw-bold">{{ job.salary }}</span></td>
+                                        <td>
+                                            {% if job.status == "Open" %}
+                                                <span class="spp-pill green">Open</span>
+                                            {% else %}
+                                                <span class="spp-pill red">Closed</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            <a href="{% url 'jobs:job_detail' job.id %}" class="btn-spp-outline py-1 px-2.5 fs-7" title="View Job Details">
+                                                <i class="bi bi-eye"></i> View
+                                            </a>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <div class="spp-empty py-5">
+                        <i class="bi bi-briefcase"></i>
+                        <h5 class="fw-bold">No Jobs Posted Yet</h5>
+                        <p class="text-muted small">Create your first campus placement job opening to start receiving student applications.</p>
+                        <a href="{% url 'jobs:add_job' %}" class="btn-spp-primary mt-2">
+                            <i class="bi bi-plus-circle-fill me-1"></i> Post First Job Opening
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Recent Candidate Applications Pipeline Table -->
+    {% if recent_applications %}
+        <div class="spp-card">
+            <div class="spp-form-section-title justify-content-between">
+                <span><i class="bi bi-person-lines-fill text-primary me-2"></i> Recent Candidate Applications</span>
+                <a href="{% url 'applications:recruiter_applications' %}" class="btn-spp-outline py-1 px-3 fs-7">View All Applicants</a>
+            </div>
+
+            <div class="table-responsive mt-3">
+                <table class="spp-table align-middle">
+                    <thead>
+                        <tr>
+                            <th style="min-width: 260px;">Student Candidate</th>
+                            <th style="min-width: 200px;">Applied Job Position</th>
+                            <th style="min-width: 120px;">Applied Date</th>
+                            <th style="min-width: 140px;">Current Status</th>
+                            <th style="min-width: 110px;">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for app in recent_applications %}
+                            <tr>
+                                <td style="min-width: 260px;">
+                                    <div class="d-flex align-items-center gap-3">
+                                        <div class="spp-avatar border-0 flex-shrink-0" style="width: 40px; height: 40px; font-size: 1.1rem; background: var(--spp-blue); color: #ffffff;">
+                                            {{ app.student.user.username|slice:":1"|upper }}
+                                        </div>
+                                        <div>
+                                            <strong class="d-block text-nowrap fs-6" style="color: var(--spp-navy);">{{ app.student.user.get_full_name|default:app.student.user.username }}</strong>
+                                            <div class="small text-muted text-nowrap">{{ app.student.get_branch_display }} • CGPA: {{ app.student.cgpa }}</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td style="min-width: 200px;"><span class="fw-bold text-nowrap" style="color: var(--spp-navy);">{{ app.job.job_title }}</span></td>
+                                <td style="min-width: 120px;" class="text-nowrap"><small class="text-muted fw-medium">{{ app.applied_at|date:"d M Y" }}</small></td>
+                                <td style="min-width: 140px;">
+                                    {% if app.status == 'Selected' %}
+                                        <span class="spp-pill green text-nowrap"><i class="bi bi-check-circle-fill me-1"></i> Selected</span>
+                                    {% elif app.status == 'Shortlisted' %}
+                                        <span class="spp-pill orange text-nowrap"><i class="bi bi-star-fill me-1"></i> Shortlisted</span>
+                                    {% elif app.status == 'Under Review' %}
+                                        <span class="spp-pill purple text-nowrap"><i class="bi bi-search me-1"></i> Under Review</span>
+                                    {% elif app.status == 'Rejected' %}
+                                        <span class="spp-pill red text-nowrap"><i class="bi bi-x-circle-fill me-1"></i> Rejected</span>
+                                    {% else %}
+                                        <span class="spp-pill blue text-nowrap"><i class="bi bi-clock me-1"></i> Pending</span>
+                                    {% endif %}
+                                </td>
+                                <td style="min-width: 110px;">
+                                    <a href="{% url 'applications:application_detail' app.id %}" class="btn-spp-outline py-1.5 px-3 fs-7 text-nowrap">
+                                        <i class="bi bi-eye me-1"></i> Review
+                                    </a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    {% endif %}
+
 
 </div>
-
 {% endblock %}

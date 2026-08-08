@@ -1,62 +1,70 @@
-<!DOCTYPE html>
-<html>
+{% extends "base.html" %}
 
-<head>
-    <title>My Projects</title>
-</head>
+{% block title %}My Projects - Student Placement Portal{% endblock %}
 
-<body>
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-10">
+        <div class="spp-card">
+            <div class="d-flex align-items-center justify-content-between flex-wrap gap-3 pb-3 mb-4 border-bottom">
+                <div>
+                    <h3 class="fw-bold mb-1" style="color: var(--spp-navy);"><i class="bi bi-code-slash text-primary me-2"></i> My Projects</h3>
+                    <p class="text-muted mb-0">Showcase your software and technical projects</p>
+                </div>
+                <div>
+                    <a href="{% url 'students:add_project' %}" class="btn-spp-primary">
+                        <i class="bi bi-plus-lg"></i> Add New Project
+                    </a>
+                </div>
+            </div>
 
-    <h1>My Projects</h1>
+            {% if projects %}
+                <div class="row g-4">
+                    {% for project in projects %}
+                        <div class="col-md-6">
+                            <div class="spp-card h-100 mb-0 shadow-sm border">
+                                <div class="d-flex align-items-start justify-content-between gap-2 mb-2">
+                                    <h5 class="fw-bold mb-0" style="color: var(--spp-navy);">{{ project.title }}</h5>
+                                    <div class="d-flex gap-1">
+                                        <a href="{% url 'students:edit_project' project.id %}" class="btn btn-sm btn-outline-secondary py-0 px-2" title="Edit">
+                                            <i class="bi bi-pencil-fill fs-7"></i>
+                                        </a>
+                                        <a href="{% url 'students:delete_project' project.id %}" class="btn btn-sm btn-outline-danger py-0 px-2" title="Delete">
+                                            <i class="bi bi-trash-fill fs-7"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                                <p class="text-secondary small mb-3">{{ project.description }}</p>
+                                
+                                {% if project.technology %}
+                                    <div class="mb-3">
+                                        <small class="text-muted d-block mb-1">Technologies:</small>
+                                        <span class="spp-pill purple fs-7"><i class="bi bi-cpu me-1"></i> {{ project.technology }}</span>
+                                    </div>
+                                {% endif %}
 
-    <a href="{% url 'students:add_project' %}">
-        Add Project
-    </a>
-
-    <hr>
-
-    {% if projects %}
-
-    <ul>
-
-        {% for project in projects %}
-
-        <li>
-
-            <h3>{{ project.title }}</h3>
-
-            <p>{{ project.description }}</p>
-
-            <p><b>Technology:</b> {{ project.technology }}</p>
-
-            <p>
-                <a href="{{ project.github_link }}" target="_blank">
-                    GitHub Repository
-                </a>
-            </p>
-
-            <a href="{% url 'students:edit_project' project.id %}">
-                Edit
-            </a>
-
-            <a href="{% url 'students:delete_project' project.id %}">
-                Delete
-            </a>
-
-        </li>
-
-        <hr>
-
-        {% endfor %}
-
-    </ul>
-
-    {% else %}
-
-    <p>No Projects Added.</p>
-
-    {% endif %}
-
-</body>
-
-</html>
+                                {% if project.github_link %}
+                                    <div class="mt-auto pt-2 border-top">
+                                        <a href="{{ project.github_link }}" target="_blank" class="btn-spp-outline py-1 px-3 fs-7 w-100">
+                                            <i class="bi bi-github"></i> GitHub Repository
+                                        </a>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="spp-empty py-5">
+                    <i class="bi bi-laptop"></i>
+                    <h5 class="fw-bold">No Projects Added</h5>
+                    <p class="text-muted small">Showcase your practical experience by adding your software projects here.</p>
+                    <a href="{% url 'students:add_project' %}" class="btn-spp-primary mt-2">
+                        <i class="bi bi-plus-lg"></i> Add Project
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

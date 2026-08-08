@@ -1,89 +1,61 @@
 {% extends "base.html" %}
 
-{% block title %}
-Monthly Placement Report
-{% endblock %}
+{% block title %}Monthly Placement Report - Student Placement Portal{% endblock %}
 
 {% block content %}
-
-<div class="container mt-4">
-
-    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
-        <h2><i class="bi bi-calendar3 text-info me-2"></i> Monthly Placement Report</h2>
-        <div class="d-flex gap-2">
-            <a href="{% url 'reports:export_csv' 'monthly-report' %}" class="btn btn-outline-success">
-                <i class="bi bi-download me-1"></i> Download CSV
-            </a>
-            <a href="{% url 'reports:email_report' 'monthly-report' %}" class="btn btn-primary">
-                <i class="bi bi-envelope-at me-1"></i> Email Report to Me
-            </a>
+<div class="row">
+    <div class="col-12 mb-4">
+        <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
+            <div>
+                <h3 class="fw-bold mb-1" style="color: var(--spp-navy);"><i class="bi bi-calendar3 text-info me-2"></i> Monthly Placement Report</h3>
+                <p class="text-muted mb-0">Timeline of monthly application volume and student hires</p>
+            </div>
+            <div class="d-flex gap-2">
+                <a href="{% url 'reports:export_csv' 'monthly-report' %}" class="btn-spp-outline">
+                    <i class="bi bi-download"></i> Download CSV
+                </a>
+                <a href="{% url 'reports:email_report' 'monthly-report' %}" class="btn-spp-primary">
+                    <i class="bi bi-envelope-at-fill"></i> Email Report
+                </a>
+            </div>
         </div>
     </div>
-
-    {% if monthly_data %}
-
-    <table class="table table-bordered table-hover shadow-sm bg-white rounded">
-
-        <thead class="table-dark">
-
-            <tr>
-
-                <th>Month</th>
-
-                <th>Total Applications</th>
-
-                <th>Selected Students</th>
-
-            </tr>
-
-        </thead>
-
-        <tbody>
-
-            {% for item in monthly_data %}
-
-            <tr>
-
-                <td>
-
-                    {{ item.month|date:"F Y" }}
-
-                </td>
-
-                <td>
-
-                    {{ item.total_applications }}
-
-                </td>
-
-                <td>
-
-                    <span class="badge bg-success fs-6">{{ item.selected_students }}</span>
-
-                </td>
-
-            </tr>
-
-            {% endfor %}
-
-        </tbody>
-
-    </table>
-
-    {% else %}
-
-    <div class="alert alert-info">
-
-        No monthly data available.
-
-    </div>
-
-    {% endif %}
-
-    <a href="{% url 'reports:dashboard' %}" class="btn btn-secondary mt-3">
-        <i class="bi bi-arrow-left me-1"></i> Back to Dashboard
-    </a>
-
 </div>
 
+<div class="spp-card">
+    {% if monthly_data %}
+        <div class="table-responsive">
+            <table class="spp-table">
+                <thead>
+                    <tr>
+                        <th>Month</th>
+                        <th>Total Applications</th>
+                        <th>Selected Students</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in monthly_data %}
+                        <tr>
+                            <td><strong class="fs-6" style="color: var(--spp-navy);"><i class="bi bi-calendar-event me-1 text-primary"></i> {{ item.month|date:"F Y" }}</strong></td>
+                            <td>{{ item.total_applications }}</td>
+                            <td><span class="spp-pill green fw-bold fs-6">{{ item.selected_students }}</span></td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <div class="spp-empty py-5">
+            <i class="bi bi-calendar-x"></i>
+            <h5 class="fw-bold">No Monthly Data Available</h5>
+            <p class="text-muted small">No monthly placement trends found.</p>
+        </div>
+    {% endif %}
+
+    <div class="mt-4">
+        <a href="{% url 'reports:dashboard' %}" class="btn-spp-outline">
+            <i class="bi bi-arrow-left me-1"></i> Back to Dashboard
+        </a>
+    </div>
+</div>
 {% endblock %}

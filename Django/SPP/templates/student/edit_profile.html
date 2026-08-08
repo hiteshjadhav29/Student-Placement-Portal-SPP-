@@ -1,32 +1,41 @@
-<!DOCTYPE html>
-<html>
+{% extends "base.html" %}
 
-<head>
-    <title>Edit Profile</title>
-</head>
+{% block title %}Edit Profile - Student Placement Portal{% endblock %}
 
-<body>
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="spp-card">
+            <div class="spp-form-section-title">
+                <i class="bi bi-pencil-square text-primary"></i> Edit Student Profile
+            </div>
 
-    <h1>Edit Profile</h1>
+            <form method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
 
-    <form method="POST" enctype="multipart/form-data">
+                {% for field in form %}
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold" for="{{ field.id_for_label }}">{{ field.label }}</label>
+                        {{ field }}
+                        {% if field.help_text %}
+                            <div class="form-text small">{{ field.help_text }}</div>
+                        {% endif %}
+                        {% if field.errors %}
+                            <div class="text-danger small mt-1">{{ field.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+                {% endfor %}
 
-        {% csrf_token %}
-
-        {{ form.as_p }}
-
-        <button type="submit">
-            Save Changes
-        </button>
-
-    </form>
-
-    <br>
-
-    <a href="{% url 'students:profile' %}">
-        Back to Profile
-    </a>
-
-</body>
-
-</html>
+                <div class="d-flex align-items-center gap-2 mt-4">
+                    <button type="submit" class="btn-spp-primary">
+                        <i class="bi bi-save"></i> Save Changes
+                    </button>
+                    <a href="{% url 'students:profile' %}" class="btn-spp-outline">
+                        Cancel
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

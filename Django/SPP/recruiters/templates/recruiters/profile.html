@@ -1,133 +1,156 @@
 {% extends 'base.html' %}
 
-{% block title %}
-Recruiter Profile
-{% endblock %}
+{% block title %}Recruiter Profile - Student Placement Portal{% endblock %}
 
 {% block content %}
+<div class="row g-4">
 
-<div class="container mt-4">
+    <!-- Left Column: Identity Card & Quick Navigation -->
+    <div class="col-lg-4">
+        <!-- Profile Identity Card -->
+        <div class="spp-card text-center mb-4">
+            <div class="position-relative d-inline-block mx-auto mb-3">
+                {% if recruiter.profile_picture %}
+                    <img src="{{ recruiter.profile_picture.url }}" class="spp-avatar shadow-sm" style="width: 130px; height: 130px;" alt="{{ recruiter.user.username }}">
+                {% else %}
+                    <div class="spp-avatar border-0 shadow-sm mx-auto" style="width: 130px; height: 130px; font-size: 3.25rem; background: linear-gradient(135deg, var(--spp-grad-start), var(--spp-grad-end)); color: #ffffff;">
+                        {{ recruiter.user.username|slice:":1"|upper }}
+                    </div>
+                {% endif %}
+                <span class="position-absolute bottom-0 end-0 badge rounded-circle bg-success p-2 border border-2 border-white" title="Active Account">
+                    <span class="visually-hidden">Active</span>
+                </span>
+            </div>
 
-    <div class="row">
+            <h4 class="fw-bold mb-1" style="color: var(--spp-navy);">{{ recruiter.user.get_full_name|default:recruiter.user.username }}</h4>
+            <p class="text-primary fw-semibold mb-2"><i class="bi bi-person-badge me-1"></i> {{ recruiter.designation|default:"Corporate Recruiter" }}</p>
 
-        <div class="col-md-4">
+            <div class="d-flex justify-content-center flex-wrap gap-2 mb-3">
+                <span class="spp-pill purple">
+                    <i class="bi bi-building me-1"></i> {{ recruiter.company.company_name|default:"Hiring Organization" }}
+                </span>
+                <span class="spp-pill blue">
+                    <i class="bi bi-patch-check-fill me-1"></i> Verified
+                </span>
+            </div>
 
-            <div class="card shadow">
+            <a href="{% url 'recruiters:edit_profile' %}" class="btn-spp-primary w-100 py-2.5">
+                <i class="bi bi-pencil-square me-1.5"></i> Edit Profile Details
+            </a>
+        </div>
 
-                <div class="card-body text-center">
+        <!-- Quick Navigation Shortcuts -->
+        <div class="spp-card">
+            <div class="spp-form-section-title">
+                <i class="bi bi-compass-fill text-primary me-1"></i> Quick Navigation
+            </div>
+            <div class="d-flex flex-column gap-2 mt-3">
+                <a href="/recruiter/dashboard/" class="btn-spp-outline justify-content-start py-2 fs-7">
+                    <i class="bi bi-speedometer2 text-primary me-1"></i> Recruiter Dashboard
+                </a>
+                <a href="{% url 'recruiters:company_profile' %}" class="btn-spp-outline justify-content-start py-2 fs-7">
+                    <i class="bi bi-building text-warning me-1"></i> View Company Profile
+                </a>
+                <a href="{% url 'jobs:manage_jobs' %}" class="btn-spp-outline justify-content-start py-2 fs-7">
+                    <i class="bi bi-briefcase text-info me-1"></i> Manage Job Listings
+                </a>
+            </div>
+        </div>
+    </div>
 
-                    {% if recruiter.profile_picture %}
+    <!-- Right Column: Account Information Grid -->
+    <div class="col-lg-8">
+        <div class="spp-card h-100">
+            <div class="pb-3 mb-4 border-bottom">
+                <h4 class="fw-bold mb-1" style="color: var(--spp-navy);"><i class="bi bi-person-lines-fill text-primary me-2"></i> Recruiter Account Information</h4>
+                <p class="text-muted small mb-0">Overview of your corporate account credentials and contact info</p>
+            </div>
 
-                        <img src="{{ recruiter.profile_picture.url }}"
-                             class="rounded-circle mb-3"
-                             width="180"
-                             height="180">
 
-                    {% else %}
+            <!-- Modern Info Cards Grid -->
+            <div class="row g-3">
 
-                        <img src="https://via.placeholder.com/180"
-                             class="rounded-circle mb-3">
+                <!-- Account Username -->
+                <div class="col-12 col-md-6">
+                    <div class="p-3 border rounded-3 bg-light h-100">
+                        <div class="d-flex align-items-center gap-2 mb-1">
+                            <div class="spp-stat-icon blue p-0" style="width: 32px; height: 32px; font-size: 1rem;">
+                                <i class="bi bi-person-fill"></i>
+                            </div>
+                            <span class="small text-muted fw-bold text-uppercase">Account Username</span>
+                        </div>
+                        <div class="fw-bold fs-6 ms-4" style="color: var(--spp-navy);">{{ recruiter.user.username }}</div>
+                    </div>
+                </div>
 
-                    {% endif %}
+                <!-- Email Address -->
+                <div class="col-12 col-md-6">
+                    <div class="p-3 border rounded-3 bg-light h-100">
+                        <div class="d-flex align-items-center gap-2 mb-1">
+                            <div class="spp-stat-icon blue p-0" style="width: 32px; height: 32px; font-size: 1rem;">
+                                <i class="bi bi-envelope-fill"></i>
+                            </div>
+                            <span class="small text-muted fw-bold text-uppercase">Email Address</span>
+                        </div>
+                        <div class="fw-semibold fs-6 text-break ms-4" style="color: var(--spp-navy);">{{ recruiter.user.email }}</div>
+                    </div>
+                </div>
 
-                    <h4>{{ recruiter.full_name }}</h4>
+                <!-- Phone Number -->
+                <div class="col-12 col-md-6">
+                    <div class="p-3 border rounded-3 bg-light h-100">
+                        <div class="d-flex align-items-center gap-2 mb-1">
+                            <div class="spp-stat-icon green p-0" style="width: 32px; height: 32px; font-size: 1rem;">
+                                <i class="bi bi-telephone-fill"></i>
+                            </div>
+                            <span class="small text-muted fw-bold text-uppercase">Phone Number</span>
+                        </div>
+                        <div class="fw-semibold fs-6 ms-4" style="color: var(--spp-navy);">{{ recruiter.phone|default:"Not specified" }}</div>
+                    </div>
+                </div>
 
-                    <p class="text-muted">
-                        {{ recruiter.designation }}
-                    </p>
+                <!-- Gender -->
+                <div class="col-12 col-md-6">
+                    <div class="p-3 border rounded-3 bg-light h-100">
+                        <div class="d-flex align-items-center gap-2 mb-1">
+                            <div class="spp-stat-icon purple p-0" style="width: 32px; height: 32px; font-size: 1rem;">
+                                <i class="bi bi-gender-ambiguous"></i>
+                            </div>
+                            <span class="small text-muted fw-bold text-uppercase">Gender</span>
+                        </div>
+                        <div class="ms-4"><span class="spp-pill gray">{{ recruiter.gender|default:"Not specified" }}</span></div>
+                    </div>
+                </div>
 
-                    <p>
-                        <strong>Company:</strong><br>
-                        {{ recruiter.company.company_name }}
-                    </p>
+                <!-- Designation / Title -->
+                <div class="col-12 col-md-6">
+                    <div class="p-3 border rounded-3 bg-light h-100">
+                        <div class="d-flex align-items-center gap-2 mb-1">
+                            <div class="spp-stat-icon orange p-0" style="width: 32px; height: 32px; font-size: 1rem;">
+                                <i class="bi bi-person-badge-fill"></i>
+                            </div>
+                            <span class="small text-muted fw-bold text-uppercase">Designation / Title</span>
+                        </div>
+                        <div class="ms-4"><span class="spp-pill blue">{{ recruiter.designation|default:"Recruiter" }}</span></div>
+                    </div>
+                </div>
 
+                <!-- Associated Company -->
+                <div class="col-12 col-md-6">
+                    <div class="p-3 border rounded-3 bg-light h-100">
+                        <div class="d-flex align-items-center gap-2 mb-1">
+                            <div class="spp-stat-icon red p-0" style="width: 32px; height: 32px; font-size: 1rem;">
+                                <i class="bi bi-building-fill"></i>
+                            </div>
+                            <span class="small text-muted fw-bold text-uppercase">Associated Company</span>
+                        </div>
+                        <div class="fw-bold fs-6 ms-4" style="color: var(--spp-navy);">{{ recruiter.company.company_name }}</div>
+                    </div>
                 </div>
 
             </div>
-
         </div>
-
-        <div class="col-md-8">
-
-            <div class="card shadow">
-
-                <div class="card-header bg-primary text-white">
-
-                    Recruiter Details
-
-                </div>
-
-                <div class="card-body">
-
-                    <table class="table table-bordered">
-
-                        <tr>
-
-                            <th width="30%">Username</th>
-
-                            <td>{{ recruiter.user.username }}</td>
-
-                        </tr>
-
-                        <tr>
-
-                            <th>Email</th>
-
-                            <td>{{ recruiter.user.email }}</td>
-
-                        </tr>
-
-                        <tr>
-
-                            <th>Phone</th>
-
-                            <td>{{ recruiter.phone }}</td>
-
-                        </tr>
-
-                        <tr>
-
-                            <th>Gender</th>
-
-                            <td>{{ recruiter.gender }}</td>
-
-                        </tr>
-
-                        <tr>
-
-                            <th>Designation</th>
-
-                            <td>{{ recruiter.designation }}</td>
-
-                        </tr>
-
-                        <tr>
-
-                            <th>Company</th>
-
-                            <td>{{ recruiter.company.company_name }}</td>
-
-                        </tr>
-
-                    </table>
-
-                    <a href="{% url 'recruiters:edit_profile' %}"
-                       class="btn btn-primary">
-
-                        <i class="bi bi-pencil-square"></i>
-
-                        Edit Profile
-
-                    </a>
-
-                </div>
-
-            </div>
-
-        </div>
-
     </div>
 
 </div>
-
 {% endblock %}

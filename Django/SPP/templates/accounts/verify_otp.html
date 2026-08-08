@@ -3,47 +3,45 @@
 {% block title %}Verify OTP - Student Placement Portal{% endblock %}
 
 {% block content %}
-<div class="row justify-content-center align-items-center vh-100">
-    <div class="col-md-5 col-lg-4">
-        <div class="card shadow-lg border-0 rounded-4">
-            <div class="card-body p-4 p-sm-5">
-                <div class="text-center mb-4">
-                    <div class="bg-info text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px;">
-                        <i class="bi bi-key-fill fs-2"></i>
+<div class="row justify-content-center align-items-center min-vh-100 py-5">
+    <div class="col-md-7 col-lg-5 col-xl-4">
+        <div class="glass-card text-center p-4 p-sm-5 shadow-lg">
+            <div class="mb-4">
+                <div class="spp-stat-icon purple mx-auto mb-3" style="width: 68px; height: 68px; font-size: 2.2rem;">
+                    <i class="bi bi-key-fill"></i>
+                </div>
+                <h3 class="fw-bold mb-1" style="color: var(--spp-navy);">Enter OTP Code</h3>
+                <p class="text-muted small">We sent a 6-digit code to <strong>{{ user_email }}</strong></p>
+            </div>
+
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }} alert-dismissible fade show text-start mb-3 border-0 shadow-sm" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                     </div>
-                    <h3 class="fw-bold">Enter OTP Code</h3>
-                    <p class="text-muted small">We sent a 6-digit code to <strong>{{ user_email }}</strong></p>
+                {% endfor %}
+            {% endif %}
+
+            <form method="POST">
+                {% csrf_token %}
+                <div class="mb-4 text-center">
+                    <label class="form-label fw-bold mb-2">6-Digit One-Time Password</label>
+                    {{ form.otp }}
+                    {% if form.otp.errors %}
+                        <div class="text-danger small mt-1">{{ form.otp.errors.0 }}</div>
+                    {% endif %}
+                    <div class="text-muted small mt-2"><i class="bi bi-clock-history me-1"></i> Valid for 15 minutes</div>
                 </div>
 
-                {% if messages %}
-                    {% for message in messages %}
-                        <div class="alert alert-{{ message.tags }} alert-dismissible fade show mb-3" role="alert">
-                            {{ message }}
-                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                        </div>
-                    {% endfor %}
-                {% endif %}
+                <button type="submit" class="btn-spp-primary w-100 py-3 mb-3 fs-6">
+                    <i class="bi bi-check-circle-fill"></i> Verify OTP
+                </button>
 
-                <form method="POST">
-                    {% csrf_token %}
-                    <div class="mb-4 text-center">
-                        <label class="form-label fw-semibold mb-2">6-Digit One-Time Password</label>
-                        {{ form.otp }}
-                        {% if form.otp.errors %}
-                            <div class="text-danger small mt-1">{{ form.otp.errors.0 }}</div>
-                        {% endif %}
-                        <div class="form-text mt-2"><i class="bi bi-clock-history me-1"></i> Valid for 15 minutes</div>
-                    </div>
-
-                    <button type="submit" class="btn btn-info text-white w-100 py-2 fw-semibold rounded-3 mb-3">
-                        <i class="bi bi-check-circle-fill me-1"></i> Verify OTP
-                    </button>
-
-                    <div class="text-center text-muted small">
-                        Didn't receive code? <a href="{% url 'accounts:forgot_password' %}" class="text-primary text-decoration-none fw-semibold">Resend OTP</a>
-                    </div>
-                </form>
-            </div>
+                <div class="text-center text-muted small">
+                    Didn't receive code? <a href="{% url 'accounts:forgot_password' %}" class="fw-bold text-decoration-none" style="color: var(--spp-blue);">Resend OTP</a>
+                </div>
+            </form>
         </div>
     </div>
 </div>

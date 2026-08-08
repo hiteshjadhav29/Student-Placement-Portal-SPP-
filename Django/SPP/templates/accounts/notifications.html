@@ -4,73 +4,109 @@
 
 {% block content %}
 <div class="row">
+    <!-- Header Section -->
     <div class="col-12 mb-4">
-        <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+        <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
             <div>
-                <h3 class="fw-bold mb-1"><i class="bi bi-bell-fill text-warning me-2"></i> Notifications</h3>
-                <p class="text-muted mb-0">Stay updated on your placement activities and updates</p>
+                <div class="d-flex align-items-center gap-2 mb-1">
+                    <h3 class="fw-bold mb-0" style="color: var(--spp-navy);"><i class="bi bi-bell-fill text-warning me-2"></i> Notifications & Placement Feed</h3>
+                    {% if user.role == 'officer' %}
+                        <span class="spp-pill orange fs-7">TPO Officer Feed</span>
+                    {% elif user.role == 'recruiter' %}
+                        <span class="spp-pill purple fs-7">Recruiter Feed</span>
+                    {% else %}
+                        <span class="spp-pill blue fs-7">Student Feed</span>
+                    {% endif %}
+                </div>
+                <p class="text-muted mb-0">Stay updated on campus recruitment drives, new job postings, and placement activities.</p>
             </div>
+
             {% if notifications %}
-                <a href="{% url 'accounts:mark_all_notifications_read' %}" class="btn btn-outline-secondary btn-sm fw-semibold rounded-pill">
+                <a href="{% url 'accounts:mark_all_notifications_read' %}" class="btn-spp-outline py-2 px-3 fs-7">
                     <i class="bi bi-check-all me-1"></i> Mark All as Read
                 </a>
             {% endif %}
         </div>
     </div>
-</div>
 
-<div class="row">
+    <!-- Alert Messages -->
+    {% if messages %}
+        <div class="col-12 mb-3">
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show border-0 shadow-sm" style="border-radius: 12px;">
+                    <i class="bi bi-info-circle-fill me-2"></i> {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <!-- Notifications Feed List -->
     <div class="col-12">
-        <div class="card border-0 shadow-sm rounded-4">
-            <div class="card-body p-0">
-                {% if notifications %}
-                    <div class="list-group list-group-flush rounded-4">
-                        {% for n in notifications %}
-                            <div class="list-group-item p-3 border-bottom {% if not n.is_read %}bg-light border-start border-4 border-warning{% endif %}">
-                                <div class="d-flex align-items-start justify-content-between">
-                                    <div class="me-3">
-                                        <div class="d-flex align-items-center mb-1">
-                                            {% if n.notification_type == 'job' %}
-                                                <span class="badge bg-primary me-2"><i class="bi bi-briefcase"></i> Job</span>
-                                            {% elif n.notification_type == 'application' %}
-                                                <span class="badge bg-info text-white me-2"><i class="bi bi-file-earmark-text"></i> Application</span>
-                                            {% elif n.notification_type == 'interview' %}
-                                                <span class="badge bg-success me-2"><i class="bi bi-calendar-event"></i> Interview</span>
-                                            {% elif n.notification_type == 'report' %}
-                                                <span class="badge bg-dark me-2"><i class="bi bi-bar-chart"></i> Report</span>
-                                            {% else %}
-                                                <span class="badge bg-secondary me-2"><i class="bi bi-info-circle"></i> Notice</span>
-                                            {% endif %}
-                                            <h6 class="fw-bold mb-0 {% if not n.is_read %}text-dark{% else %}text-secondary{% endif %}">{{ n.title }}</h6>
-                                        </div>
-                                        <p class="text-dark mb-1 small">{{ n.message }}</p>
-                                        <small class="text-muted"><i class="bi bi-clock me-1"></i> {{ n.created_at|timesince }} ago</small>
-                                    </div>
-                                    <div class="d-flex align-items-center gap-2">
+        {% if notifications %}
+            <div class="d-flex flex-column gap-3">
+                {% for n in notifications %}
+                    <div class="spp-card mb-0 p-3.5 {% if not n.is_read %}bg-white border-primary border-opacity-25 shadow-sm{% else %}bg-light opacity-75{% endif %}">
+                        <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
+                            <div class="d-flex align-items-center gap-3">
+                                <!-- Icon Chip -->
+                                <div class="spp-stat-icon {% if n.notification_type == 'job' or 'Job' in n.title %}blue{% elif n.notification_type == 'application' or 'Application' in n.title %}green{% elif n.notification_type == 'interview' %}purple{% elif n.notification_type == 'report' %}orange{% else %}gray{% endif %} p-0 flex-shrink-0" style="width: 44px; height: 44px; font-size: 1.25rem;">
+                                    {% if n.notification_type == 'job' or 'Job' in n.title %}
+                                        <i class="bi bi-briefcase-fill"></i>
+                                    {% elif n.notification_type == 'application' or 'Application' in n.title %}
+                                        <i class="bi bi-send-fill"></i>
+                                    {% elif n.notification_type == 'interview' %}
+                                        <i class="bi bi-calendar-check-fill"></i>
+                                    {% elif n.notification_type == 'report' %}
+                                        <i class="bi bi-bar-chart-fill"></i>
+                                    {% else %}
+                                        <i class="bi bi-bell-fill"></i>
+                                    {% endif %}
+                                </div>
+
+                                <!-- Notification Message Content -->
+                                <div>
+                                    <div class="d-flex align-items-center gap-2 mb-1">
+                                        <strong class="fs-6" style="color: var(--spp-navy);">{{ n.title }}</strong>
                                         {% if not n.is_read %}
-                                            <a href="{% url 'accounts:mark_notification_read' n.id %}" class="btn btn-sm btn-light border text-primary" title="Mark as Read">
-                                                <i class="bi bi-check2"></i> Read
-                                            </a>
-                                        {% endif %}
-                                        {% if n.link %}
-                                            <a href="{{ n.link }}" class="btn btn-sm btn-primary">
-                                                View <i class="bi bi-arrow-right"></i>
-                                            </a>
+                                            <span class="spp-pill blue fs-7 py-0.5 px-2.5">New</span>
                                         {% endif %}
                                     </div>
+                                    <p class="mb-1 text-secondary small fw-medium" style="line-height: 1.5;">{{ n.message }}</p>
+                                    <small class="text-muted"><i class="bi bi-clock me-1"></i> {{ n.created_at|timesince }} ago ({{ n.created_at|date:"d M Y, h:i A" }})</small>
                                 </div>
                             </div>
-                        {% endfor %}
+
+                            <!-- Action Buttons -->
+                            <div class="d-flex align-items-center gap-2 ms-auto ms-sm-0">
+                                {% if not n.is_read %}
+                                    <a href="{% url 'accounts:mark_notification_read' n.id %}" class="btn-spp-outline py-1.5 px-3 fs-7" title="Mark as Read">
+                                        <i class="bi bi-check-lg me-1"></i> Mark Read
+                                    </a>
+                                {% else %}
+                                    <span class="badge bg-light text-muted border fs-7 px-2.5 py-1.5">Read</span>
+                                {% endif %}
+
+                                {% if n.link %}
+                                    <a href="{{ n.link }}" class="btn-spp-primary py-1.5 px-3 fs-7">
+                                        View Details <i class="bi bi-arrow-right ms-1"></i>
+                                    </a>
+                                {% endif %}
+                            </div>
+                        </div>
                     </div>
-                {% else %}
-                    <div class="text-center py-5">
-                        <i class="bi bi-bell-slash text-muted fs-1 mb-3 d-block"></i>
-                        <h5 class="text-muted fw-normal">No notifications yet</h5>
-                        <p class="text-muted small">You will receive notifications for job updates, applications, and system alerts here.</p>
-                    </div>
-                {% endif %}
+                {% endfor %}
             </div>
-        </div>
+        {% else %}
+            <!-- Clean Empty State -->
+            <div class="spp-card py-5 text-center">
+                <div class="spp-empty py-3">
+                    <i class="bi bi-bell-slash text-muted opacity-50 display-4 mb-3"></i>
+                    <h5 class="fw-bold" style="color: var(--spp-navy);">All Caught Up!</h5>
+                    <p class="text-muted small mb-0">You have no unread placement activity notifications.</p>
+                </div>
+            </div>
+        {% endif %}
     </div>
 </div>
 {% endblock %}

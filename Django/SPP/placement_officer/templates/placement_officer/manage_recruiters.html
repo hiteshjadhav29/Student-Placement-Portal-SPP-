@@ -1,125 +1,84 @@
 {% extends "base.html" %}
 
-{% block title %}
-Manage Recruiters
-{% endblock %}
+{% block title %}Manage Recruiters - Placement Officer{% endblock %}
 
 {% block content %}
-
-<div class="container mt-5">
-
-    <h2 class="mb-4">
-        Manage Recruiters
-    </h2>
-
-    {% if recruiters %}
-
-    <form method="GET" class="row mb-4">
-
-        <div class="col-md-10">
-
-            <input type="text" name="q" class="form-control"
-                placeholder="Search by recruiter, company, email or designation..." value="{{ query }}">
-
+<div class="row">
+    <div class="col-12 mb-4">
+        <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+            <div>
+                <h3 class="fw-bold mb-1" style="color: var(--spp-navy);"><i class="bi bi-person-badge-fill text-primary me-2"></i> Recruiter Directory</h3>
+                <p class="text-muted mb-0">Manage corporate recruiter accounts and company affiliations</p>
+            </div>
         </div>
-
-        <div class="col-md-2">
-
-            <button type="submit" class="btn btn-primary w-100">
-
-                Search
-
-            </button>
-
-        </div>
-
-    </form>
-
-    <table class="table table-bordered table-hover">
-
-        <thead class="table-dark">
-
-            <tr>
-
-                <th>Name</th>
-                <th>Company</th>
-                <th>Email</th>
-                <th>Phone</th>
-                <th>Designation</th>
-                <th>Verified</th>
-                <th>Actions</th>
-
-            </tr>
-
-        </thead>
-
-        <tbody>
-
-            {% for recruiter in recruiters %}
-
-            <tr>
-
-                <td>{{ recruiter.full_name }}</td>
-
-                <td>{{ recruiter.company.company_name }}</td>
-
-                <td>{{ recruiter.user.email }}</td>
-
-                <td>{{ recruiter.phone }}</td>
-
-                <td>{{ recruiter.designation }}</td>
-
-                <td>
-
-                    {% if recruiter.is_verified %}
-
-                    <span class="badge bg-success">
-
-                        Verified
-
-                    </span>
-
-                    {% else %}
-
-                    <span class="badge bg-danger">
-
-                        Not Verified
-
-                    </span>
-
-                    {% endif %}
-
-                </td>
-
-                <td>
-
-                    <a href="{% url 'placement_officer:recruiter_profile' recruiter.id %}"
-                        class="btn btn-primary btn-sm">
-
-                        View Profile
-
-                    </a>
-
-                </td>
-
-            </tr>
-
-            {% endfor %}
-
-        </tbody>
-
-    </table>
-
-    {% else %}
-
-    <div class="alert alert-info">
-
-        No recruiters found.
-
     </div>
-
-    {% endif %}
-
 </div>
 
+<div class="spp-card mb-4">
+    <form method="GET">
+        <div class="row g-3">
+            <div class="col-md-10">
+                <div class="input-group">
+                    <span class="input-group-text bg-light"><i class="bi bi-search text-muted"></i></span>
+                    <input type="text" name="q" class="form-control"
+                        placeholder="Search by recruiter, company, email or designation..." value="{{ query }}">
+                </div>
+            </div>
+            <div class="col-md-2">
+                <button type="submit" class="btn-spp-primary w-100 py-2">
+                    <i class="bi bi-search"></i> Search
+                </button>
+            </div>
+        </div>
+    </form>
+</div>
+
+<div class="spp-card">
+    {% if recruiters %}
+        <div class="table-responsive">
+            <table class="spp-table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Company</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                        <th>Designation</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for recruiter in recruiters %}
+                        <tr>
+                            <td><strong class="fs-6" style="color: var(--spp-navy);">{{ recruiter.full_name }}</strong></td>
+                            <td><span class="fw-semibold text-primary"><i class="bi bi-building me-1"></i> {{ recruiter.company.company_name }}</span></td>
+                            <td><span class="text-muted small">{{ recruiter.user.email }}</span></td>
+                            <td>{{ recruiter.phone|default:"-" }}</td>
+                            <td>{{ recruiter.designation|default:"-" }}</td>
+                            <td>
+                                {% if recruiter.is_verified %}
+                                    <span class="spp-pill green"><i class="bi bi-check-circle-fill"></i> Verified</span>
+                                {% else %}
+                                    <span class="spp-pill red"><i class="bi bi-x-circle-fill"></i> Unverified</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <a href="{% url 'placement_officer:recruiter_profile' recruiter.id %}" class="btn-spp-primary py-1 px-2.5 fs-7">
+                                    <i class="bi bi-eye-fill me-1"></i> View Profile
+                                </a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <div class="spp-empty py-5">
+            <i class="bi bi-person-badge"></i>
+            <h5 class="fw-bold">No Recruiters Found</h5>
+            <p class="text-muted small">No recruiter profiles matched your search parameters.</p>
+        </div>
+    {% endif %}
+</div>
 {% endblock %}

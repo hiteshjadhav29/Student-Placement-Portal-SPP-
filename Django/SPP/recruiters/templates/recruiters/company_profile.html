@@ -1,211 +1,120 @@
 {% extends 'base.html' %}
 
-{% block title %}
-Company Profile
-{% endblock %}
+{% block title %}Company Profile - Student Placement Portal{% endblock %}
 
 {% block content %}
+<div class="row g-4">
 
-<div class="container mt-4">
-
-    <div class="row">
-
-        <!-- Company Logo -->
-
-        <div class="col-lg-4">
-
-            <div class="card shadow">
-
-                <div class="card-body text-center">
-
-                    {% if company.logo %}
-
-                        <img src="{{ company.logo.url }}"
-                             class="img-fluid rounded-circle mb-3"
-                             width="180"
-                             height="180">
-
-                    {% else %}
-
-                        <img src="https://via.placeholder.com/180"
-                             class="img-fluid rounded-circle mb-3">
-
-                    {% endif %}
-
-                    <h3>{{ company.company_name }}</h3>
-
-                    <p class="text-muted">
-                        {{ company.industry }}
-                    </p>
-
-                </div>
-
-            </div>
-
-        </div>
-
-        <!-- Company Details -->
-
-        <div class="col-lg-8">
-
-            <div class="card shadow">
-
-                <div class="card-header bg-info text-white">
-
-                    <h4>
-
+    <!-- Company Logo & Overview Card -->
+    <div class="col-lg-4">
+        <div class="spp-card text-center h-100">
+            <div class="mb-3">
+                {% if company.logo %}
+                    <img src="{{ company.logo.url }}" class="spp-logo shadow" style="width: 130px; height: 130px; border-radius: 24px;" alt="{{ company.company_name }}">
+                {% else %}
+                    <div class="spp-logo shadow mx-auto" style="width: 130px; height: 130px; border-radius: 24px; font-size: 3.5rem; background: linear-gradient(135deg, var(--spp-navy), var(--spp-navy-light)); color: #ffffff;">
                         <i class="bi bi-building"></i>
-
-                        Company Information
-
-                    </h4>
-
-                </div>
-
-                <div class="card-body">
-
-                    <table class="table table-bordered">
-
-                        <tr>
-
-                            <th width="30%">Company Name</th>
-
-                            <td>{{ company.company_name }}</td>
-
-                        </tr>
-
-                        <tr>
-
-                            <th>Email</th>
-
-                            <td>{{ company.company_email }}</td>
-
-                        </tr>
-
-                        <tr>
-
-                            <th>Phone</th>
-
-                            <td>{{ company.company_phone }}</td>
-
-                        </tr>
-
-                        <tr>
-
-                            <th>Website</th>
-
-                            <td>
-
-                                <a href="{{ company.website }}"
-                                   target="_blank">
-
-                                    {{ company.website }}
-
-                                </a>
-
-                            </td>
-
-                        </tr>
-
-                        <tr>
-
-                            <th>Industry</th>
-
-                            <td>{{ company.industry }}</td>
-
-                        </tr>
-
-                        <tr>
-
-                            <th>Location</th>
-
-                            <td>{{ company.location }}</td>
-
-                        </tr>
-
-                        <tr>
-
-                            <th>Description</th>
-
-                            <td>{{ company.description }}</td>
-
-                        </tr>
-
-                    </table>
-
-                    <div class="row mt-4">
-
-                        <div class="col-md-4">
-
-                            <div class="card bg-primary text-white">
-
-                                <div class="card-body text-center">
-
-                                    <h5>{{ total_jobs }}</h5>
-
-                                    <small>Total Jobs</small>
-
-                                </div>
-
-                            </div>
-
-                        </div>
-
-                        <div class="col-md-4">
-
-                            <div class="card bg-success text-white">
-
-                                <div class="card-body text-center">
-
-                                    <h5>{{ active_jobs }}</h5>
-
-                                    <small>Active Jobs</small>
-
-                                </div>
-
-                            </div>
-
-                        </div>
-
-                        <div class="col-md-4">
-
-                            <div class="card bg-warning text-dark">
-
-                                <div class="card-body text-center">
-
-                                    <h5>{{ total_applicants }}</h5>
-
-                                    <small>Applicants</small>
-
-                                </div>
-
-                            </div>
-
-                        </div>
-
                     </div>
-
-                    <div class="mt-4">
-
-                        <a href="{% url 'recruiters:edit_company' %}"
-                           class="btn btn-primary">
-
-                            <i class="bi bi-pencil-square"></i>
-
-                            Edit Company Profile
-
-                        </a>
-
-                    </div>
-
-                </div>
-
+                {% endif %}
             </div>
 
-        </div>
+            <h3 class="fw-bold mb-1" style="color: var(--spp-navy);">{{ company.company_name }}</h3>
+            <p class="text-primary fw-semibold mb-2"><i class="bi bi-diagram-3 me-1"></i> {{ company.industry|default:"Corporate Hiring Partner" }}</p>
 
+            <span class="spp-pill blue mb-3">
+                <i class="bi bi-geo-alt-fill me-1"></i> {{ company.location|default:"Location unspecified" }}
+            </span>
+
+            <hr class="my-3 opacity-25">
+
+            <!-- 3 Stat Tiles -->
+            <div class="row g-2 mb-3">
+                <div class="col-4">
+                    <div class="p-2 border rounded-3 bg-light">
+                        <div class="fw-bold fs-5 text-primary">{{ total_jobs|default:"0" }}</div>
+                        <div class="small text-muted" style="font-size: 0.75rem;">Jobs</div>
+                    </div>
+                </div>
+                <div class="col-4">
+                    <div class="p-2 border rounded-3 bg-light">
+                        <div class="fw-bold fs-5 text-success">{{ active_jobs|default:"0" }}</div>
+                        <div class="small text-muted" style="font-size: 0.75rem;">Active</div>
+                    </div>
+                </div>
+                <div class="col-4">
+                    <div class="p-2 border rounded-3 bg-light">
+                        <div class="fw-bold fs-5 text-warning">{{ total_applicants|default:"0" }}</div>
+                        <div class="small text-muted" style="font-size: 0.75rem;">Applicants</div>
+                    </div>
+                </div>
+            </div>
+
+            <a href="{% url 'recruiters:edit_company' %}" class="btn-spp-primary w-100 py-2">
+                <i class="bi bi-pencil-square me-1"></i> Edit Company Profile
+            </a>
+        </div>
+    </div>
+
+    <!-- Company Details Table Card -->
+    <div class="col-lg-8">
+        <div class="spp-card h-100">
+            <div class="d-flex align-items-center justify-content-between pb-3 mb-3 border-bottom">
+                <div class="spp-form-section-title mb-0 border-0 p-0">
+                    <i class="bi bi-building-gear text-primary me-2"></i> Organization Details
+                </div>
+                <a href="{% url 'recruiters:edit_company' %}" class="btn-spp-outline py-1 px-3 fs-7">
+                    <i class="bi bi-pencil"></i> Edit Info
+                </a>
+            </div>
+
+            <div class="table-responsive">
+                <table class="spp-table">
+                    <tbody>
+                        <tr>
+                            <th width="32%">Company Name</th>
+                            <td><strong class="fs-6" style="color: var(--spp-navy);">{{ company.company_name }}</strong></td>
+                        </tr>
+                        <tr>
+                            <th>Corporate Email</th>
+                            <td><i class="bi bi-envelope text-primary me-1"></i> {{ company.company_email }}</td>
+                        </tr>
+                        <tr>
+                            <th>Phone Number</th>
+                            <td><i class="bi bi-telephone text-success me-1"></i> {{ company.company_phone|default:"Not specified" }}</td>
+                        </tr>
+                        <tr>
+                            <th>Official Website</th>
+                            <td>
+                                {% if company.website %}
+                                    <a href="{{ company.website }}" target="_blank" class="fw-semibold text-decoration-none">
+                                        <i class="bi bi-globe me-1"></i> {{ company.website }}
+                                    </a>
+                                {% else %}
+                                    <span class="text-muted small">Not provided</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>Industry Sector</th>
+                            <td><span class="spp-pill purple">{{ company.industry|default:"Corporate" }}</span></td>
+                        </tr>
+                        <tr>
+                            <th>Headquarters Location</th>
+                            <td><span class="spp-pill green"><i class="bi bi-geo-alt me-1"></i> {{ company.location|default:"Not specified" }}</span></td>
+                        </tr>
+                        <tr>
+                            <th>Organization Overview</th>
+                            <td>
+                                <p class="mb-0 text-muted small" style="line-height: 1.6;">
+                                    {{ company.description|default:"No description provided yet." }}
+                                </p>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
 
 </div>
-
 {% endblock %}

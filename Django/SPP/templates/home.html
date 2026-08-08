@@ -1,25 +1,547 @@
 {% extends "base.html" %}
 
-{% block title %}
-Student Placement Portal
-{% endblock %}
+{% block title %}Student Placement Portal - Launch Your Career with Confidence{% endblock %}
 
 {% block content %}
+<div class="container-fluid p-0">
 
-<div class="container mt-5 text-center">
+    <!-- SECTION 1: HERO SECTION -->
+    <section class="spp-hero text-start p-4 p-md-5 mb-5 shadow-lg position-relative overflow-hidden fade-in-up">
+        <div class="row align-items-center g-4">
+            <div class="col-lg-7">
+                <div class="d-inline-flex align-items-center gap-2 bg-dark bg-opacity-25 text-white px-4 py-2 rounded-pill mb-3 border border-white border-opacity-25 shadow-sm">
+                    <i class="bi bi-rocket-takeoff-fill text-warning fs-6 me-1"></i>
+                    <span class="small fw-bold text-white">Trusted by 100+ Universities & Top Corporate Recruiters</span>
+                </div>
 
-    <h1>Student Placement Portal</h1>
 
-    <p>Welcome to the Student Placement Portal.</p>
 
-    <a href="{% url 'accounts:login' %}" class="btn btn-primary">
-        Login
-    </a>
+                <h1 class="display-3 fw-extrabold mb-3 text-white letter-spacing-tight" style="line-height: 1.12;">
+                    Launch Your Career with <span class="text-warning">Confidence</span>
+                </h1>
 
-    <a href="{% url 'accounts:register' %}" class="btn btn-success">
-        Register
-    </a>
+                <p class="fs-5 text-white opacity-90 mb-4 fw-medium" style="max-width: 630px; line-height: 1.6;">
+                    A centralized campus placement portal connecting students, corporate recruiters, and placement officers for seamless hiring — from profile building to official job offers.
+                </p>
+
+                <div class="d-flex align-items-center flex-wrap gap-3 mb-4">
+                    {% if not user.is_authenticated %}
+                        <a href="{% url 'accounts:register' %}" class="btn btn-light text-primary fw-extrabold px-4 py-3 rounded-3 shadow-lg hover-shadow fs-6">
+                            <i class="bi bi-person-plus-fill me-2"></i> Get Started
+                        </a>
+                        <a href="{% url 'jobs:job_list' %}" class="btn btn-outline-light fw-bold px-4 py-3 rounded-3 fs-6">
+                            <i class="bi bi-briefcase-fill me-2"></i> Browse Jobs
+                        </a>
+                    {% else %}
+                        {% if user.role == 'student' %}
+                            <a href="{% url 'students:dashboard' %}" class="btn btn-light text-primary fw-extrabold px-4 py-3 rounded-3 shadow-lg hover-shadow fs-6">
+                                <i class="bi bi-speedometer2 me-2"></i> Student Dashboard
+                            </a>
+                        {% elif user.role == 'recruiter' %}
+                            <a href="/recruiter/dashboard/" class="btn btn-light text-primary fw-extrabold px-4 py-3 rounded-3 shadow-lg hover-shadow fs-6">
+                                <i class="bi bi-speedometer2 me-2"></i> Recruiter Dashboard
+                            </a>
+                        {% elif user.role == 'officer' %}
+                            <a href="{% url 'placement_officer:dashboard' %}" class="btn btn-light text-primary fw-extrabold px-4 py-3 rounded-3 shadow-lg hover-shadow fs-6">
+                                <i class="bi bi-speedometer2 me-2"></i> Officer Command Center
+                            </a>
+                        {% endif %}
+                        <a href="{% url 'jobs:job_list' %}" class="btn btn-outline-light fw-bold px-4 py-3 rounded-3 fs-6">
+                            <i class="bi bi-briefcase me-2"></i> Placement Drives
+                        </a>
+                    {% endif %}
+                </div>
+
+                <!-- Trust Rating Pill -->
+                <div class="d-flex align-items-center gap-3 pt-2">
+                    <div class="d-flex align-items-center">
+                        <div class="spp-avatar border-2 border-white shadow-sm" style="width: 36px; height: 36px; font-size: 0.9rem; background: var(--spp-blue); color: #fff; margin-right: -10px;">S</div>
+                        <div class="spp-avatar border-2 border-white shadow-sm" style="width: 36px; height: 36px; font-size: 0.9rem; background: var(--spp-purple); color: #fff; margin-right: -10px;">R</div>
+                        <div class="spp-avatar border-2 border-white shadow-sm" style="width: 36px; height: 36px; font-size: 0.9rem; background: var(--spp-green); color: #fff;">P</div>
+                    </div>
+                    <div class="small text-white">
+                        <div class="fw-bold"><i class="bi bi-star-fill text-warning me-1"></i> 4.9/5 Student Rating</div>
+                        <div class="opacity-75">Over 2,500+ active candidates placed</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Hero Dynamic Card Graphic -->
+            <div class="col-lg-5 text-center">
+                <div class="p-4 p-md-5 rounded-4 bg-white text-dark shadow-2xl position-relative border-0" style="box-shadow: 0 25px 60px rgba(0,0,0,0.25) !important;">
+                    <div class="spp-stat-icon blue mx-auto mb-3" style="width: 76px; height: 76px; font-size: 2.25rem;">
+                        <i class="bi bi-mortarboard-fill"></i>
+                    </div>
+                    <h3 class="fw-bold mb-2" style="color: var(--spp-navy);">Centralized Campus Hiring</h3>
+                    <p class="text-muted small mb-4">Empowering Universities, Students, and Corporate Partners with Real-Time Placement Automation.</p>
+
+                    <div class="row g-3 text-start">
+                        <div class="col-6">
+                            <div class="p-3 rounded-3 bg-light border text-center">
+                                <div class="fw-extrabold fs-4 text-primary">{{ placement_rate|default:"95.0" }}%</div>
+                                <div class="small text-muted fw-bold text-uppercase" style="font-size: 0.7rem;">Placement Rate</div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="p-3 rounded-3 bg-light border text-center">
+                                <div class="fw-extrabold fs-4 text-success">{{ total_jobs|default:"300" }}+</div>
+                                <div class="small text-muted fw-bold text-uppercase" style="font-size: 0.7rem;">Active Drives</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- SECTION 3: ANIMATED STATISTICS COUNTERS -->
+    <div class="row g-3 mb-5">
+        <div class="col-6 col-md-4 col-lg-2">
+            <div class="spp-stat text-center justify-content-center flex-column py-3.5">
+                <div class="spp-stat-val text-primary count-up" data-target="{{ total_students|default:'2500' }}">0</div>
+                <div class="spp-stat-label mt-1">Total Students</div>
+            </div>
+        </div>
+        <div class="col-6 col-md-4 col-lg-2">
+            <div class="spp-stat text-center justify-content-center flex-column py-3.5">
+                <div class="spp-stat-val text-purple count-up" data-target="{{ total_companies|default:'150' }}">0</div>
+                <div class="spp-stat-label mt-1">Recruiters</div>
+            </div>
+        </div>
+        <div class="col-6 col-md-4 col-lg-2">
+            <div class="spp-stat text-center justify-content-center flex-column py-3.5">
+                <div class="spp-stat-val text-info count-up" data-target="{{ total_companies|default:'150' }}">0</div>
+                <div class="spp-stat-label mt-1">Companies</div>
+            </div>
+        </div>
+        <div class="col-6 col-md-4 col-lg-2">
+            <div class="spp-stat text-center justify-content-center flex-column py-3.5">
+                <div class="spp-stat-val text-warning count-up" data-target="{{ total_jobs|default:'300' }}">0</div>
+                <div class="spp-stat-label mt-1">Jobs Posted</div>
+            </div>
+        </div>
+        <div class="col-6 col-md-4 col-lg-2">
+            <div class="spp-stat text-center justify-content-center flex-column py-3.5">
+                <div class="spp-stat-val text-success count-up" data-target="{{ total_placements|default:'900' }}">0</div>
+                <div class="spp-stat-label mt-1">Students Placed</div>
+            </div>
+        </div>
+        <div class="col-6 col-md-4 col-lg-2">
+            <div class="spp-stat text-center justify-content-center flex-column py-3.5">
+                <div class="spp-stat-val text-success"><span class="count-up" data-target="95">0</span>%</div>
+                <div class="spp-stat-label mt-1">Placement %</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SECTION 4: FEATURES SECTION -->
+    <div class="mb-5">
+        <div class="text-center mb-4">
+            <span class="spp-pill blue mb-2">Portal Modules</span>
+            <h2 class="display-6 fw-bold" style="color: var(--spp-navy);">Everything You Need for Campus Placements</h2>
+            <p class="text-muted mx-auto" style="max-width: 600px;">Integrated modules designed for Students, Recruiters, and Placement Officers.</p>
+        </div>
+
+        <div class="row g-4">
+            <!-- Student Dashboard -->
+            <div class="col-12 col-md-6 col-lg-4">
+                <div class="spp-card h-100 hover-shadow">
+                    <div class="spp-stat-icon blue mb-3">
+                        <i class="bi bi-mortarboard-fill"></i>
+                    </div>
+                    <h5 class="fw-bold mb-2" style="color: var(--spp-navy);">Student Dashboard</h5>
+                    <p class="text-muted small mb-0">Build academic profiles, track applications, manage skills, and review drive eligibility.</p>
+                </div>
+            </div>
+
+            <!-- Recruiter Dashboard -->
+            <div class="col-12 col-md-6 col-lg-4">
+                <div class="spp-card h-100 hover-shadow">
+                    <div class="spp-stat-icon purple mb-3">
+                        <i class="bi bi-building-fill"></i>
+                    </div>
+                    <h5 class="fw-bold mb-2" style="color: var(--spp-navy);">Recruiter Dashboard</h5>
+                    <p class="text-muted small mb-0">Post campus openings, review ATS candidate profiles, and manage shortlisting pipelines.</p>
+                </div>
+            </div>
+
+            <!-- Placement Officer Dashboard -->
+            <div class="col-12 col-md-6 col-lg-4">
+                <div class="spp-card h-100 hover-shadow">
+                    <div class="spp-stat-icon orange mb-3">
+                        <i class="bi bi-shield-check"></i>
+                    </div>
+                    <h5 class="fw-bold mb-2" style="color: var(--spp-navy);">Placement Officer Command Center</h5>
+                    <p class="text-muted small mb-0">Oversee student rosters, approve corporate recruiters, export CSV reports, and send broadcast mailers.</p>
+                </div>
+            </div>
+
+            <!-- Resume Upload -->
+            <div class="col-12 col-md-6 col-lg-4">
+                <div class="spp-card h-100 hover-shadow">
+                    <div class="spp-stat-icon green mb-3">
+                        <i class="bi bi-file-earmark-pdf-fill"></i>
+                    </div>
+                    <h5 class="fw-bold mb-2" style="color: var(--spp-navy);">Resume Upload & Preview</h5>
+                    <p class="text-muted small mb-0">Upload PDF resume files with in-browser PDF previews for instant recruiter evaluation.</p>
+                </div>
+            </div>
+
+
+
+            <!-- Live Placement Tracker -->
+            <div class="col-12 col-md-6 col-lg-4">
+                <div class="spp-card h-100 hover-shadow">
+                    <div class="spp-stat-icon gray mb-3">
+                        <i class="bi bi-clock-history"></i>
+                    </div>
+                    <h5 class="fw-bold mb-2" style="color: var(--spp-navy);">Live Placement Tracker</h5>
+                    <p class="text-muted small mb-0">Track real-time status updates: Pending, Under Review, Shortlisted, Selected, or Rejected.</p>
+                </div>
+            </div>
+
+            <!-- Notifications & Reports -->
+            <div class="col-12 col-md-6 col-lg-4">
+                <div class="spp-card h-100 hover-shadow">
+                    <div class="spp-stat-icon green mb-3">
+                        <i class="bi bi-bell-fill"></i>
+                    </div>
+                    <h5 class="fw-bold mb-2" style="color: var(--spp-navy);">Notifications & Reports</h5>
+                    <p class="text-muted small mb-0">Instant activity notifications and exportable CSV placement statistics for university compliance.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SECTION 5: HOW IT WORKS TIMELINE -->
+    <div class="spp-card mb-5 bg-light border-0 py-5 px-4">
+        <div class="text-center mb-5">
+            <span class="spp-pill purple mb-2"><i class="bi bi-diagram-3-fill me-1"></i> Hiring Process</span>
+            <h2 class="display-6 fw-bold" style="color: var(--spp-navy);">Six Steps to Your Dream Offer</h2>
+            <p class="text-muted mx-auto" style="max-width: 550px;">A seamless campus placement journey guided by automated tools and placement officer support.</p>
+        </div>
+
+        <div class="row g-4 text-center">
+            <!-- Step 1 -->
+            <div class="col-6 col-md-4 col-lg-2">
+                <div class="spp-card h-100 border-0 shadow-sm hover-shadow p-3 d-flex flex-column align-items-center justify-content-center">
+                    <span class="spp-pill blue py-0.5 px-2.5 mb-3 fw-bold" style="font-size: 0.7rem;">STEP 01</span>
+                    <div class="spp-stat-icon blue p-0 mb-3" style="width: 52px; height: 52px; font-size: 1.35rem;">
+                        <i class="bi bi-person-plus-fill"></i>
+                    </div>
+                    <h6 class="fw-bold mb-1" style="color: var(--spp-navy);">Register</h6>
+                    <small class="text-muted" style="font-size: 0.75rem;">Create account</small>
+                </div>
+            </div>
+
+            <!-- Step 2 -->
+            <div class="col-6 col-md-4 col-lg-2">
+                <div class="spp-card h-100 border-0 shadow-sm hover-shadow p-3 d-flex flex-column align-items-center justify-content-center">
+                    <span class="spp-pill blue py-0.5 px-2.5 mb-3 fw-bold" style="font-size: 0.7rem;">STEP 02</span>
+                    <div class="spp-stat-icon blue p-0 mb-3" style="width: 52px; height: 52px; font-size: 1.35rem;">
+                        <i class="bi bi-mortarboard-fill"></i>
+                    </div>
+                    <h6 class="fw-bold mb-1" style="color: var(--spp-navy);">Complete Profile</h6>
+                    <small class="text-muted" style="font-size: 0.75rem;">Branch & CGPA</small>
+                </div>
+            </div>
+
+            <!-- Step 3 -->
+            <div class="col-6 col-md-4 col-lg-2">
+                <div class="spp-card h-100 border-0 shadow-sm hover-shadow p-3 d-flex flex-column align-items-center justify-content-center">
+                    <span class="spp-pill purple py-0.5 px-2.5 mb-3 fw-bold" style="font-size: 0.7rem;">STEP 03</span>
+                    <div class="spp-stat-icon purple p-0 mb-3" style="width: 52px; height: 52px; font-size: 1.35rem;">
+                        <i class="bi bi-file-earmark-pdf-fill"></i>
+                    </div>
+                    <h6 class="fw-bold mb-1" style="color: var(--spp-navy);">Upload Resume</h6>
+                    <small class="text-muted" style="font-size: 0.75rem;">PDF ATS resume</small>
+                </div>
+            </div>
+
+            <!-- Step 4 -->
+            <div class="col-6 col-md-4 col-lg-2">
+                <div class="spp-card h-100 border-0 shadow-sm hover-shadow p-3 d-flex flex-column align-items-center justify-content-center">
+                    <span class="spp-pill orange py-0.5 px-2.5 mb-3 fw-bold" style="font-size: 0.7rem;">STEP 04</span>
+                    <div class="spp-stat-icon orange p-0 mb-3" style="width: 52px; height: 52px; font-size: 1.35rem;">
+                        <i class="bi bi-briefcase-fill"></i>
+                    </div>
+                    <h6 class="fw-bold mb-1" style="color: var(--spp-navy);">Apply Jobs</h6>
+                    <small class="text-muted" style="font-size: 0.75rem;">1-click submission</small>
+                </div>
+            </div>
+
+            <!-- Step 5 -->
+            <div class="col-6 col-md-4 col-lg-2">
+                <div class="spp-card h-100 border-0 shadow-sm hover-shadow p-3 d-flex flex-column align-items-center justify-content-center">
+                    <span class="spp-pill red py-0.5 px-2.5 mb-3 fw-bold" style="font-size: 0.7rem;">STEP 05</span>
+                    <div class="spp-stat-icon red p-0 mb-3" style="width: 52px; height: 52px; font-size: 1.35rem;">
+                        <i class="bi bi-chat-square-quote-fill"></i>
+                    </div>
+                    <h6 class="fw-bold mb-1" style="color: var(--spp-navy);">Attend Interview</h6>
+                    <small class="text-muted" style="font-size: 0.75rem;">Technical & HR</small>
+                </div>
+            </div>
+
+            <!-- Step 6 -->
+            <div class="col-6 col-md-4 col-lg-2">
+                <div class="spp-card h-100 border-0 shadow-sm hover-shadow p-3 d-flex flex-column align-items-center justify-content-center">
+                    <span class="spp-pill green py-0.5 px-2.5 mb-3 fw-bold" style="font-size: 0.7rem;">STEP 06</span>
+                    <div class="spp-stat-icon green p-0 mb-3" style="width: 52px; height: 52px; font-size: 1.35rem;">
+                        <i class="bi bi-trophy-fill"></i>
+                    </div>
+                    <h6 class="fw-bold mb-1" style="color: var(--spp-navy);">Get Placed</h6>
+                    <small class="text-muted" style="font-size: 0.75rem;">Official offer letter</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- SECTION 6: TOP RECRUITERS SLIDER / GRID -->
+    <div class="spp-card mb-5 text-center py-4">
+        <p class="text-muted fw-bold text-uppercase small letter-spacing-2 mb-3">Top Corporate Recruiting Partners</p>
+        <div class="d-flex flex-wrap justify-content-center gap-3">
+            <span class="badge bg-light text-dark border px-3.5 py-2.5 fw-bold fs-6">Google</span>
+            <span class="badge bg-light text-dark border px-3.5 py-2.5 fw-bold fs-6">Microsoft</span>
+            <span class="badge bg-light text-dark border px-3.5 py-2.5 fw-bold fs-6">Amazon</span>
+            <span class="badge bg-light text-dark border px-3.5 py-2.5 fw-bold fs-6">TCS</span>
+            <span class="badge bg-light text-dark border px-3.5 py-2.5 fw-bold fs-6">Infosys</span>
+            <span class="badge bg-light text-dark border px-3.5 py-2.5 fw-bold fs-6">Wipro</span>
+            <span class="badge bg-light text-dark border px-3.5 py-2.5 fw-bold fs-6">Accenture</span>
+            <span class="badge bg-light text-dark border px-3.5 py-2.5 fw-bold fs-6">Capgemini</span>
+            <span class="badge bg-light text-dark border px-3.5 py-2.5 fw-bold fs-6">Deloitte</span>
+            <span class="badge bg-light text-dark border px-3.5 py-2.5 fw-bold fs-6">IBM</span>
+        </div>
+    </div>
+
+    <!-- SECTION 7: UPCOMING PLACEMENT DRIVES -->
+    <div class="mb-5">
+        <div class="d-flex align-items-center justify-content-between mb-4 flex-wrap gap-2">
+            <div>
+                <span class="spp-pill green mb-1">Live Openings</span>
+                <h2 class="display-6 fw-bold mb-0" style="color: var(--spp-navy);">Upcoming Placement Drives</h2>
+            </div>
+            <a href="{% url 'jobs:job_list' %}" class="btn-spp-outline">
+                View All Drives <i class="bi bi-arrow-right ms-1"></i>
+            </a>
+        </div>
+
+        <div class="row g-4">
+            {% if featured_jobs %}
+                {% for job in featured_jobs %}
+                    <div class="col-md-4">
+                        <div class="spp-card h-100 hover-shadow">
+                            <div class="d-flex align-items-center gap-2 mb-3">
+                                <div class="spp-logo" style="width: 44px; height: 44px; font-size: 1.1rem;">
+                                    <i class="bi bi-building"></i>
+                                </div>
+                                <div>
+                                    <strong class="d-block text-dark small fs-6">{{ job.company.company_name }}</strong>
+                                    <span class="small text-muted"><i class="bi bi-geo-alt me-1"></i> {{ job.location }}</span>
+                                </div>
+                            </div>
+
+                            <h5 class="fw-bold mb-2" style="color: var(--spp-navy);">{{ job.job_title }}</h5>
+                            <div class="d-flex align-items-center gap-2 mb-3">
+                                <span class="spp-pill green fw-bold">{{ job.salary }}</span>
+                                <span class="spp-pill blue fs-7">Full-Time</span>
+                            </div>
+
+                            <a href="{% url 'jobs:job_detail' job.id %}" class="btn-spp-primary w-100 mt-auto">
+                                Apply Now <i class="bi bi-arrow-right me-1"></i>
+                            </a>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="col-md-4">
+                    <div class="spp-card h-100 hover-shadow">
+                        <div class="d-flex align-items-center gap-2 mb-3">
+                            <div class="spp-logo" style="width: 44px; height: 44px; font-size: 1.1rem;">
+                                <i class="bi bi-building"></i>
+                            </div>
+                            <div>
+                                <strong class="d-block text-dark small fs-6">Google Inc.</strong>
+                                <span class="small text-muted"><i class="bi bi-geo-alt me-1"></i> Bangalore / Remote</span>
+                            </div>
+                        </div>
+
+                        <h5 class="fw-bold mb-2" style="color: var(--spp-navy);">Software Development Engineer</h5>
+                        <div class="d-flex align-items-center gap-2 mb-3">
+                            <span class="spp-pill green fw-bold">₹18.5 LPA</span>
+                            <span class="spp-pill blue fs-7">Full-Time</span>
+                        </div>
+
+                        <a href="{% url 'jobs:job_list' %}" class="btn-spp-primary w-100 mt-auto">
+                            Apply Now <i class="bi bi-arrow-right me-1"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="spp-card h-100 hover-shadow">
+                        <div class="d-flex align-items-center gap-2 mb-3">
+                            <div class="spp-logo" style="width: 44px; height: 44px; font-size: 1.1rem;">
+                                <i class="bi bi-building"></i>
+                            </div>
+                            <div>
+                                <strong class="d-block text-dark small fs-6">Microsoft</strong>
+                                <span class="small text-muted"><i class="bi bi-geo-alt me-1"></i> Hyderabad</span>
+                            </div>
+                        </div>
+
+                        <h5 class="fw-bold mb-2" style="color: var(--spp-navy);">Data & AI Specialist</h5>
+                        <div class="d-flex align-items-center gap-2 mb-3">
+                            <span class="spp-pill green fw-bold">₹16.0 LPA</span>
+                            <span class="spp-pill purple fs-7">Full-Time</span>
+                        </div>
+
+                        <a href="{% url 'jobs:job_list' %}" class="btn-spp-primary w-100 mt-auto">
+                            Apply Now <i class="bi bi-arrow-right me-1"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="spp-card h-100 hover-shadow">
+                        <div class="d-flex align-items-center gap-2 mb-3">
+                            <div class="spp-logo" style="width: 44px; height: 44px; font-size: 1.1rem;">
+                                <i class="bi bi-building"></i>
+                            </div>
+                            <div>
+                                <strong class="d-block text-dark small fs-6">Amazon</strong>
+                                <span class="small text-muted"><i class="bi bi-geo-alt me-1"></i> Pune</span>
+                            </div>
+                        </div>
+
+                        <h5 class="fw-bold mb-2" style="color: var(--spp-navy);">Cloud Systems Engineer</h5>
+                        <div class="d-flex align-items-center gap-2 mb-3">
+                            <span class="spp-pill green fw-bold">₹14.5 LPA</span>
+                            <span class="spp-pill orange fs-7">Full-Time</span>
+                        </div>
+
+                        <a href="{% url 'jobs:job_list' %}" class="btn-spp-primary w-100 mt-auto">
+                            Apply Now <i class="bi bi-arrow-right me-1"></i>
+                        </a>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- SECTION 8: STUDENT SUCCESS STORIES -->
+    <div class="mb-5">
+        <div class="text-center mb-4">
+            <span class="spp-pill blue mb-2">Success Stories</span>
+            <h2 class="display-6 fw-bold" style="color: var(--spp-navy);">Hear From Our Placed Students</h2>
+            <p class="text-muted">Real experiences from students who launched their careers through SPP.</p>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="spp-card h-100">
+                    <div class="text-warning mb-2"><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i></div>
+                    <p class="text-muted small mb-3">"The Student Placement Portal made applying for campus drives effortless! I tracked my application status in real-time and got hired at Google!"</p>
+                    <div class="d-flex align-items-center gap-2 mt-auto">
+                        <div class="spp-avatar border-0" style="width: 38px; height: 38px; font-size: 1rem; background: var(--spp-blue); color: #fff;">A</div>
+                        <div>
+                            <strong class="d-block text-dark small">Amit Sharma</strong>
+                            <span class="small text-muted">Software Engineer at Google (₹18.5 LPA)</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="spp-card h-100">
+                    <div class="text-warning mb-2"><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i></div>
+                    <p class="text-muted small mb-3">"Uploading my PDF resume and searching for branch-specific jobs took less than 2 minutes. The TPO officers kept us updated throughout!"</p>
+                    <div class="d-flex align-items-center gap-2 mt-auto">
+                        <div class="spp-avatar border-0" style="width: 38px; height: 38px; font-size: 1rem; background: var(--spp-purple); color: #fff;">N</div>
+                        <div>
+                            <strong class="d-block text-dark small">Neha Verma</strong>
+                            <span class="small text-muted">Data Analyst at Microsoft (₹16 LPA)</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="spp-card h-100">
+                    <div class="text-warning mb-2"><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i></div>
+                    <p class="text-muted small mb-3">"As a recruiter, posting job openings and screening candidate profiles with CGPA cutoffs saved our team hours during campus drives."</p>
+                    <div class="d-flex align-items-center gap-2 mt-auto">
+                        <div class="spp-avatar border-0" style="width: 38px; height: 38px; font-size: 1rem; background: var(--spp-green); color: #fff;">R</div>
+                        <div>
+                            <strong class="d-block text-dark small">Rohan Deshmukh</strong>
+                            <span class="small text-muted">Senior Talent Lead at TCS</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <!-- SECTION 10: CALL TO ACTION BANNER -->
+    <div class="spp-hero text-center p-5 mb-5 shadow-lg">
+        <h2 class="display-5 fw-extrabold text-white mb-2">Ready to Start Your Career?</h2>
+        <p class="text-white opacity-90 fs-6 mb-4 mx-auto" style="max-width: 600px;">
+            Join thousands of students, corporate recruiters, and placement officers building their future today.
+        </p>
+
+        <div class="d-flex justify-content-center gap-3 flex-wrap">
+            <a href="{% url 'accounts:register' %}" class="btn btn-light text-primary fw-extrabold px-4 py-3 rounded-3 shadow-lg hover-shadow fs-6">
+                <i class="bi bi-person-plus-fill me-1"></i> Register Now
+            </a>
+            <a href="{% url 'jobs:job_list' %}" class="btn btn-outline-light fw-bold px-4 py-3 rounded-3 fs-6">
+                <i class="bi bi-briefcase me-1"></i> Browse Jobs
+            </a>
+        </div>
+    </div>
 
 </div>
 
+<!-- JS ANIMATED COUNTERS & DARK MODE TOGGLE SCRIPTS -->
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    // 1. Counter Animation Script
+    const counters = document.querySelectorAll('.count-up');
+    const speed = 200;
+
+    const animateCounters = () => {
+        counters.forEach(counter => {
+            const target = +counter.getAttribute('data-target');
+            const updateCount = () => {
+                const count = +counter.innerText;
+                const inc = Math.ceil(target / speed);
+
+                if (count < target) {
+                    counter.innerText = count + inc;
+                    setTimeout(updateCount, 15);
+                } else {
+                    counter.innerText = target.toLocaleString();
+                }
+            };
+            updateCount();
+        });
+    };
+
+    // Intersection Observer for Counter Animation
+    const observer = new IntersectionObserver((entries, observer) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                animateCounters();
+                observer.disconnect();
+            }
+        });
+    }, { threshold: 0.3 });
+
+    const statsSection = document.querySelector('.count-up');
+    if (statsSection) {
+        observer.observe(statsSection);
+    }});
+</script>
 {% endblock %}

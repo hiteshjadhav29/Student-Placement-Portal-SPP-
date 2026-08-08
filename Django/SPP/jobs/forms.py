@@ -10,13 +10,12 @@ class JobForm(forms.ModelForm):
 
     target_branches_list = forms.MultipleChoiceField(
         choices=BRANCH_CHOICES_WITH_ALL,
-        widget=forms.CheckboxSelectMultiple(
-            attrs={'class': 'form-check-input'}
-        ),
+        widget=forms.CheckboxSelectMultiple(),
         required=True,
         initial=['ALL'],
         label="Target Branches"
     )
+
 
     class Meta:
         model = Job

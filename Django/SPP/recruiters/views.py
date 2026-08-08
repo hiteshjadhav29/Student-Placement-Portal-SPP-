@@ -124,10 +124,33 @@ def recruiter_dashboard(request):
         return redirect("recruiters:complete_profile")
 
     recruiter = RecruiterProfile.objects.get(user=request.user)
+    company = recruiter.company
+
+    from jobs.models import Job
+    from applications.models import Application
+
+    jobs_qs = Job.objects.filter(company=company).order_by('-created_at') if company else Job.objects.none()
+    total_jobs = jobs_qs.count()
+    active_jobs = jobs_qs.filter(status='Open').count()
+
+    apps_qs = Application.objects.filter(job__company=company) if company else Application.objects.none()
+    total_applicants = apps_qs.count()
+    shortlisted = apps_qs.filter(status='Shortlisted').count()
+    selected = apps_qs.filter(status='Selected').count()
+
+    recent_jobs = jobs_qs[:5]
+    recent_applications = apps_qs.select_related('student__user', 'job').order_by('-applied_at')[:5]
 
     context = {
         "recruiter": recruiter,
-        "company": recruiter.company,
+        "company": company,
+        "jobs": recent_jobs,
+        "total_jobs": total_jobs,
+        "active_jobs": active_jobs,
+        "total_applicants": total_applicants,
+        "shortlisted": shortlisted,
+        "selected": selected,
+        "recent_applications": recent_applications,
     }
 
     return render(
@@ -135,6 +158,7 @@ def recruiter_dashboard(request):
         "recruiters/recruiter_dashboard.html",
         context
     )
+
 
 
 # =====================================

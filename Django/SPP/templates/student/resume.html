@@ -1,46 +1,65 @@
-<!DOCTYPE html>
-<html>
+{% extends "base.html" %}
 
-<head>
-    <title>My Resume</title>
-</head>
+{% block title %}My Resume - Student Placement Portal{% endblock %}
 
-<body>
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-9">
+        <div class="spp-card">
+            <div class="d-flex align-items-center justify-content-between flex-wrap gap-3 pb-3 mb-4 border-bottom">
+                <div>
+                    <h3 class="fw-bold mb-1" style="color: var(--spp-navy);"><i class="bi bi-file-earmark-text-fill text-primary me-2"></i> My Resume</h3>
+                    <p class="text-muted mb-0">Manage and preview your uploaded PDF resume file for campus job applications</p>
+                </div>
+                <div>
+                    {% if resume %}
+                        <a href="{% url 'students:upload_resume' %}" class="btn-spp-primary">
+                            <i class="bi bi-cloud-arrow-up-fill me-1"></i> Update Resume
+                        </a>
+                    {% else %}
+                        <a href="{% url 'students:upload_resume' %}" class="btn-spp-primary">
+                            <i class="bi bi-cloud-arrow-up-fill me-1"></i> Upload Resume
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
 
-    <h1>My Resume</h1>
+            {% if resume %}
+                <div class="p-4 bg-light rounded-3 mb-4 d-flex align-items-center justify-content-between flex-wrap gap-3">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="spp-stat-icon green" style="width: 48px; height: 48px; font-size: 1.5rem;">
+                            <i class="bi bi-file-earmark-pdf-fill"></i>
+                        </div>
+                        <div>
+                            <h6 class="fw-bold mb-0" style="color: var(--spp-navy);">Uploaded Resume File</h6>
+                            <small class="text-muted">PDF Document</small>
+                        </div>
+                    </div>
+                    <div>
+                        <a href="{{ resume.resume_file.url }}" target="_blank" class="btn-spp-outline">
+                            <i class="bi bi-box-arrow-up-right me-1"></i> Open Full PDF
+                        </a>
+                    </div>
+                </div>
 
-    {% if resume %}
+                <div class="spp-form-section-title">
+                    <i class="bi bi-eye-fill text-primary me-2"></i> PDF Document Preview
+                </div>
+                <div class="ratio ratio-16x9 rounded-3 overflow-hidden border shadow-sm" style="min-height: 500px;">
+                    <iframe src="{{ resume.resume_file.url }}" title="Resume Preview" class="w-100 h-100 border-0"></iframe>
+                </div>
 
-    <p><strong>Resume Uploaded Successfully ✅</strong></p>
-
-    <p>
-        <a href="{{ resume.resume_file.url }}" target="_blank">
-            View Resume
-        </a>
-    </p>
-
-    <p>Resume Score: {{ resume.resume_score }}</p>
-
-    <p>ATS Score: {{ resume.ats_score }}</p>
-
-    <p>AI Feedback:</p>
-
-    <p>{{ resume.ai_feedback }}</p>
-
-    <a href="{% url 'students:upload_resume' %}">
-        Update Resume
-    </a>
-
-    {% else %}
-
-    <p>No Resume Uploaded.</p>
-
-    <a href="{% url 'students:upload_resume' %}">
-        Upload Resume
-    </a>
-
-    {% endif %}
-
-</body>
-
-</html>
+            {% else %}
+                <div class="spp-empty py-5">
+                    <i class="bi bi-file-earmark-x"></i>
+                    <h5 class="fw-bold">No Resume Uploaded</h5>
+                    <p class="text-muted small">Upload your resume in PDF format to start applying for campus placement opportunities.</p>
+                    <a href="{% url 'students:upload_resume' %}" class="btn-spp-primary mt-2">
+                        <i class="bi bi-cloud-arrow-up-fill"></i> Upload Resume Now
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

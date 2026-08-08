@@ -1,133 +1,90 @@
 {% extends "base.html" %}
 
-{% block title %}
-Manage Students
-{% endblock %}
+{% block title %}Manage Students - Placement Officer{% endblock %}
 
 {% block content %}
-
-<div class="container mt-5">
-
-    <h2 class="mb-4">
-        Manage Students
-    </h2>
-
-    {% if students %}
-    <form method="GET" class="row mb-4">
-
-        <div class="col-md-10">
-
-            <input type="text" name="q" class="form-control"
-                placeholder="Search by name, roll number, email or branch..." value="{{ query }}">
-
+<div class="row">
+    <div class="col-12 mb-4">
+        <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+            <div>
+                <h3 class="fw-bold mb-1" style="color: var(--spp-navy);"><i class="bi bi-people-fill text-primary me-2"></i> Student Directory</h3>
+                <p class="text-muted mb-0">Manage registered students and inspect academic profiles</p>
+            </div>
         </div>
-
-        <div class="col-md-2">
-
-            <button type="submit" class="btn btn-primary w-100">
-
-                Search
-
-            </button>
-
-        </div>
-
-    </form>
-
-    <table class="table table-bordered table-hover">
-
-        <thead class="table-dark">
-
-            <tr>
-
-                <th>Roll No.</th>
-                <th>Name</th>
-                <th>Email</th>
-                <th>Phone</th>
-                <th>Branch</th>
-                <th>Semester</th>
-                <th>CGPA</th>
-                <th>Resume</th>
-                <th>Actions</th>
-
-
-            </tr>
-
-        </thead>
-
-        <tbody>
-
-            {% for student in students %}
-
-            <tr>
-
-                <td>{{ student.roll_number }}</td>
-
-                <td>
-                    {{ student.user.get_full_name|default:student.user.username }}
-                </td>
-
-                <td>{{ student.user.email }}</td>
-
-                <td>{{ student.phone }}</td>
-
-                <td>{{ student.get_branch_display }}</td>
-
-                <td>{{ student.get_semester_display }}</td>
-
-                <td>{{ student.cgpa }}</td>
-
-                <td>
-
-                    {% if student.resume %}
-
-                    <a href="{{ student.resume.resume_file.url }}" target="_blank" class="btn btn-success btn-sm">
-
-                        View Resume
-
-                    </a>
-
-                    {% else %}
-
-                    <span class="text-muted">
-
-                        Not Uploaded
-
-                    </span>
-
-                    {% endif %}
-
-                </td>
-
-                <td>
-
-                    <a href="{% url 'placement_officer:student_profile' student.id %}" class="btn btn-primary btn-sm">
-
-                        View Profile
-
-                    </a>
-
-                </td>
-
-            </tr>
-
-
-            {% endfor %}
-
-        </tbody>
-
-    </table>
-
-    {% else %}
-
-    <div class="alert alert-info">
-
-        No students found.
-
     </div>
-
-    {% endif %}
-
 </div>
 
+<div class="spp-card mb-4">
+    <form method="GET">
+        <div class="row g-3">
+            <div class="col-md-10">
+                <div class="input-group">
+                    <span class="input-group-text bg-light"><i class="bi bi-search text-muted"></i></span>
+                    <input type="text" name="q" class="form-control"
+                        placeholder="Search by name, roll number, email or branch..." value="{{ query }}">
+                </div>
+            </div>
+            <div class="col-md-2">
+                <button type="submit" class="btn-spp-primary w-100 py-2">
+                    <i class="bi bi-search"></i> Search
+                </button>
+            </div>
+        </div>
+    </form>
+</div>
+
+<div class="spp-card">
+    {% if students %}
+        <div class="table-responsive">
+            <table class="spp-table">
+                <thead>
+                    <tr>
+                        <th>Roll No.</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                        <th>Branch</th>
+                        <th>Semester</th>
+                        <th>CGPA</th>
+                        <th>Resume</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for student in students %}
+                        <tr>
+                            <td><strong class="fs-6" style="color: var(--spp-navy);">{{ student.roll_number }}</strong></td>
+                            <td>{{ student.user.get_full_name|default:student.user.username }}</td>
+                            <td><span class="text-muted small">{{ student.user.email }}</span></td>
+                            <td>{{ student.phone|default:"-" }}</td>
+                            <td><span class="spp-pill blue">{{ student.get_branch_display }}</span></td>
+                            <td>Sem {{ student.semester }}</td>
+                            <td><span class="spp-pill green fw-bold">{{ student.cgpa }}</span></td>
+                            <td>
+                                {% if student.resume %}
+                                    <a href="{{ student.resume.resume_file.url }}" target="_blank" class="btn-spp-outline py-1 px-2.5 fs-7">
+                                        <i class="bi bi-file-earmark-pdf-fill"></i> View
+                                    </a>
+                                {% else %}
+                                    <span class="text-muted small">Not Uploaded</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <a href="{% url 'placement_officer:student_profile' student.id %}" class="btn-spp-primary py-1 px-2.5 fs-7">
+                                    <i class="bi bi-person-bounding-box"></i> Profile
+                                </a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <div class="spp-empty py-5">
+            <i class="bi bi-people"></i>
+            <h5 class="fw-bold">No Students Found</h5>
+            <p class="text-muted small">No student records matched your search query.</p>
+        </div>
+    {% endif %}
+</div>
 {% endblock %}

@@ -1,270 +1,129 @@
-<div class="bg-dark text-white vh-100 p-3">
+<div class="spp-sidebar p-3" style="background-color: #0B1739 !important; min-height: 100vh;">
 
-    <h5 class="text-center mb-4">
-        Dashboard
-    </h5>
+    <div class="d-flex align-items-center gap-2 mb-4 px-2 pt-2">
+        <i class="bi bi-grid-1x2-fill fs-5 text-primary"></i>
+        <span class="fw-bold fs-6 text-uppercase text-white-50 letter-spacing-2">Navigation</span>
+    </div>
 
-    <ul class="nav flex-column">
-
-        <!-- Common Dashboard -->
-
-        <li class="nav-item mb-2">
-
-            <a href="/"
-               class="nav-link text-white">
-
-                <i class="bi bi-speedometer2"></i>
-
-                Dashboard
-
-            </a>
-
-        </li>
+    <ul class="nav flex-column gap-1">
 
         {% if user.is_authenticated %}
 
-            <!-- ========================= -->
             <!-- Recruiter Sidebar -->
-            <!-- ========================= -->
-
             {% if user.role == "recruiter" %}
-
-                <li class="nav-item mb-2">
-
-                    <a href="/recruiter/dashboard/"
-                       class="nav-link text-white">
-
-                        <i class="bi bi-house-door-fill"></i>
-
-                        Recruiter Dashboard
-
+                <li class="nav-item">
+                    <a href="/recruiter/dashboard/" class="nav-link d-flex align-items-center gap-2" style="color: #ffffff !important;">
+                        <i class="bi bi-house-door-fill text-primary"></i>
+                        <span>Recruiter Dashboard</span>
                     </a>
-
                 </li>
 
-                <li class="nav-item mb-2">
-
-                    <a href="/recruiter/profile/"
-                       class="nav-link text-white">
-
-                        <i class="bi bi-person-fill"></i>
-
-                        My Profile
-
+                <li class="nav-item">
+                    <a href="/recruiter/profile/" class="nav-link d-flex align-items-center gap-2" style="color: #ffffff !important;">
+                        <i class="bi bi-person-fill text-primary"></i>
+                        <span>My Profile</span>
                     </a>
-
                 </li>
 
-                <li class="nav-item mb-2">
-
-                    <a href="/jobs/add/"
-                       class="nav-link text-white">
-
-                        <i class="bi bi-plus-circle-fill"></i>
-
-                        Post Job
-
+                <li class="nav-item">
+                    <a href="/jobs/add/" class="nav-link d-flex align-items-center gap-2" style="color: #ffffff !important;">
+                        <i class="bi bi-plus-circle-fill text-primary"></i>
+                        <span>Post Job</span>
                     </a>
-
                 </li>
 
-                <li class="nav-item mb-2">
-
-                    <a href="/jobs/manage/"
-                       class="nav-link text-white">
-
-                        <i class="bi bi-briefcase-fill"></i>
-
-                        Manage Jobs
-
+                <li class="nav-item">
+                    <a href="/jobs/manage/" class="nav-link d-flex align-items-center gap-2" style="color: #ffffff !important;">
+                        <i class="bi bi-briefcase-fill text-primary"></i>
+                        <span>Manage Jobs</span>
                     </a>
-
                 </li>
 
-                <li class="nav-item mb-2">
-
-                    <a href="#"></a>
-                    <a href="{% url 'applications:recruiter_applications' %}"
-                       class="nav-link text-white">
-
-                        <i class="bi bi-people-fill"></i>
-
-                        Applicants
-
+                <li class="nav-item">
+                    <a href="{% url 'applications:recruiter_applications' %}" class="nav-link d-flex align-items-center gap-2" style="color: #ffffff !important;">
+                        <i class="bi bi-people-fill text-primary"></i>
+                        <span>Applicants</span>
                     </a>
-
                 </li>
-
-                <li class="nav-item mb-2">
-
-                    <a href="#"
-                       class="nav-link text-white">
-
-                        <i class="bi bi-calendar-check-fill"></i>
-
-                        Interviews
-
-                    </a>
-
-                </li>
-
-                <li class="nav-item mb-2">
-
-                    <a href="#"
-                       class="nav-link text-white">
-
-                        <i class="bi bi-bar-chart-fill"></i>
-
-                        Analytics
-
-                    </a>
-
-                </li>
-
             {% endif %}
 
-
-            <!-- ========================= -->
             <!-- Student Sidebar -->
-            <!-- ========================= -->
-
             {% if user.role == "student" %}
-
-                <li class="nav-item mb-2">
-
-                    <a href="/students/dashboard/"
-                       class="nav-link text-white">
-
-                        <i class="bi bi-mortarboard-fill"></i>
-
-                        Student Dashboard
-
-                    </a>
-
-                </li>
-
-                <li class="nav-item mb-2">
-
-                    <a href="/students/profile/"
-                       class="nav-link text-white">
-
-                        <i class="bi bi-person-fill"></i>
-
-                        My Profile
-
-                    </a>
-
-                </li>
-
-                <li class="nav-item mb-2">
-
-                    <a href="{% url 'jobs:job_list' %}"
-                       class="nav-link text-white">
-
-                        <i class="bi bi-search"></i>
-
-                        Browse Jobs
-
-                    </a>
-
-                </li>
-
-                <li class="nav-item mb-2">
-                    <a class="nav-link text-white" href="{% url 'applications:my_applications' %}">
-                        <i class="bi bi-file-earmark-text"></i> My Applications
+                <li class="nav-item">
+                    <a href="/students/dashboard/" class="nav-link d-flex align-items-center gap-2" style="color: #ffffff !important;">
+                        <i class="bi bi-mortarboard-fill text-primary"></i>
+                        <span>Student Dashboard</span>
                     </a>
                 </li>
 
-                <li class="nav-item mb-2">
-
-                    <a href="#"
-                       class="nav-link text-white">
-
-                        <i class="bi bi-robot"></i>
-
-                        AI Job Recommendations
-
+                <li class="nav-item">
+                    <a href="/students/profile/" class="nav-link d-flex align-items-center gap-2" style="color: #ffffff !important;">
+                        <i class="bi bi-person-fill text-primary"></i>
+                        <span>My Profile</span>
                     </a>
-
                 </li>
 
+                <li class="nav-item">
+                    <a href="{% url 'jobs:job_list' %}" class="nav-link d-flex align-items-center gap-2" style="color: #ffffff !important;">
+                        <i class="bi bi-search text-primary"></i>
+                        <span>Browse Jobs</span>
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a href="{% url 'applications:my_applications' %}" class="nav-link d-flex align-items-center gap-2" style="color: #ffffff !important;">
+                        <i class="bi bi-file-earmark-text-fill text-primary"></i>
+                        <span>My Applications</span>
+                    </a>
+                </li>
             {% endif %}
 
-
-            <!-- ========================= -->
             <!-- Placement Officer Sidebar -->
-            <!-- ========================= -->
-
             {% if user.role == "officer" %}
-
-                <li class="nav-item mb-2">
-
-                    <a href="{% url 'placement_officer:dashboard' %}"
-                       class="nav-link text-white">
-
-                        <i class="bi bi-building-fill"></i>
-
-                        Officer Dashboard
-
+                <li class="nav-item">
+                    <a href="{% url 'placement_officer:dashboard' %}" class="nav-link d-flex align-items-center gap-2" style="color: #ffffff !important;">
+                        <i class="bi bi-building-fill text-primary"></i>
+                        <span>Officer Dashboard</span>
                     </a>
-
                 </li>
 
-                <li class="nav-item mb-2">
-
-                    <a href="{% url 'placement_officer:manage_students' %}" class="nav-link text-white">
-                       
-
-                        <i class="bi bi-people-fill"></i>
-
-                        Students
-
+                <li class="nav-item">
+                    <a href="{% url 'placement_officer:manage_students' %}" class="nav-link d-flex align-items-center gap-2" style="color: #ffffff !important;">
+                        <i class="bi bi-people-fill text-primary"></i>
+                        <span>Students</span>
                     </a>
-
                 </li>
 
-                <li class="nav-item mb-2">
-
-                    <a href="{% url 'placement_officer:manage_recruiters' %}"
-                       class="nav-link text-white">
-
-                        <i class="bi bi-person-badge-fill"></i>
-
-                        Recruiters
-
+                <li class="nav-item">
+                    <a href="{% url 'placement_officer:manage_recruiters' %}" class="nav-link d-flex align-items-center gap-2" style="color: #ffffff !important;">
+                        <i class="bi bi-person-badge-fill text-primary"></i>
+                        <span>Recruiters</span>
                     </a>
-
                 </li>
 
-                <li class="nav-item mb-2">
-
-                    <a href="{% url 'placement_officer:reports' %}"
-                       class="nav-link text-white">
-
-                        <i class="bi bi-file-earmark-bar-graph-fill"></i>
-
-                        Reports & Mail
-
+                <li class="nav-item">
+                    <a href="{% url 'placement_officer:reports' %}" class="nav-link d-flex align-items-center gap-2" style="color: #ffffff !important;">
+                        <i class="bi bi-file-earmark-bar-graph-fill text-primary"></i>
+                        <span>Reports & Mail</span>
                     </a>
-
                 </li>
-
             {% endif %}
 
-            <hr class="text-secondary my-3">
+            <hr class="border-secondary my-3">
 
-            <li class="nav-item mb-2">
-                <a href="{% url 'accounts:notifications' %}" class="nav-link text-white d-flex align-items-center justify-content-between">
-                    <span><i class="bi bi-bell-fill me-2"></i> Notifications</span>
+            <li class="nav-item">
+                <a href="{% url 'accounts:notifications' %}" class="nav-link d-flex align-items-center justify-content-between" style="color: #ffffff !important;">
+                    <span><i class="bi bi-bell-fill me-2 text-warning"></i> Notifications</span>
                     {% if unread_notifications_count > 0 %}
                         <span class="badge bg-danger rounded-pill">{{ unread_notifications_count }}</span>
                     {% endif %}
                 </a>
             </li>
 
-            <li class="nav-item mb-2">
-                <a href="{% url 'accounts:settings' %}" class="nav-link text-white">
-                    <i class="bi bi-gear-fill me-2"></i> Settings
+            <li class="nav-item">
+                <a href="{% url 'accounts:settings' %}" class="nav-link d-flex align-items-center gap-2" style="color: #ffffff !important;">
+                    <i class="bi bi-gear-fill text-secondary"></i>
+                    <span>Settings</span>
                 </a>
             </li>
 

@@ -1,73 +1,75 @@
 {% extends 'base.html' %}
 
-{% block title %}
-Recruiter & Company Directory
-{% endblock %}
+{% block title %}Recruiters List - Placement Officer{% endblock %}
 
 {% block content %}
-
-<div class="container mt-4 mb-5">
-
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2><i class="bi bi-person-badge-fill text-primary"></i> Recruiters & Companies</h2>
-    </div>
-
-    <!-- Companies -->
-    <h4 class="mb-3 text-secondary"><i class="bi bi-building"></i> Registered Companies</h4>
-    <div class="row g-4 mb-5">
-        {% for comp in companies %}
-            <div class="col-md-4">
-                <div class="card shadow-sm border-0 h-100">
-                    <div class="card-body">
-                        <h5 class="card-title text-primary"><i class="bi bi-building"></i> {{ comp.company_name }}</h5>
-                        <p class="card-text text-muted mb-2"><i class="bi bi-geo-alt"></i> {{ comp.location }} | {{ comp.industry }}</p>
-                        <p class="card-text mb-2"><i class="bi bi-envelope"></i> {{ comp.company_email }}</p>
-                        <span class="badge bg-success">{{ comp.job_count }} Jobs Posted</span>
-                    </div>
-                </div>
+<div class="row">
+    <div class="col-12 mb-4">
+        <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+            <div>
+                <h3 class="fw-bold mb-1" style="color: var(--spp-navy);"><i class="bi bi-person-badge-fill text-primary me-2"></i> Recruiter List</h3>
+                <p class="text-muted mb-0">Overview of corporate recruiters and company representatives</p>
             </div>
-        {% empty %}
-            <div class="col-12"><div class="alert alert-info">No companies registered yet.</div></div>
-        {% endfor %}
+        </div>
     </div>
+</div>
 
-    <!-- Recruiters -->
-    <h4 class="mb-3 text-secondary"><i class="bi bi-people"></i> Recruiter Profiles</h4>
+<div class="spp-card mb-4">
+    <form method="GET" class="row g-3">
+        <div class="col-md-9">
+            <div class="input-group">
+                <span class="input-group-text bg-light"><i class="bi bi-search text-muted"></i></span>
+                <input type="text" name="search" class="form-control" placeholder="Search by name, company, or email" value="{{ search }}">
+            </div>
+        </div>
+        <div class="col-md-3">
+            <button type="submit" class="btn-spp-primary w-100 py-2"><i class="bi bi-search"></i> Search</button>
+        </div>
+    </form>
+</div>
+
+<div class="spp-card">
     <div class="table-responsive">
-        <table class="table table-bordered table-hover shadow-sm align-middle">
-            <thead class="table-dark">
+        <table class="spp-table">
+            <thead>
                 <tr>
                     <th>Recruiter Name</th>
                     <th>Company</th>
                     <th>Designation</th>
+                    <th>Email</th>
                     <th>Phone</th>
-                    <th>Status</th>
+                    <th>Verification</th>
+                    <th>Action</th>
                 </tr>
             </thead>
             <tbody>
-                {% for r in recruiters %}
+                {% for rec in recruiters %}
                     <tr>
-                        <td><strong>{{ r.full_name }}</strong> ({{ r.user.username }})</td>
-                        <td>{{ r.company.company_name }}</td>
-                        <td>{{ r.designation }}</td>
-                        <td>{{ r.phone }}</td>
+                        <td><strong class="fs-6" style="color: var(--spp-navy);">{{ rec.full_name }}</strong></td>
+                        <td><span class="fw-semibold text-primary"><i class="bi bi-building me-1"></i> {{ rec.company.company_name }}</span></td>
+                        <td>{{ rec.designation|default:"-" }}</td>
+                        <td><span class="text-muted small">{{ rec.user.email }}</span></td>
+                        <td>{{ rec.phone|default:"-" }}</td>
                         <td>
-                            {% if r.is_verified %}
-                                <span class="badge bg-success">Verified</span>
+                            {% if rec.is_verified %}
+                                <span class="spp-pill green"><i class="bi bi-check-circle-fill"></i> Verified</span>
                             {% else %}
-                                <span class="badge bg-warning text-dark">Pending</span>
+                                <span class="spp-pill red"><i class="bi bi-x-circle-fill"></i> Unverified</span>
                             {% endif %}
+                        </td>
+                        <td>
+                            <a href="{% url 'placement_officer:recruiter_profile' rec.id %}" class="btn-spp-primary py-1 px-2.5 fs-7">
+                                View Profile
+                            </a>
                         </td>
                     </tr>
                 {% empty %}
                     <tr>
-                        <td colspan="5" class="text-center text-muted py-4">No recruiter profiles found.</td>
+                        <td colspan="7" class="text-center text-muted py-4">No recruiters found matching your criteria.</td>
                     </tr>
                 {% endfor %}
             </tbody>
         </table>
     </div>
-
 </div>
-
 {% endblock %}

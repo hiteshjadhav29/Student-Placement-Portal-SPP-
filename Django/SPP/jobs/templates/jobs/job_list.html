@@ -1,230 +1,137 @@
 {% extends 'base.html' %}
 
-{% block title %}
-Available Jobs
-{% endblock %}
+{% block title %}Available Jobs - Student Placement Portal{% endblock %}
 
 {% block content %}
-
-<div class="container mt-4">
-
-    <div class="row">
-
-        <div class="col-12">
-
-            <h2 class="mb-4">
-                Available Jobs
-            </h2>
-
+<div class="row">
+    <div class="col-12 mb-4">
+        <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+            <div>
+                <h3 class="fw-bold mb-1" style="color: var(--spp-navy);"><i class="bi bi-briefcase-fill text-primary me-2"></i> Recommended Jobs</h3>
+                <p class="text-muted mb-0">Explore campus placement openings matched to your profile</p>
+            </div>
         </div>
-
     </div>
+</div>
 
-    <!-- Search & Filters -->
-
+<!-- Filter Bar Card -->
+<div class="spp-card mb-4">
+    <div class="spp-form-section-title mb-3">
+        <i class="bi bi-funnel-fill text-primary"></i> Filter Openings
+    </div>
     <form method="GET">
-
-        <div class="row mb-4">
-
+        <div class="row g-3">
             <div class="col-md-4">
-
-                <input
-                    type="text"
-                    name="search"
-                    class="form-control"
-                    placeholder="Search by title, location or qualification"
-                    value="{{ request.GET.search }}">
-
+                <label class="form-label small fw-semibold text-muted">Search Query</label>
+                <div class="input-group">
+                    <span class="input-group-text bg-light"><i class="bi bi-search text-muted"></i></span>
+                    <input
+                        type="text"
+                        name="search"
+                        class="form-control"
+                        placeholder="Search by title, company, skills..."
+                        value="{{ request.GET.search }}">
+                </div>
             </div>
 
             <div class="col-md-2">
-
-                <select
-                    name="job_type"
-                    class="form-select">
-
-                    <option value="">
-                        All Job Types
-                    </option>
-
+                <label class="form-label small fw-semibold text-muted">Job Type</label>
+                <select name="job_type" class="form-select">
+                    <option value="">All Job Types</option>
                     {% for value,label in job_types %}
-
-                    <option
-                        value="{{ value }}"
-                        {% if request.GET.job_type == value %}selected{% endif %}>
-
-                        {{ label }}
-
-                    </option>
-
+                        <option value="{{ value }}" {% if request.GET.job_type == value %}selected{% endif %}>{{ label }}</option>
                     {% endfor %}
-
                 </select>
-
             </div>
 
             <div class="col-md-2">
-
-                <select
-                    name="experience"
-                    class="form-select">
-
-                    <option value="">
-                        Experience
-                    </option>
-
+                <label class="form-label small fw-semibold text-muted">Experience</label>
+                <select name="experience" class="form-select">
+                    <option value="">All Experience</option>
                     {% for value,label in experiences %}
-
-                    <option
-                        value="{{ value }}"
-                        {% if request.GET.experience == value %}selected{% endif %}>
-
-                        {{ label }}
-
-                    </option>
-
+                        <option value="{{ value }}" {% if request.GET.experience == value %}selected{% endif %}>{{ label }}</option>
                     {% endfor %}
-
                 </select>
-
             </div>
 
             <div class="col-md-2">
-
+                <label class="form-label small fw-semibold text-muted">Location</label>
                 <input
                     type="text"
                     name="location"
                     class="form-control"
                     placeholder="Location"
                     value="{{ request.GET.location }}">
-
             </div>
 
-            <div class="col-md-2 d-grid">
-
-                <button
-                    class="btn btn-primary">
-
-                    Search
-
+            <div class="col-md-2 d-flex align-items-end gap-2">
+                <button type="submit" class="btn-spp-primary w-100 py-2">
+                    <i class="bi bi-search"></i> Search
                 </button>
-
+                <a href="{% url 'jobs:job_list' %}" class="btn-spp-outline py-2 px-3" title="Reset Filters">
+                    <i class="bi bi-x-circle"></i>
+                </a>
             </div>
-
         </div>
-
     </form>
-
-    <!-- Jobs -->
-
-    <div class="row">
-
-        {% for job in jobs %}
-
-        <div class="col-lg-6 mb-4">
-
-            <div class="card shadow h-100">
-
-                <div class="card-body">
-
-                    <h4 class="text-primary">
-
-                        {{ job.job_title }}
-
-                    </h4>
-
-                    <hr>
-
-                    <p>
-
-                        <strong>Company:</strong>
-
-                        {{ job.company.company_name }}
-
-                    </p>
-
-                    <p>
-
-                        <strong>Location:</strong>
-
-                        {{ job.location }}
-
-                    </p>
-
-                    <p>
-
-                        <strong>Job Type:</strong>
-
-                        {{ job.job_type }}
-
-                    </p>
-
-                    <p>
-
-                        <strong>Qualification:</strong>
-
-                        {{ job.qualification }}
-
-                    </p>
-
-                    <p>
-
-                        <strong>Experience:</strong>
-
-                        {{ job.experience }}
-
-                    </p>
-
-                    <p>
-
-                        <strong>Salary:</strong>
-
-                        {{ job.salary }}
-
-                    </p>
-
-                    <p>
-
-                        <strong>Deadline:</strong>
-
-                        {{ job.application_deadline }}
-
-                    </p>
-
-                </div>
-
-                <div class="card-footer bg-white">
-
-                    <a
-                        href="{% url 'jobs:job_detail' job.id %}"
-                        class="btn btn-primary">
-
-                        View Details
-
-                    </a>
-
-                </div>
-
-            </div>
-
-        </div>
-
-        {% empty %}
-
-        <div class="col-12">
-
-            <div class="alert alert-warning">
-
-                No jobs found.
-
-            </div>
-
-        </div>
-
-        {% endfor %}
-
-    </div>
-
 </div>
 
+<!-- Jobs List -->
+<div class="row g-4">
+    {% for job in jobs %}
+        <div class="col-12">
+            <div class="spp-card mb-0 shadow-sm border hover-shadow">
+                <div class="d-flex align-items-start justify-content-between flex-wrap gap-3">
+                    <div class="d-flex align-items-start gap-3">
+                        <div class="spp-logo">
+                            <i class="bi bi-building-fill"></i>
+                        </div>
+                        <div>
+                            <div class="d-flex align-items-center gap-2 mb-1">
+                                <h5 class="fw-bold mb-0" style="color: var(--spp-navy);">{{ job.job_title }}</h5>
+                                <span class="spp-pill blue">{{ job.job_type }}</span>
+                                {% if job.status == "Open" %}
+                                    <span class="spp-pill green">Open</span>
+                                {% else %}
+                                    <span class="spp-pill gray">Closed</span>
+                                {% endif %}
+                            </div>
+                            <h6 class="text-primary mb-2 fw-semibold">{{ job.company.company_name }}</h6>
+                            <div class="d-flex flex-wrap align-items-center gap-3 text-muted small">
+                                <span><i class="bi bi-geo-alt-fill text-danger me-1"></i> {{ job.location }}</span>
+                                <span><i class="bi bi-award-fill text-warning me-1"></i> {{ job.qualification }}</span>
+                                <span><i class="bi bi-clock-fill text-info me-1"></i> Exp: {{ job.experience }}</span>
+                                <span><i class="bi bi-calendar-event me-1"></i> Deadline: {{ job.application_deadline|date:"d M Y"|default:job.application_deadline }}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="d-flex flex-column align-items-end justify-content-between gap-3 text-end ms-auto">
+                        <span class="spp-pill green fs-6 py-1 px-3 fw-bold">
+                            <i class="bi bi-cash-stack me-1"></i> {{ job.salary }}
+                        </span>
+                        <div class="d-flex align-items-center gap-2">
+                            <a href="{% url 'jobs:job_detail' job.id %}" class="btn-spp-outline py-1.5 px-3 fs-7">
+                                View Details
+                            </a>
+                            {% if user.role == 'student' and job.status == 'Open' %}
+                                <a href="{% url 'applications:apply_job' job.id %}" class="btn-spp-primary py-1.5 px-3 fs-7">
+                                    <i class="bi bi-send-fill"></i> Apply
+                                </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% empty %}
+        <div class="col-12">
+            <div class="spp-empty py-5">
+                <i class="bi bi-briefcase-slash"></i>
+                <h5 class="fw-bold">No Jobs Found</h5>
+                <p class="text-muted small">Try relaxing your search terms or filter criteria.</p>
+            </div>
+        </div>
+    {% endfor %}
+</div>
 {% endblock %}

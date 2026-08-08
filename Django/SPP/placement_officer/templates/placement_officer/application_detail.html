@@ -1,125 +1,91 @@
 {% extends "base.html" %}
 
-{% block title %}
-Application Details
-{% endblock %}
+{% block title %}Application Details - Placement Officer{% endblock %}
 
 {% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-10">
+        <div class="spp-card">
+            <!-- Header -->
+            <div class="d-flex align-items-center justify-content-between flex-wrap gap-3 pb-3 mb-4 border-bottom">
+                <div>
+                    <h3 class="fw-bold mb-1" style="color: var(--spp-navy);"><i class="bi bi-file-earmark-person-fill text-primary me-2"></i> Application Overview</h3>
+                    <p class="text-muted mb-0">Officer inspect view of student submission</p>
+                </div>
+                <div>
+                    <a href="{% url 'placement_officer:manage_applications' %}" class="btn-spp-outline">
+                        <i class="bi bi-arrow-left"></i> Back to Applications
+                    </a>
+                </div>
+            </div>
 
-<div class="container mt-5">
+            <!-- Student Summary -->
+            <div class="spp-form-section-title">
+                <i class="bi bi-person-fill text-primary me-2"></i> Applicant Information
+            </div>
+            <div class="row g-4 mb-4">
+                <div class="col-md-4">
+                    <small class="text-muted d-block mb-1">Applicant Name</small>
+                    <strong class="fs-6 text-dark">{{ application.student.user.get_full_name|default:application.student.user.username }}</strong>
+                </div>
+                <div class="col-md-4">
+                    <small class="text-muted d-block mb-1">Roll Number</small>
+                    <span class="spp-pill blue">{{ application.student.roll_number }}</span>
+                </div>
+                <div class="col-md-4">
+                    <small class="text-muted d-block mb-1">Email / Phone</small>
+                    <span class="text-dark small">{{ application.student.user.email }} • {{ application.student.phone }}</span>
+                </div>
+                <div class="col-md-4">
+                    <small class="text-muted d-block mb-1">Branch & CGPA</small>
+                    <span class="fw-semibold text-dark">{{ application.student.get_branch_display }} (CGPA: {{ application.student.cgpa }})</span>
+                </div>
+            </div>
 
-    <h2 class="mb-4">
-        Application Details
-    </h2>
+            <!-- Job Summary -->
+            <div class="spp-form-section-title">
+                <i class="bi bi-briefcase-fill text-primary me-2"></i> Job Details
+            </div>
+            <div class="row g-4 mb-4">
+                <div class="col-md-4">
+                    <small class="text-muted d-block mb-1">Job Title</small>
+                    <strong class="fs-6 text-primary">{{ application.job.job_title }}</strong>
+                </div>
+                <div class="col-md-4">
+                    <small class="text-muted d-block mb-1">Company</small>
+                    <span class="fw-semibold text-dark">{{ application.job.company.company_name }}</span>
+                </div>
+                <div class="col-md-4">
+                    <small class="text-muted d-block mb-1">Location & Type</small>
+                    <span class="text-dark">{{ application.job.location }} • {{ application.job.job_type }}</span>
+                </div>
+            </div>
 
-    <!-- Student Information -->
-    <div class="card shadow mb-4">
-
-        <div class="card-header bg-primary text-white">
-            Student Information
+            <!-- Application Meta & Status -->
+            <div class="spp-form-section-title">
+                <i class="bi bi-info-circle-fill text-primary me-2"></i> Application Status
+            </div>
+            <div class="row g-4 mb-3">
+                <div class="col-md-6">
+                    <small class="text-muted d-block mb-1">Application Date</small>
+                    <span class="fw-semibold text-dark"><i class="bi bi-calendar-event me-1"></i> {{ application.applied_at }}</span>
+                </div>
+                <div class="col-md-6">
+                    <small class="text-muted d-block mb-1">Current Status</small>
+                    {% if application.status == "Selected" %}
+                        <span class="spp-pill green fs-6"><i class="bi bi-check-circle-fill"></i> Selected</span>
+                    {% elif application.status == "Shortlisted" %}
+                        <span class="spp-pill purple fs-6"><i class="bi bi-star-fill"></i> Shortlisted</span>
+                    {% elif application.status == "Under Review" %}
+                        <span class="spp-pill blue fs-6"><i class="bi bi-eye-fill"></i> Under Review</span>
+                    {% elif application.status == "Rejected" %}
+                        <span class="spp-pill red fs-6"><i class="bi bi-x-circle-fill"></i> Rejected</span>
+                    {% else %}
+                        <span class="spp-pill gray fs-6"><i class="bi bi-clock-history"></i> {{ application.status }}</span>
+                    {% endif %}
+                </div>
+            </div>
         </div>
-
-        <div class="card-body">
-
-            <p><strong>Name:</strong>
-                {{ application.student.user.get_full_name|default:application.student.user.username }}
-            </p>
-
-            <p><strong>Roll Number:</strong>
-                {{ application.student.roll_number }}
-            </p>
-
-            <p><strong>Email:</strong>
-                {{ application.student.user.email }}
-            </p>
-
-            <p><strong>Phone:</strong>
-                {{ application.student.phone }}
-            </p>
-
-            <p><strong>Branch:</strong>
-                {{ application.student.get_branch_display }}
-            </p>
-
-            <p><strong>Semester:</strong>
-                {{ application.student.get_semester_display }}
-            </p>
-
-            <p><strong>CGPA:</strong>
-                {{ application.student.cgpa }}
-            </p>
-
-        </div>
-
     </div>
-
-    <!-- Job Information -->
-
-    <div class="card shadow mb-4">
-
-        <div class="card-header bg-success text-white">
-            Job Information
-        </div>
-
-        <div class="card-body">
-
-            <p><strong>Job Title:</strong>
-                {{ application.job.job_title }}
-            </p>
-
-            <p><strong>Company:</strong>
-                {{ application.job.company.company_name }}
-            </p>
-
-            <p><strong>Location:</strong>
-                {{ application.job.location }}
-            </p>
-
-            <p><strong>Job Type:</strong>
-                {{ application.job.job_type }}
-            </p>
-
-            <p><strong>Salary:</strong>
-                {{ application.job.salary }}
-            </p>
-
-            <p><strong>Status:</strong>
-                {{ application.job.status }}
-            </p>
-
-        </div>
-
-    </div>
-
-    <!-- Application Information -->
-
-    <div class="card shadow mb-4">
-
-        <div class="card-header bg-warning">
-            Application Information
-        </div>
-
-        <div class="card-body">
-
-            <p><strong>Applied On:</strong>
-                {{ application.applied_at }}
-            </p>
-
-            <p><strong>Application Status:</strong>
-                {{ application.status }}
-            </p>
-
-        </div>
-
-    </div>
-
-    <a href="{% url 'placement_officer:manage_applications' %}"
-       class="btn btn-secondary">
-
-        Back to Applications
-
-    </a>
-
 </div>
-
 {% endblock %}

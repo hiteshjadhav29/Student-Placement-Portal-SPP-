@@ -1,232 +1,275 @@
 {% extends "base.html" %}
 
-{% block title %}
-Student Dashboard
-{% endblock %}
+{% block title %}Student Dashboard - Student Placement Portal{% endblock %}
 
 {% block content %}
+<div class="container-fluid p-0">
 
-<div class="container mt-4">
-
-    <h2 class="mb-4">
-        Welcome, {{ student.user.username }}
-    </h2>
-
-    <!-- Student Information -->
-
-    <div class="card shadow mb-4">
-
-        <div class="card-header bg-primary text-white">
-
-            <h4 class="mb-0">Student Information</h4>
-
-        </div>
-
-        <div class="card-body">
-
-            <div class="row">
-
-                <div class="col-md-3">
-                    <strong>Roll Number</strong><br>
-                    {{ student.roll_number }}
-                </div>
-
-                <div class="col-md-3">
-                    <strong>Branch</strong><br>
-                    {{ student.get_branch_display }}
-                </div>
-
-                <div class="col-md-3">
-                    <strong>Semester</strong><br>
-                    {{ student.semester }}
-                </div>
-
-                <div class="col-md-3">
-                    <strong>CGPA</strong><br>
-                    {{ student.cgpa }}
-                </div>
-
+    <!-- Hero Banner -->
+    <div class="spp-hero d-flex align-items-center justify-content-between flex-wrap gap-3 mb-4">
+        <div>
+            <div class="d-flex align-items-center gap-2 mb-2">
+                <span class="badge bg-white text-primary px-3 py-1 rounded-pill fw-bold text-uppercase fs-7">Student Portal</span>
+                <span class="text-white-50">•</span>
+                <span class="text-white-50">{{ student.get_branch_display }} (Sem {{ student.semester }})</span>
             </div>
-
+            <h1 class="h2 fw-bold mb-2">Welcome back, {{ student.user.first_name|default:student.user.username }}!</h1>
+            <p class="mb-0 text-white-50">Track your applications, update your profile, and explore new job opportunities.</p>
         </div>
-
+        <div class="d-flex align-items-center gap-3">
+            <a href="{% url 'jobs:job_list' %}" class="btn btn-light fw-bold text-primary px-4 py-2 rounded-3">
+                <i class="bi bi-briefcase-fill me-1"></i> Browse Jobs
+            </a>
+        </div>
     </div>
 
-    <!-- Statistics -->
-
-    <div class="row">
-
-        <div class="col-md-3 mb-3">
-
-            <div class="card text-center shadow">
-
-                <div class="card-body">
-
-                    <h5>Skills</h5>
-
-                    <h2>{{ skills_count }}</h2>
-
+    <!-- Stat Tiles Row -->
+    <div class="row g-3 mb-4">
+        <div class="col-6 col-md-3">
+            <div class="spp-stat">
+                <div class="spp-stat-icon blue">
+                    <i class="bi bi-lightbulb-fill"></i>
                 </div>
-
+                <div>
+                    <div class="spp-stat-val text-primary">{{ skills_count|default:"0" }}</div>
+                    <div class="spp-stat-label">Skills Added</div>
+                </div>
             </div>
-
         </div>
 
-        <div class="col-md-3 mb-3">
-
-            <div class="card text-center shadow">
-
-                <div class="card-body">
-
-                    <h5>Projects</h5>
-
-                    <h2>{{ projects_count }}</h2>
-
+        <div class="col-6 col-md-3">
+            <div class="spp-stat">
+                <div class="spp-stat-icon purple">
+                    <i class="bi bi-code-slash"></i>
                 </div>
-
+                <div>
+                    <div class="spp-stat-val text-purple">{{ projects_count|default:"0" }}</div>
+                    <div class="spp-stat-label">Projects</div>
+                </div>
             </div>
-
         </div>
 
-        <div class="col-md-3 mb-3">
-
-            <div class="card text-center shadow">
-
-                <div class="card-body">
-
-                    <h5>Certifications</h5>
-
-                    <h2>{{ certifications_count }}</h2>
-
+        <div class="col-6 col-md-3">
+            <div class="spp-stat">
+                <div class="spp-stat-icon orange">
+                    <i class="bi bi-patch-check-fill"></i>
                 </div>
-
+                <div>
+                    <div class="spp-stat-val text-warning">{{ certifications_count|default:"0" }}</div>
+                    <div class="spp-stat-label">Certifications</div>
+                </div>
             </div>
-
         </div>
 
-        <div class="col-md-3 mb-3">
+        <div class="col-6 col-md-3">
+            <div class="spp-stat">
+                <div class="spp-stat-icon green">
+                    <i class="bi bi-send-fill"></i>
+                </div>
+                <div>
+                    <div class="spp-stat-val text-success">{{ student.applications.count|default:"0" }}</div>
+                    <div class="spp-stat-label">Applications</div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-            <div class="card text-center shadow">
 
-                <div class="card-body">
+    <!-- Student Information & Resume Summary -->
+    <div class="row g-4 mb-4">
+        <div class="col-lg-8">
+            <div class="spp-card h-100">
+                <div class="spp-form-section-title justify-content-between">
+                    <span><i class="bi bi-person-lines-fill text-primary me-2"></i> Academic Summary</span>
+                    <a href="{% url 'students:edit_profile' %}" class="btn-spp-outline py-1 px-3 fs-7">
+                        <i class="bi bi-pencil me-1"></i> Edit Profile
+                    </a>
+                </div>
 
-                    <h5>Resume</h5>
+                <div class="d-flex align-items-center gap-3 mb-4">
+                    <div class="spp-avatar flex-shrink-0" style="width: 64px; height: 64px;">
+                        {% if student.profile_picture %}
+                            <img src="{{ student.profile_picture.url }}" alt="{{ student.user.username }}" class="w-100 h-100 rounded-circle object-fit-cover">
+                        {% else %}
+                            <div class="w-100 h-100 rounded-circle d-flex align-items-center justify-content-center fw-bold text-white fs-4" style="background: linear-gradient(135deg, var(--spp-grad-start), var(--spp-grad-end));">
+                                {{ student.user.username|slice:":1"|upper }}
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div>
+                        <h4 class="fw-bold mb-1" style="color: var(--spp-navy);">{{ student.user.get_full_name|default:student.user.username }}</h4>
+                        <div class="small text-muted"><i class="bi bi-envelope me-1 text-primary"></i> {{ student.user.email }}</div>
+                    </div>
+                </div>
 
+                <!-- 4 Academic Info Tiles (No Truncation) -->
+                <div class="row g-3">
+                    <div class="col-6 col-md-3">
+                        <div class="p-3 border rounded-3 bg-light h-100 d-flex align-items-center gap-3">
+                            <div class="spp-stat-icon blue p-0 flex-shrink-0" style="width: 38px; height: 38px; font-size: 1.1rem;">
+                                <i class="bi bi-hash"></i>
+                            </div>
+                            <div>
+                                <div class="small text-muted fw-bold text-uppercase" style="font-size: 0.7rem;">Roll Number</div>
+                                <div class="fw-bold fs-6 text-primary">#{{ student.roll_number|default:"N/A" }}</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-6 col-md-3">
+                        <div class="p-3 border rounded-3 bg-light h-100 d-flex align-items-center gap-3">
+                            <div class="spp-stat-icon purple p-0 flex-shrink-0" style="width: 38px; height: 38px; font-size: 1.1rem;">
+                                <i class="bi bi-mortarboard-fill"></i>
+                            </div>
+                            <div>
+                                <div class="small text-muted fw-bold text-uppercase" style="font-size: 0.7rem;">Department</div>
+                                <div class="fw-bold text-purple" style="font-size: 0.85rem;">{{ student.get_branch_display }}</div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="col-6 col-md-3">
+                        <div class="p-3 border rounded-3 bg-light h-100 d-flex align-items-center gap-3">
+                            <div class="spp-stat-icon green p-0 flex-shrink-0" style="width: 38px; height: 38px; font-size: 1.1rem;">
+                                <i class="bi bi-award-fill"></i>
+                            </div>
+                            <div>
+                                <div class="small text-muted fw-bold text-uppercase" style="font-size: 0.7rem;">CGPA Score</div>
+                                <div class="fw-bold fs-6 text-success">{{ student.cgpa }} / 10</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-6 col-md-3">
+                        <div class="p-3 border rounded-3 bg-light h-100 d-flex align-items-center gap-3">
+                            <div class="spp-stat-icon green p-0 flex-shrink-0" style="width: 38px; height: 38px; font-size: 1.1rem;">
+                                <i class="bi bi-patch-check-fill"></i>
+                            </div>
+                            <div>
+                                <div class="small text-muted fw-bold text-uppercase" style="font-size: 0.7rem;">Drive Status</div>
+                                <div class="fw-bold fs-6 text-success">Eligible</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="spp-card h-100 d-flex flex-column justify-content-between">
+                <div>
+                    <div class="spp-form-section-title">
+                        <i class="bi bi-file-earmark-pdf-fill text-primary me-2"></i> Resume Status
+                    </div>
                     {% if resume %}
-                        <span class="badge bg-success">
-                            Uploaded
-                        </span>
+                        <div class="d-flex align-items-center gap-3 p-3 bg-light rounded-3 mb-3 border border-success border-opacity-25">
+                            <div class="spp-stat-icon green flex-shrink-0">
+                                <i class="bi bi-file-earmark-check-fill"></i>
+                            </div>
+                            <div>
+                                <h6 class="fw-bold mb-0 text-success">Resume Uploaded</h6>
+                                <small class="text-muted">Verified & ready for applications</small>
+                            </div>
+                        </div>
                     {% else %}
-                        <span class="badge bg-danger">
-                            Not Uploaded
-                        </span>
+                        <div class="d-flex align-items-center gap-3 p-3 bg-light rounded-3 mb-3 border border-danger border-opacity-25">
+                            <div class="spp-stat-icon red flex-shrink-0">
+                                <i class="bi bi-exclamation-triangle-fill"></i>
+                            </div>
+                            <div>
+                                <h6 class="fw-bold mb-0 text-danger">No Resume Found</h6>
+                                <small class="text-muted">Upload PDF resume to apply</small>
+                            </div>
+                        </div>
                     {% endif %}
-
                 </div>
 
+                <div class="d-flex gap-2 mt-3">
+                    {% if resume %}
+                        <a href="{{ resume.resume_file.url }}" target="_blank" class="btn-spp-outline w-50 py-2.5 text-center">
+                            <i class="bi bi-eye me-1"></i> View PDF
+                        </a>
+                    {% endif %}
+                    <a href="{% url 'students:resume' %}" class="btn-spp-primary {% if resume %}w-50{% else %}w-100{% endif %} py-2.5 text-center">
+                        <i class="bi bi-file-earmark-text me-1"></i> Manage
+                    </a>
+                </div>
             </div>
-
         </div>
-
     </div>
 
-    <!-- Quick Menu -->
 
-    <div class="card shadow">
-
-        <div class="card-header bg-dark text-white">
-
-            <h4 class="mb-0">Quick Menu</h4>
-
+    <!-- Quick Navigation Menu Grid -->
+    <div class="spp-card">
+        <div class="spp-form-section-title">
+            <i class="bi bi-grid-fill text-primary me-2"></i> Quick Actions & Links
         </div>
-
-        <div class="card-body">
-
-            <div class="row">
-
-                <div class="col-md-4 mb-3">
-
-                    <a href="{% url 'students:profile' %}"
-                       class="btn btn-outline-primary w-100">
-
-                        👤 Profile
-
-                    </a>
-
-                </div>
-
-                <div class="col-md-4 mb-3">
-
-                    <a href="{% url 'students:resume' %}"
-                       class="btn btn-outline-success w-100">
-
-                        📄 Resume
-
-                    </a>
-
-                </div>
-
-                <div class="col-md-4 mb-3">
-
-                    <a href="{% url 'students:skills' %}"
-                       class="btn btn-outline-warning w-100">
-
-                        💡 Skills
-
-                    </a>
-
-                </div>
-
-                <div class="col-md-4 mb-3">
-
-                    <a href="{% url 'students:projects' %}"
-                       class="btn btn-outline-info w-100">
-
-                        💻 Projects
-
-                    </a>
-
-                </div>
-
-                <div class="col-md-4 mb-3">
-
-                    <a href="{% url 'students:certifications' %}"
-                       class="btn btn-outline-secondary w-100">
-
-                        🏆 Certifications
-
-                    </a>
-
-                </div>
-
-                <div class="col-md-4 mb-3">
-
-                    <a href="{% url 'jobs:job_list' %}"
-                       class="btn btn-outline-primary w-100">
-
-                        💼 Browse Jobs
-
-                    </a>
-
-                </div>
-
-                <div class="col-md-4 mb-3">
-
-                    <a href="{% url 'applications:my_applications' %}"
-                       class="btn btn-outline-danger w-100">
-
-                        📬 My Applications
-
-                    </a>
-
-                </div>
-
+        <div class="row g-3">
+            <div class="col-6 col-lg-4">
+                <a href="{% url 'students:profile' %}" class="btn btn-outline-light text-start p-3 w-100 border rounded-3 text-dark text-decoration-none shadow-sm hover-shadow d-block">
+                    <div class="spp-stat-icon blue mb-2" style="width:40px; height:40px; font-size:1.2rem;">
+                        <i class="bi bi-person-fill"></i>
+                    </div>
+                    <div class="fw-bold" style="color: var(--spp-navy);">My Profile</div>
+                    <small class="text-muted">View academic details</small>
+                </a>
             </div>
 
+            <div class="col-6 col-lg-4">
+                <a href="{% url 'students:resume' %}" class="btn btn-outline-light text-start p-3 w-100 border rounded-3 text-dark text-decoration-none shadow-sm hover-shadow d-block">
+                    <div class="spp-stat-icon green mb-2" style="width:40px; height:40px; font-size:1.2rem;">
+                        <i class="bi bi-file-earmark-text-fill"></i>
+                    </div>
+                    <div class="fw-bold" style="color: var(--spp-navy);">Resume</div>
+                    <small class="text-muted">Upload & view resume</small>
+                </a>
+            </div>
+
+            <div class="col-6 col-lg-4">
+                <a href="{% url 'students:skills' %}" class="btn btn-outline-light text-start p-3 w-100 border rounded-3 text-dark text-decoration-none shadow-sm hover-shadow d-block">
+                    <div class="spp-stat-icon purple mb-2" style="width:40px; height:40px; font-size:1.2rem;">
+                        <i class="bi bi-mortarboard-fill"></i>
+                    </div>
+                    <div class="fw-bold" style="color: var(--spp-navy);">Skills</div>
+                    <small class="text-muted">Manage technical skills</small>
+                </a>
+            </div>
+
+            <div class="col-6 col-lg-4">
+                <a href="{% url 'students:projects' %}" class="btn btn-outline-light text-start p-3 w-100 border rounded-3 text-dark text-decoration-none shadow-sm hover-shadow d-block">
+                    <div class="spp-stat-icon orange mb-2" style="width:40px; height:40px; font-size:1.2rem;">
+                        <i class="bi bi-laptop-fill"></i>
+                    </div>
+                    <div class="fw-bold" style="color: var(--spp-navy);">Projects</div>
+                    <small class="text-muted">Showcase portfolio</small>
+                </a>
+            </div>
+
+            <div class="col-6 col-lg-4">
+                <a href="{% url 'students:certifications' %}" class="btn btn-outline-light text-start p-3 w-100 border rounded-3 text-dark text-decoration-none shadow-sm hover-shadow d-block">
+                    <div class="spp-stat-icon gray mb-2" style="width:40px; height:40px; font-size:1.2rem;">
+                        <i class="bi bi-award-fill"></i>
+                    </div>
+                    <div class="fw-bold" style="color: var(--spp-navy);">Certifications</div>
+                    <small class="text-muted">Add course certificates</small>
+                </a>
+            </div>
+
+            <div class="col-6 col-lg-4">
+                <a href="{% url 'applications:my_applications' %}" class="btn btn-outline-light text-start p-3 w-100 border rounded-3 text-dark text-decoration-none shadow-sm hover-shadow d-block">
+                    <div class="spp-stat-icon green mb-2" style="width:40px; height:40px; font-size:1.2rem;">
+                        <i class="bi bi-send-fill"></i>
+                    </div>
+                    <div class="fw-bold" style="color: var(--spp-navy);">My Applications</div>
+                    <small class="text-muted">Track status & updates</small>
+                </a>
+            </div>
         </div>
 
     </div>
 
 </div>
-
 {% endblock %}

@@ -1,32 +1,41 @@
-<!DOCTYPE html>
-<html>
+{% extends "base.html" %}
 
-<head>
-    <title>Edit Project</title>
-</head>
+{% block title %}Edit Project - Student Placement Portal{% endblock %}
 
-<body>
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-7">
+        <div class="spp-card">
+            <div class="spp-form-section-title">
+                <i class="bi bi-pencil-fill text-primary"></i> Edit Project Details
+            </div>
 
-    <h1>Edit Project</h1>
+            <form method="POST">
+                {% csrf_token %}
 
-    <form method="POST">
+                {% for field in form %}
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold" for="{{ field.id_for_label }}">{{ field.label }}</label>
+                        {{ field }}
+                        {% if field.help_text %}
+                            <div class="form-text small">{{ field.help_text }}</div>
+                        {% endif %}
+                        {% if field.errors %}
+                            <div class="text-danger small mt-1">{{ field.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+                {% endfor %}
 
-        {% csrf_token %}
-
-        {{ form.as_p }}
-
-        <button type="submit">
-            Update Project
-        </button>
-
-    </form>
-
-    <br>
-
-    <a href="{% url 'students:projects' %}">
-        Back
-    </a>
-
-</body>
-
-</html>
+                <div class="d-flex align-items-center gap-2 mt-4">
+                    <button type="submit" class="btn-spp-primary">
+                        <i class="bi bi-check-lg"></i> Update Project
+                    </button>
+                    <a href="{% url 'students:projects' %}" class="btn-spp-outline">
+                        Cancel
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

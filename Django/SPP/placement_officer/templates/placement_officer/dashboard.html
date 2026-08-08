@@ -1,177 +1,174 @@
 {% extends 'base.html' %}
 
-{% block title %}
-Placement Officer Dashboard
-{% endblock %}
+{% block title %}Placement Officer Dashboard - Student Placement Portal{% endblock %}
 
 {% block content %}
+<div class="container-fluid p-0">
 
-<div class="container mt-5">
-
-    <h2 class="mb-4">
-        Placement Officer Dashboard
-    </h2>
-
-    <div class="row">
-
-        <div class="col-md-4 mb-4">
-            <div class="card shadow text-center">
-                <div class="card-body">
-                    <h5>Total Students</h5>
-                    <h2>{{ total_students }}</h2>
-<div class="container mt-4 mb-5">
-
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2><i class="bi bi-building-fill text-primary"></i> Placement Officer Dashboard</h2>
+    <!-- Hero Banner -->
+    <div class="spp-hero d-flex align-items-center justify-content-between flex-wrap gap-3 mb-4">
         <div>
-            <a href="{% url 'placement_officer:reports' %}" class="btn btn-primary me-2">
-                <i class="bi bi-file-earmark-bar-graph"></i> View Reports
+            <div class="d-flex align-items-center gap-2 mb-2">
+                <span class="badge bg-white text-primary px-3 py-1 rounded-pill fw-bold text-uppercase fs-7">Officer Portal</span>
+                <span class="text-white-50">•</span>
+                <span class="text-white-50">Campus Placement Management</span>
+            </div>
+            <h1 class="h2 fw-bold mb-2">Welcome, Placement Officer</h1>
+            <p class="mb-0 text-white-50">Monitor student placements, corporate recruiter engagement, and campaign metrics.</p>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+            <a href="{% url 'placement_officer:reports' %}" class="btn btn-light fw-bold text-primary px-3 py-2 rounded-3">
+                <i class="bi bi-file-earmark-bar-graph me-1"></i> Reports & Mail
             </a>
-            <a href="{% url 'placement_officer:download_report' %}" class="btn btn-success">
-                <i class="bi bi-download"></i> Download Report (CSV)
+            <a href="{% url 'placement_officer:download_report' %}" class="btn btn-outline-light fw-bold px-3 py-2 rounded-3">
+                <i class="bi bi-download me-1"></i> Export CSV
             </a>
         </div>
     </div>
 
-    <!-- Analytics Cards -->
+    <!-- 6 Key Campus Placement Metrics Grid (Symmetrical 3x2 Layout) -->
+    <div class="row g-3 mb-4">
+        <div class="col-12 col-sm-6 col-lg-4">
+            <div class="spp-stat">
+                <div class="spp-stat-icon blue flex-shrink-0">
+                    <i class="bi bi-people-fill"></i>
+                </div>
+                <div>
+                    <div class="spp-stat-val">{{ total_students }}</div>
+                    <div class="spp-stat-label">Total Registered Students</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-sm-6 col-lg-4">
+            <div class="spp-stat">
+                <div class="spp-stat-icon purple flex-shrink-0">
+                    <i class="bi bi-building"></i>
+                </div>
+                <div>
+                    <div class="spp-stat-val">{{ total_companies }}</div>
+                    <div class="spp-stat-label">Recruiting Companies</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-sm-6 col-lg-4">
+            <div class="spp-stat">
+                <div class="spp-stat-icon orange flex-shrink-0">
+                    <i class="bi bi-briefcase-fill"></i>
+                </div>
+                <div>
+                    <div class="spp-stat-val">{{ total_jobs }}</div>
+                    <div class="spp-stat-label">Total Job Listings</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-sm-6 col-lg-4">
+            <div class="spp-stat">
+                <div class="spp-stat-icon green flex-shrink-0">
+                    <i class="bi bi-door-open-fill"></i>
+                </div>
+                <div>
+                    <div class="spp-stat-val">{{ open_jobs }}</div>
+                    <div class="spp-stat-label">Active Open Positions</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-sm-6 col-lg-4">
+            <div class="spp-stat">
+                <div class="spp-stat-icon gray flex-shrink-0">
+                    <i class="bi bi-file-earmark-text-fill"></i>
+                </div>
+                <div>
+                    <div class="spp-stat-val">{{ total_applications }}</div>
+                    <div class="spp-stat-label">Student Applications Submitted</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-sm-6 col-lg-4">
+            <div class="spp-stat">
+                <div class="spp-stat-icon green flex-shrink-0">
+                    <i class="bi bi-check-circle-fill"></i>
+                </div>
+                <div>
+                    <div class="spp-stat-val">{{ selected_students }} <small class="fs-6 text-success font-normal">({{ placement_rate }}%)</small></div>
+                    <div class="spp-stat-label">Placed Students (Placement Rate)</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Main Content Section: Branch Breakdown & Recent Job Postings -->
     <div class="row g-4 mb-4">
-
-        <div class="col-md-3">
-            <div class="card bg-primary text-white shadow-sm border-0 rounded-3">
-                <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <h6 class="text-white-50">Total Students</h6>
-                            <h2 class="mb-0 fw-bold">{{ total_students }}</h2>
-                        </div>
-                        <i class="bi bi-people-fill fs-1 text-white-50"></i>
-                    </div>
+        <!-- Branch-wise Student Breakdown -->
+        <div class="col-lg-6">
+            <div class="spp-card h-100">
+                <div class="spp-form-section-title justify-content-between">
+                    <span><i class="bi bi-bar-chart-line-fill text-primary me-2"></i> Branch-wise Student Distribution</span>
+                    <a href="{% url 'placement_officer:manage_students' %}" class="btn-spp-outline py-1 px-3 fs-7">View All Students</a>
                 </div>
-            </div>
-        </div>
 
-        <div class="col-md-4 mb-4">
-            <div class="card shadow text-center">
-                <div class="card-body">
-                    <h5>Total Recruiters</h5>
-                    <h2>{{ total_recruiters }}</h2>
-        <div class="col-md-3">
-            <div class="card bg-success text-white shadow-sm border-0 rounded-3">
-                <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <h6 class="text-white-50">Placed Students</h6>
-                            <h2 class="mb-0 fw-bold">{{ selected_students }}</h2>
-                            <small class="text-white-50">{{ placement_rate }}% Placement Rate</small>
-                        </div>
-                        <i class="bi bi-check-circle-fill fs-1 text-white-50"></i>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-4 mb-4">
-            <div class="card shadow text-center">
-                <div class="card-body">
-                    <h5>Total Jobs</h5>
-                    <h2>{{ total_jobs }}</h2>
-        <div class="col-md-3">
-            <div class="card bg-warning text-dark shadow-sm border-0 rounded-3">
-                <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <h6 class="text-dark-50">Registered Companies</h6>
-                            <h2 class="mb-0 fw-bold">{{ total_companies }}</h2>
-                        </div>
-                        <i class="bi bi-building fs-1 text-dark-50"></i>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-4 mb-4">
-            <div class="card shadow text-center">
-                <div class="card-body">
-                    <h5>Total Applications</h5>
-                    <h2>{{ total_applications }}</h2>
-        <div class="col-md-3">
-            <div class="card bg-info text-white shadow-sm border-0 rounded-3">
-                <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <h6 class="text-white-50">Active Job Posts</h6>
-                            <h2 class="mb-0 fw-bold">{{ open_jobs }}</h2>
-                        </div>
-                        <i class="bi bi-briefcase-fill fs-1 text-white-50"></i>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-4 mb-4">
-            <div class="card shadow text-center">
-                <div class="card-body">
-                    <h5>Open Jobs</h5>
-                    <h2>{{ open_jobs }}</h2>
-    </div>
-
-    <!-- Quick Sections -->
-    <div class="row g-4">
-
-        <!-- Branch Breakdown -->
-        <div class="col-md-6">
-            <div class="card shadow-sm border-0">
-                <div class="card-header bg-dark text-white">
-                    <h5 class="mb-0"><i class="bi bi-pie-chart-fill"></i> Branch Breakdown</h5>
-                </div>
-                <div class="card-body p-0">
-                    <ul class="list-group list-group-flush">
+                {% if branch_stats %}
+                    <div class="d-flex flex-column gap-3 mt-3">
                         {% for bs in branch_stats %}
-                            <li class="list-group-item d-flex justify-content-between align-items-center">
-                                <span>{{ bs.branch }}</span>
-                                <span class="badge bg-primary rounded-pill">{{ bs.count }} Students</span>
-                            </li>
-                        {% empty %}
-                            <li class="list-group-item text-muted">No branch data available</li>
-                        {% endfor %}
-                    </ul>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-4 mb-4">
-            <div class="card shadow text-center">
-                <div class="card-body">
-                    <h5>Selected Students</h5>
-                    <h2>{{ selected_students }}</h2>
-        <!-- Recent Jobs Posted -->
-        <div class="col-md-6">
-            <div class="card shadow-sm border-0">
-                <div class="card-header bg-primary text-white">
-                    <h5 class="mb-0"><i class="bi bi-clock-history"></i> Recent Job Postings</h5>
-                </div>
-                <div class="card-body p-0">
-                    <ul class="list-group list-group-flush">
-                        {% for j in recent_jobs %}
-                            <li class="list-group-item d-flex justify-content-between align-items-center">
-                                <div>
-                                    <strong>{{ j.job_title }}</strong>
-                                    <br>
-                                    <small class="text-muted">{{ j.company.company_name }} | {{ j.created_at|date:"d M Y" }}</small>
+                            <div>
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <span class="fw-semibold" style="color: var(--spp-navy);">{{ bs.branch }}</span>
+                                    <span class="spp-pill blue fs-7">{{ bs.count }} Students</span>
                                 </div>
-                                <span class="badge bg-secondary">{{ j.target_branches }}</span>
-                            </li>
-                        {% empty %}
-                            <li class="list-group-item text-muted">No jobs posted recently</li>
+                                <div class="progress" style="height: 10px; border-radius: 6px;">
+                                    <div class="progress-bar" role="progressbar" style="width: {% if total_students > 0 %}{% widthratio bs.count total_students 100 %}{% else %}0{% endif %}%; background: linear-gradient(90deg, var(--spp-grad-start), var(--spp-grad-end)); border-radius: 6px;"></div>
+                                </div>
+                            </div>
                         {% endfor %}
-                    </ul>
-                </div>
+                    </div>
+                {% else %}
+                    <div class="spp-empty py-4">
+                        <i class="bi bi-diagram-3"></i>
+                        <p class="text-muted small">No branch distribution data available.</p>
+                    </div>
+                {% endif %}
             </div>
         </div>
 
+        <!-- Recent Job Postings -->
+        <div class="col-lg-6">
+            <div class="spp-card h-100">
+                <div class="spp-form-section-title justify-content-between">
+                    <span><i class="bi bi-clock-history text-primary me-2"></i> Recent Job Postings</span>
+                    <a href="{% url 'placement_officer:manage_jobs' %}" class="btn-spp-outline py-1 px-3 fs-7">Manage Jobs</a>
+                </div>
+
+                {% if recent_jobs %}
+                    <div class="list-group list-group-flush rounded-3 border">
+                        {% for j in recent_jobs %}
+                            <div class="list-group-item p-3 border-bottom d-flex align-items-center justify-content-between flex-wrap gap-2">
+                                <div>
+                                    <h6 class="fw-bold mb-1" style="color: var(--spp-navy);">{{ j.job_title }}</h6>
+                                    <small class="text-muted"><i class="bi bi-building me-1"></i> {{ j.company.company_name }} • {{ j.created_at|date:"d M Y" }}</small>
+                                </div>
+                                <div>
+                                    <span class="spp-pill blue fs-7">{{ j.target_branches }}</span>
+                                    <a href="{% url 'placement_officer:job_detail' j.id %}" class="btn-spp-outline py-1 px-2.5 fs-7 ms-2">
+                                        <i class="bi bi-eye"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="spp-empty py-4">
+                        <i class="bi bi-briefcase"></i>
+                        <p class="text-muted small">No jobs posted recently.</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
     </div>
 
 </div>
-
 {% endblock %}
-
